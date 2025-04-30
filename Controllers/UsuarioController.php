@@ -13,10 +13,15 @@ class UsuarioController{
     public function save($usuario, $contrasena){
         $id = $this->model->createUser($usuario, $contrasena);
         return ($id!=false) ? header("Location:show.php?id=" .$id) : header("Location:create.php");
+        return ($id!=false) ? header("Location:show.php?id=" .$id) : header("Location:create.php");
     }   
 
     //Esta función será para mostrar los detalles de cada usuario cuando se crea
     public function index(){
         return ($this->model->index()) ? $this->model->index() : false;
+    }
+
+    public function show($id){
+        return ($this->model->show($id) != false) ? $this->model->show($id) : header("Location:index.php");
     }
 }

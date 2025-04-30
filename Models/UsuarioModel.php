@@ -25,6 +25,18 @@ class UsuarioModel{
         return ($stmt->execute()) ? $stmt->fetchAll() : false;
     }
 
+    public function show($id){
+        $stmt = $this->PDO->prepare("
+                SELECT 
+                    *  
+                FROM usuarios
+                WHERE id = :id
+                LIMIT 1
+            ");
+            $stmt->bindParam(":id", $id);
+            return ($stmt->execute()) ? $stmt->fetch() : false;
+    }
+
 }
 
 
