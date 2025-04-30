@@ -24,4 +24,4 @@ $data = $obj->show($_GET['id']);
     </tbody>
 </table>
 
-<a href="index.php" class="btn btn-primary">Continuar</a>
+<a href="see.php" class="btn btn-primary">Continuar</a>

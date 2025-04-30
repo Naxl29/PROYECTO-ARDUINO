@@ -17,8 +17,8 @@ class UsuarioController{
     }   
 
     //Esta función será para mostrar los detalles de cada usuario cuando se crea
-    public function index(){
-        return ($this->model->index()) ? $this->model->index() : false;
+    public function see(){
+        return ($this->model->see()) ? $this->model->see() : false;
     }
 
     public function show($id){
