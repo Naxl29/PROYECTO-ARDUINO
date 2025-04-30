@@ -10,8 +10,8 @@ class UsuarioController{
     }
 
     //Función para guardar cuando se crea un nuevo usuario
-    public function save($usuario, $contraseña){
-        $id = $this->model->createUser($usuario, $contraseña);
+    public function save($usuario, $contrasena){
+        $id = $this->model->createUser($usuario, $contrasena);
         return ($id!=false) ? header("Location:show.php?id=" .$id) : header("Location:create.php");
     }   
 

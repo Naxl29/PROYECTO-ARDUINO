@@ -9,8 +9,8 @@
         <input type="text" class="form-control" id="usuario" name="usuario" required ="">
     </div>
     <div class="mb-3">
-        <label for="contraseña" class="form-label">Ingresar contraseña:</label>
-        <input type="text" class="form-control" id="contraseña" name="contraseña" required ="">
+        <label for="contrasena" class="form-label">Ingresar contraseña:</label>
+        <input type="text" class="form-control" id="contrasena" name="contrasena" required ="">
     </div>
 
     <button type="submit" class="btn btn-primary">Crear</button>

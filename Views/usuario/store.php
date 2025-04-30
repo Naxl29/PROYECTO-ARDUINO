@@ -3,5 +3,5 @@
     require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
     $obj = new UsuarioController();
     $usuario = $_POST['usuario'];
-    $contrasena = $_POST['contraseña'];
+    $contrasena = $_POST['contrasena'];
     $obj->save($usuario, $contrasena);
