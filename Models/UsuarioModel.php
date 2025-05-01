@@ -25,6 +25,10 @@ class UsuarioModel{
         return ($stmt->execute()) ? $stmt->fetchAll() : false;
     }
 <<<<<<< HEAD
+ 
+=======
+
+>>>>>>> c5bba5ba6b8cce3609b2544d2f95bdc862b234e1
     
     // Función para iniciar sesión
     public function login($usuario, $contrasena){
@@ -34,9 +38,22 @@ class UsuarioModel{
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
     }
+<<<<<<< HEAD
+      public function show($id){   // Esta función será para mostrar los detalles de cada usuario cuando se crea
+            $stmt = $this->PDO->prepare("
+                SELECT 
+                    *  
+                FROM usuarios
+                WHERE id = :id
+                LIMIT 1
+            ");
+            $stmt->bindParam(":id", $id);
+            return ($stmt->execute()) ? $stmt->fetch() : false;
 =======
 
+
     public function show($id){
+>>>>>>> c5bba5ba6b8cce3609b2544d2f95bdc862b234e1
         $stmt = $this->PDO->prepare("
                 SELECT 
                     *  
@@ -47,6 +64,9 @@ class UsuarioModel{
             $stmt->bindParam(":id", $id);
             return ($stmt->execute()) ? $stmt->fetch() : false;
     }
+<<<<<<< HEAD
+    
+=======
 
->>>>>>> 0b293296bf7c00baeabff2dffafbdbf9b721876f
+>>>>>>> c5bba5ba6b8cce3609b2544d2f95bdc862b234e1
 }
