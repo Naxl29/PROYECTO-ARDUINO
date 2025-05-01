@@ -19,11 +19,12 @@ class UsuarioModel{
         return ($stmt->execute()) ? $this->PDO->lastInsertId() : false; 
     }
     
-    //Función para mostrar los
-    public function index(){
+    //Función para mostrar los usuarios
+    public function see(){
         $stmt = $this->PDO->prepare("SELECT * FROM usuarios");
         return ($stmt->execute()) ? $stmt->fetchAll() : false;
     }
+<<<<<<< HEAD
     
     // Función para iniciar sesión
     public function login($usuario, $contrasena){
@@ -33,4 +34,19 @@ class UsuarioModel{
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
     }
+=======
+
+    public function show($id){
+        $stmt = $this->PDO->prepare("
+                SELECT 
+                    *  
+                FROM usuarios
+                WHERE id = :id
+                LIMIT 1
+            ");
+            $stmt->bindParam(":id", $id);
+            return ($stmt->execute()) ? $stmt->fetch() : false;
+    }
+
+>>>>>>> 0b293296bf7c00baeabff2dffafbdbf9b721876f
 }
