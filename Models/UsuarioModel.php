@@ -24,8 +24,13 @@ class UsuarioModel{
         $stmt = $this->PDO->prepare("SELECT * FROM usuarios");
         return ($stmt->execute()) ? $stmt->fetchAll() : false;
     }
-
+    
+    // Función para iniciar sesión
+    public function login($usuario, $contrasena){
+        $stmt = $this->PDO->prepare("SELECT * FROM usuarios WHERE usuario = :usuario AND contrasena = :contrasena");
+        $stmt->bindParam(':usuario', $usuario);
+        $stmt->bindParam(':contrasena', $contrasena);
+        $stmt->execute();
+        return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
+    }
 }
-
-
-        
