@@ -3,7 +3,7 @@
 ?>
 
 <a href="/PROYECTO-ARDUINO/Views/usuario/create.php" class="btn btn-primary">Agregar Usuario</a>
-<a href="/PROYECTO-ARDUINO/Views//usuario/see.php" class="btn btn-success">Ver historial</a>
+<a href="/PROYECTO-ARDUINO/Views/usuario/see.php" class="btn btn-success">Ver historial</a>
 
 <h1>INICIO</h1> 
 <?php
