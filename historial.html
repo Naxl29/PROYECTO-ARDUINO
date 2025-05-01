@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Historial</title>
+    <link rel="stylesheet" href="css/styles.css"> </head>
+<body>
+    <div class="historial-container">
+        <h1>Historial de Acceso e Interruptor</h1>
+        <table class="historial-table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Estado del Interruptor</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody id="historial-registros">
+                <tr>
+                    <td>UsuarioEjemplo1</td>
+                    <td>Inicio de Sesión</td>
+                    <td>N/A</td>
+                    <td>2025-05-01</td>
+                    <td>10:00:00</td>
+                </tr>
+                <tr>
+                    <td>UsuarioEjemplo2</td>
+                    <td>Interruptor</td>
+                    <td>Encendido</td>
+                    <td>2025-05-01</td>
+                    <td>10:15:30</td>
+                </tr>
+                <tr>
+                    <td>UsuarioEjemplo1</td>
+                    <td>Interruptor</td>
+                    <td>Apagado</td>
+                    <td>2025-05-01</td>
+                    <td>10:45:12</td>
+                </tr>
+                </tbody>
+        </table>
+        <p><a href="boton.html">Volver al Inicio</a></p> </div>
+
+    <script>
+        // Este script es un ejemplo de cómo podrías insertar datos dinámicamente
+        // desde un backend (esto requeriría comunicación con el servidor).
+        // Por ahora, los datos de ejemplo están directamente en el HTML.
+
+        // Si tu backend te envía los datos como un array de objetos JSON,
+        // podrías usar JavaScript para construir las filas de la tabla.
+        /*
+        fetch('/api/historial') // Ejemplo de una ruta de backend para obtener el historial
+            .then(response => response.json())
+            .then(data => {
+                const historialRegistros = document.getElementById('historial-registros');
+                data.forEach(registro => {
+                    const row = historialRegistros.insertRow();
+                    const usuarioCell = row.insertCell();
+                    const accionCell = row.insertCell();
+                    const estadoCell = row.insertCell();
+                    const fechaCell = row.insertCell();
+                    const horaCell = row.insertCell();
+
+                    usuarioCell.textContent = registro.usuario;
+                    accionCell.textContent = registro.accion;
+                    estadoCell.textContent = registro.estado_interruptor || 'N/A';
+                    fechaCell.textContent = registro.fecha;
+                    horaCell.textContent = registro.hora;
+                });
+            });
+        */
+    </script>
+</body>
+</html>

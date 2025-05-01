@@ -1,0 +1,414 @@
+body {
+    background: linear-gradient(to bottom, black, #1a237e);
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.shadow__btn {
+    padding: 10px 20px;
+    border: 2px solid white; /* Borde blanco visible */
+    font-size: 17px;
+    color: #fff;
+    border-radius: 7px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: 0.5s;
+    transition-property: box-shadow;
+    text-decoration: none;
+    background-color: transparent;
+    box-shadow: 0 0 10px transparent;
+    margin: 10px;
+    background-clip: padding-box;
+    /* Aquí es donde cambiamos la fuente */
+    font-family: sans-serif; /* Ejemplo: una fuente sans-serif genérica */
+}
+
+.shadow__btn:hover {
+    box-shadow: 0 0 5px rgb(0,140,255),
+                0 0 25px rgb(0,140,255),
+                0 0 50px rgb(0,140,255),
+                0 0 100px rgb(0,140,255);
+}
+
+/*boton encender apagar*/
+body {
+    background: linear-gradient(to bottom, black, #1a237e) url('rayo.jpg') repeat;
+    min-height: 100vh;
+    position: relative; /* Importante para que el contenedor se posicione con respecto al body */
+    margin: 0;
+}
+
+.switch-container { /* Este contenedor es el que centramos */
+    position: absolute;
+    top: 50%; /* Lo coloca en la mitad vertical */
+    left: 50%; /* Lo coloca en la mitad horizontal */
+    transform: translate(-50%, -50%); /* Lo centra exactamente en su propio centro */
+}
+
+/* El resto de tus estilos para .switch y sus elementos */
+.switch {
+    font-size: 24px; /* Aumenta el tamaño de la fuente para que los elementos internos se escalen un poco */
+    position: relative;
+    display: inline-block;
+    /* Aumenta el ancho y la altura para agrandar el botón */
+    width: 8em;
+    height: 4.4em;
+    border-radius: 60px; /* Aumenta el radio para que siga siendo redondeado */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2a2a2a;
+    transition: 0.4s;
+    border-radius: 60px; /* Aumenta el radio para que coincida */
+    overflow: hidden;
+    box-shadow: 0 0 100px rgba(255, 255, 255, 0.8);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    /* Aumenta el tamaño del círculo */
+    height: 2.4em;
+    width: 2.4em;
+    border-radius: 30px; /* Aumenta el radio del círculo */
+    left: 0.8em; /* Ajusta la posición inicial */
+    bottom: 0.8em; /* Ajusta la posición inicial */
+    transition: 0.4s;
+    transition-timing-function: cubic-bezier(0.81, -0.04, 0.38, 1.5);
+    box-shadow: inset 8px -4px 0px 0px #fff;
+}
+
+.switch input:checked + .slider {
+    background-color: #00a6ff;
+}
+
+.switch input:checked + .slider:before {
+    /* Ajusta el desplazamiento para que el círculo llegue al otro lado del botón más grande */
+    transform: translateX(3.6em);
+    box-shadow: inset 150px -4px 0px 15px #ffcf48;
+}
+
+.star {
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    width: 0.7em; /* Aumenta el tamaño de las estrellas */
+    transition: all 0.4s;
+    height: 0.7em; /* Aumenta el tamaño de las estrellas */
+}
+
+.star_1 {
+    left: 4.0em; /* Ajusta la posición */
+    top: 1.0em; /* Ajusta la posición */
+}
+
+.star_2 {
+    left: 3.5em; /* Ajusta la posición */
+    top: 2.0em; /* Ajusta la posición */
+}
+
+.star_3 {
+    left: 4.6em; /* Ajusta la posición */
+    top: 1.6em; /* Ajusta la posición */
+}
+
+.switch input:checked ~ .slider .star {
+    opacity: 0;
+}
+
+.cloud {
+    width: 5em; /* Aumenta el tamaño de la nube */
+    position: absolute;
+    bottom: -2.0em; /* Ajusta la posición */
+    left: -1.5em; /* Ajusta la posición */
+    opacity: 0;
+    transition: all 0.4s;
+}
+
+.switch input:checked ~ .slider .cloud {
+    opacity: 100;
+}
+
+/*inicio_sesion*/
+/* From Uiverse.io by glisovic01 */
+.login-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    padding: 40px;
+    margin: 20px auto;
+    transform: translate(-50%, -55%);
+    background: rgba(7, 7, 7, 0.349);
+    box-sizing: border-box;
+    box-shadow: 0 150px 250px rgb(0, 0, 0)
+}
+
+.login-box p:first-child {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.login-box .user-box {
+    position: relative;
+}
+
+.login-box .user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 36px;
+    border: none;
+    border-bottom: 2px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+.login-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 18px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #fff;
+    font-size: 16px;
+}
+
+/*boton iniciar*/
+.login-box form a {
+    position: relative;
+    display: inline-block;
+    padding: 20px 25px;
+    font-weight: bold;
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 3px
+}
+
+.login-box a:hover {
+    background: #fff;
+    color: #272727;
+    border-radius: 5px;
+}
+
+.login-box a span {
+    position: absolute;
+    display: block;
+}
+
+.login-box a span:nth-child(1) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #fff);
+    animation: btn-anim1 1.5s linear infinite;
+}
+
+@keyframes btn-anim1 {
+    0% {
+        left: -100%;
+    }
+
+    50%,100% {
+        left: 100%;
+    }
+}
+
+.login-box a span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #fff);
+    animation: btn-anim2 1.5s linear infinite;
+    animation-delay: .375s
+}
+
+@keyframes btn-anim2 {
+    0% {
+        top: -100%;
+    }
+
+    50%,100% {
+        top: 100%;
+    }
+}
+
+.login-box a span:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #fff);
+    animation: btn-anim3 1.5s linear infinite;
+    animation-delay: .75s
+}
+
+@keyframes btn-anim3 {
+    0% {
+        right: -100%;
+    }
+
+    50%,100% {
+        right: 100%;
+    }
+}
+
+.login-box a span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #fff);
+    animation: btn-anim4 1.5s linear infinite;
+    animation-delay: 1.125s
+}
+
+@keyframes btn-anim4 {
+    0% {
+        bottom: -100%;
+    }
+
+    50%,100% {
+        bottom: 100%;
+    }
+}
+
+.login-box p:last-child {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.login-box form a button.a2 {
+    background: transparent; /* Fondo transparente para el botón */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+    outline: none;
+}
+
+.login-box form a button.a2:hover {
+    background: #fff;
+    color: #272727;
+    border-radius: 5px;
+}
+
+.login-box p:last-child a.a2 {
+    color: #00bfff; /* Cambiado solo al enlace "Regístrate!" */
+}
+
+/* Ajuste específico para la etiqueta "Correo Electrónico" */
+.login-box .user-box:nth-child(2) label {
+    top: 5px; /* Ajusta este valor según sea necesario */
+}
+
+/*botones historial*/
+.botones .boton_2 {
+  background-color: transparent !important;
+  color: white !important;
+  border: 0px solid white !important;
+  font-weight: bold !important;
+  padding: 8px 20px !important; /* Ajusta los valores vertical (top/bottom) y horizontal (left/right) */
+  text-decoration: none;
+}
+.botones {
+  position: absolute;
+  top: 30px; /* Ajusta según necesites la distancia desde la parte superior */
+  right: 30px; /* Ajusta según necesites la distancia desde la derecha */
+  display: flex;
+  gap: 20px; /* Ajusta el espacio entre los botones */
+}
+
+/* Estilos para la página de historial */
+.historial-container {
+  width: 80%;
+  max-width: 960px;
+  margin: 30px auto;
+  padding: 20px;
+  background: rgba(7, 7, 7, 0.349);
+  box-sizing: border-box;
+  box-shadow: 0 150px 250px rgb(0, 0, 0);
+  color: #fff;
+  text-align: center;
+}
+
+.historial-container h1 {
+  margin-bottom: 20px;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.historial-table th, .historial-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.historial-table th {
+  background-color: #333;
+  color: #fff;
+}
+
+.historial-table tbody tr:nth-child(even) {
+  background-color: #222;
+}
+
+.historial-container a {
+  color: #00bfff; /* El mismo color del "Regístrate!" */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.historial-container a:hover {
+  color: #fff;
+}
