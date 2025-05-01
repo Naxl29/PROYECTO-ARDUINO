@@ -6,17 +6,20 @@
 ?>
 
 <div class="mb-3">
-    <a href="/PROYECTO-ARDUINO/index.php" class="btn btn-primary">Regresar</a>
+    <a href="/PROYECTO-ARDUINO/Views/usuario/button.php" class="btn btn-primary">Regresar</a>
 </div>
 
-<table class="table table-striped table-h">
-    <thead class="table-dark">
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">USUARIO</th>
-            <th scope="col">CONTRASEÑA</th>
-        </tr>
-    </thead>
+<link rel="stylesheet" href="/PROYECTO-ARDUINO/css/styles.css">
+    <div class="historial-container">
+        <h1>Historial de Acceso e Interruptor</h1>
+        <table class="historial-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>USUARIO</th>
+                    <th>CONTRASEÑA</th>
+                </tr>
+            </thead>
     <tbody>
         <?php if($rows): ?>
             <?php foreach($rows as $row): ?>

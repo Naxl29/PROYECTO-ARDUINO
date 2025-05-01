@@ -7,21 +7,23 @@ $obj = new UsuarioController();
 $data = $obj->show($_GET['id']);
 ?>
 
-<table class="table">
-    <thead class="table">
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Usuario</th>
-            <th scope="col">Contraseña</th>
-        </tr>
+<link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
+<div class="container">
+        <h1 class="text-center">Datos de Usuario Registrado</h1>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Contraseña</th>
+                </tr>
+            </thead>
     </thead>
     <tbody>
         <tr>
-            <td scope="col"><?= $data["id"] ?></td>
             <td scope="col"><?= $data["usuario"] ?></td>
             <td scope="col"><?= $data["contrasena"] ?></td>
         </tr>
     </tbody>
 </table>
 
-<a href="/PROYECTO-ARDUINO/index.php" class="btn btn-primary">Continuar</a>
+<a href="/PROYECTO-ARDUINO/Views/usuario/button.php" class="btn btn-primary">Continuar</a>

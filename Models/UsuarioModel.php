@@ -18,21 +18,13 @@ class UsuarioModel{
         $stmt->bindParam(':contrasena', $contrasena); 
         return ($stmt->execute()) ? $this->PDO->lastInsertId() : false; 
     }
-    
+
     //Función para mostrar los usuarios
     public function see(){
         $stmt = $this->PDO->prepare("SELECT * FROM usuarios");
         return ($stmt->execute()) ? $stmt->fetchAll() : false;
     }
-<<<<<<< HEAD
 
-=======
-<<<<<<< HEAD
- 
-=======
-
->>>>>>> c5bba5ba6b8cce3609b2544d2f95bdc862b234e1
->>>>>>> 60dcb948ac558b11fdb3cfd64d42b91c4cabcc83
     
     // Función para iniciar sesión
     public function login($usuario, $contrasena){
@@ -42,43 +34,16 @@ class UsuarioModel{
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
     }
-<<<<<<< HEAD
 
-=======
-<<<<<<< HEAD
       public function show($id){   // Esta función será para mostrar los detalles de cada usuario cuando se crea
-            $stmt = $this->PDO->prepare("
-                SELECT 
-                    *  
-                FROM usuarios
-                WHERE id = :id
-                LIMIT 1
-            ");
-            $stmt->bindParam(":id", $id);
-            return ($stmt->execute()) ? $stmt->fetch() : false;
-=======
->>>>>>> 60dcb948ac558b11fdb3cfd64d42b91c4cabcc83
-
-
-    public function show($id){
->>>>>>> c5bba5ba6b8cce3609b2544d2f95bdc862b234e1
         $stmt = $this->PDO->prepare("
-                SELECT 
-                    *  
-                FROM usuarios
-                WHERE id = :id
-                LIMIT 1
-            ");
-            $stmt->bindParam(":id", $id);
-            return ($stmt->execute()) ? $stmt->fetch() : false;
+            SELECT 
+                *  
+            FROM usuarios
+            WHERE id = :id
+            LIMIT 1
+        ");
+        $stmt->bindParam(":id", $id);
+        return ($stmt->execute()) ? $stmt->fetch() : false;
     }
-<<<<<<< HEAD
-    
-=======
-
-<<<<<<< HEAD
-
-=======
->>>>>>> c5bba5ba6b8cce3609b2544d2f95bdc862b234e1
->>>>>>> 60dcb948ac558b11fdb3cfd64d42b91c4cabcc83
 }
