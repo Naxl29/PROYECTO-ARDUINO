@@ -6,7 +6,7 @@
 ?>
 
 <div class="mb-3">
-    <a href="/PROYECTO-ARDUINO/Views/index.php" class="btn btn-primary">Regresar</a>
+    <a href="/PROYECTO-ARDUINO/index.php" class="btn btn-primary">Regresar</a>
 </div>
 
 <table class="table table-striped table-h">

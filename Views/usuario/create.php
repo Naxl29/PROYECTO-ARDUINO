@@ -14,7 +14,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Crear</button>
-    <a class="btn btn-danger" href="index.php">Cancelar</a>
+    <a class="btn btn-danger" href="/PROYECTO-ARDUINO/index.php">Cancelar</a>
     </form>
 
 <?php
