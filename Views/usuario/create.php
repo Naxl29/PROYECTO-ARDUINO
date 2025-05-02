@@ -5,11 +5,11 @@
 
 
 <div class="login-box">
-    <p>Registrar</p>
+    <div class="user-box">
+       <p>Registrar</p>
 
     <form action="store.php" method="POST" autocomplete="off">
-        <div class="user-box">
-            <input type="text" id="usuario" name="usuario" required>
+             <input type="text" id="usuario" name="usuario" required>
             <label for="usuario">Usuario</label>
         </div>
         <div class="user-box">
