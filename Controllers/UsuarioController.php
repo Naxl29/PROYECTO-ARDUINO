@@ -19,7 +19,7 @@ class UsuarioController{
     public function see(){
         return ($this->model->see()) ? $this->model->see() : false;
     }
-
+    //Función para tomar el id del último usuario que se creó y mostrar los detalles de su creación
     public function show($id){
         return ($this->model->show($id) != false) ? $this->model->show($id) : header("Location:index.php");
     }
