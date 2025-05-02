@@ -2,6 +2,8 @@
 //Vista que contiene el formulario de para crear un nuevo
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
+<link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
+    <div class="login-box">
 
  <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
  <link rel="stylesheet" href="css/Registro.css">
