@@ -1,5 +1,5 @@
 <?php
-//Vista que contiene el formulario de para crear un nuevo usuario
+//Vista que contiene el formulario de para crear un nuvoe
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
@@ -17,8 +17,7 @@
             <input type="password" id="contrasena" name="contrasena" required>
             <label for="contrasena">Contraseña</label>
         </div>
-    
-        
+
         <button type="submit" class="button">
             <div class="blob1"></div>
             <div class="blob2"></div>
@@ -27,8 +26,10 @@
         <button type="submit" class="button">
             <div class="blob1"></div>
             <div class="blob2"></div>
-            <div class="inner">Cancelar</div>
+            <div class="inner">Cancelarr</div>
         </button>
+            
+        <a href="/PROYECTO-ARDUINO/index.php" class="custom-cancel">Cancelar</a>
     </form>
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
