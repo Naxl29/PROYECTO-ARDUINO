@@ -25,6 +25,6 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php
         </form>
         <p>No tienes una cuenta?<a href="registrarse.html" class="a2">Registrate!</a></p>
     </div>
-    
+
  
 
