@@ -19,27 +19,20 @@ class UsuarioController{
     public function see(){
         return ($this->model->see()) ? $this->model->see() : false;
     }
-    
     //Función para tomar el id del último usuario que se creó y mostrar los detalles de su creación
     public function show($id){
         return ($this->model->show($id) != false) ? $this->model->show($id) : header("Location:index.php");
     }
 
     //Función para iniciar sesión
+
     public function login($usuario, $contrasena){
         $user = $this->model->login($usuario, $contrasena);
         if ($user) {
             session_start();
             $_SESSION['usuario'] = $user['usuario'];
-            $_SESSION['usuario'] = $user['id'];
-            header("Location: button.php"); 
-            exit;
+            header("Location: button.php"); // O a la página que quieras mostrar después de iniciar sesión
         } else {
-<<<<<<< HEAD
-            header("Location: login.php");
-            exit;
-=======
->>>>>>> 30a6f3893d3b43c5d17080505753d70ebac296b5
             header("Location: login.php?error=1"); // Redirigir a la página de inicio de sesión con un error
             session_start(); // Inicia la sesión si aún no está iniciada
             $_SESSION['login_error'] = "Usuario o contraseña incorrectos."; // Guarda el mensaje de error en la sesión
