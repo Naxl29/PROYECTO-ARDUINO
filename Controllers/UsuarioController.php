@@ -35,8 +35,11 @@ class UsuarioController{
             header("Location: button.php"); 
             exit;
         } else {
+<<<<<<< HEAD
             header("Location: login.php");
             exit;
+=======
+>>>>>>> 30a6f3893d3b43c5d17080505753d70ebac296b5
             header("Location: login.php?error=1"); // Redirigir a la página de inicio de sesión con un error
             session_start(); // Inicia la sesión si aún no está iniciada
             $_SESSION['login_error'] = "Usuario o contraseña incorrectos."; // Guarda el mensaje de error en la sesión

@@ -3,12 +3,20 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
 ?>
     <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30a6f3893d3b43c5d17080505753d70ebac296b5
     <link rel="stylesheet" href="css/Registro.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 30a6f3893d3b43c5d17080505753d70ebac296b5
     <div class="login-box">
         <p>Iniciar sesion</p>
         <form method="post">
@@ -28,6 +36,10 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php
         </form>
         <p>No tienes una cuenta?<a href="/PROYECTO-ARDUINO/Views/usuario/create.php" class="a2"> Registrate!</a></p>
     </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30a6f3893d3b43c5d17080505753d70ebac296b5
     <script>
         <?php
         session_start(); // Asegúrate de iniciar la sesión en la vista
@@ -53,5 +65,9 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php
         ?>
     </script>
 </body>
+<<<<<<< HEAD
 </html>
 
+=======
+</html>
+>>>>>>> 30a6f3893d3b43c5d17080505753d70ebac296b5
