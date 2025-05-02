@@ -33,6 +33,7 @@ class UsuarioModel{
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
   
     }
+}
 <<<<<<< HEAD
     
     //Función para mostrar los detalles del usuario creado

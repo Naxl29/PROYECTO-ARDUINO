@@ -52,7 +52,6 @@
         </form>
         <p>Ya tienes una cuenta?<a href="inicio_sesion.html" class="a2">   Inicia sesion</a></p>
     </div>
->>>>>>> 4afcb5bcdddfd1aa6e44c0307f7882d9bfd07740
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
 ?>
