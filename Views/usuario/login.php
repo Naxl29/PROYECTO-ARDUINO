@@ -2,28 +2,29 @@
 require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
 ?>
-   <div class="mb-3">
-        <label for="usuario" class="form-label">Usuario:</label>
-        <input type="text" class="form-control" id="usuario" name="usuario" required>
+    <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/styles.css">
+
+    <div class="login-box">
+        <p>Iniciar sesion</p>
+        <form action="boton.html" method="post">
+            <div class="user-box">
+                <input required="" name="" type="text">
+                <label>Usuario</label>
+            </div>
+            <div class="user-box">
+                <input required="" name="" type="password">
+                <label>Contraseña</label>
+            </div>
+            <a href="boton.html">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Iniciar
+            </a>
+        </form>
+        <p>No tienes una cuenta?<a href="registrarse.html" class="a2">Registrate!</a></p>
     </div>
+    
+ 
 
-    <div class="mb-3">
-        <label for="contrasena" class="form-label">Contraseña:</label>
-        <input type="password" class="form-control" id="contrasena" name="contrasena" required>
-    </div>
-
-    <button type="submit" class="btn btn-success">Iniciar Sesión</button>
-    <a class="btn btn-secondary" href="/PROYECTO-ARDUINO/index.php">Cancelar</a>
-
-    <?php if (isset($_GET['error'])): ?>
-        <div class="alert alert-danger mt-3" role="alert">
-            Usuario o contraseña incorrectos.
-        </div>
-    <?php endif; ?>
-</form>
-
-<?php
-    require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
-?>
-   
-<?php

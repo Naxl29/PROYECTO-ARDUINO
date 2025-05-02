@@ -9,7 +9,7 @@ class UsuarioModel{
             $con = new Database();
             $this->PDO = $con->conexion();
         }
-
+    
     //Función para crear o agregar un usuario. Esta función está utilizando una conexión con base de datos, esto solo con la finalidad de probar si sí funciona.
     public function createUser($usuario, $contrasena){
         $stmt = $this->PDO->prepare("INSERT INTO usuarios VALUES(null, :usuario, :contrasena)");
@@ -31,7 +31,9 @@ class UsuarioModel{
         $stmt->bindParam(':contrasena', $contrasena);
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
+  
     }
+<<<<<<< HEAD
     
     //Función para mostrar los detalles del usuario creado
     public function show($id){  
@@ -45,4 +47,6 @@ class UsuarioModel{
         $stmt->bindParam(":id", $id);
         return ($stmt->execute()) ? $stmt->fetch() : false;
     }
+=======
+>>>>>>> feature/orde
 }
