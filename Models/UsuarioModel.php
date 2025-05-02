@@ -44,7 +44,7 @@ class UsuarioModel{
             LIMIT 1
         ");
         $stmt->bindParam(":id", $id);
-        return ($stmt->execute()) ? $stmt->fetch() : false;
+        return ($stmt->execute()) ? $stmt->fetch() : false ;
     }
     
 }
