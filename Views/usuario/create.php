@@ -18,10 +18,17 @@
         </div>
 
     
-        <button type="submit" class="custom-button">
-            Iniciar
+        
+        <button type="submit" class="button">
+            <div class="blob1"></div>
+            <div class="blob2"></div>
+            <div class="inner">Iniciar</div>
         </button>
-        <a href="/PROYECTO-ARDUINO/index.php" class="custom-cancel">Cancelar</a>
+        <button type="submit" class="button">
+            <div class="blob1"></div>
+            <div class="blob2"></div>
+            <div class="inner">Cancelar</div>
+        </button>
     </form>
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
