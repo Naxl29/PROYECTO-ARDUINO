@@ -412,3 +412,21 @@ body {
 .historial-container a:hover {
   color: #fff;
 }
+
+.boton-back {
+    background-color: transparent !important;
+    color: white !important;
+    border: 0px solid white !important;
+    font-weight: bold !important;
+    padding: 8px 20px !important;
+    text-decoration: none;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    font-size: 1.5em; /* Aumenta el tamaño del icono. Prueba con diferentes valores como 2em, 20px, etc. */
+    
+}
+.boton-back svg {
+    width: 29px; /* Ajusta este valor al tamaño deseado */
+    height: 60px; /* Ajusta este valor al tamaño deseado */
+  }

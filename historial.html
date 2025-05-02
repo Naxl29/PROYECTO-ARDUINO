@@ -45,34 +45,7 @@
         </table>
         <p><a href="boton.html">Volver al Inicio</a></p> </div>
 
-    <script>
-        // Este script es un ejemplo de cómo podrías insertar datos dinámicamente
-        // desde un backend (esto requeriría comunicación con el servidor).
-        // Por ahora, los datos de ejemplo están directamente en el HTML.
-
-        // Si tu backend te envía los datos como un array de objetos JSON,
-        // podrías usar JavaScript para construir las filas de la tabla.
-        /*
-        fetch('/api/historial') // Ejemplo de una ruta de backend para obtener el historial
-            .then(response => response.json())
-            .then(data => {
-                const historialRegistros = document.getElementById('historial-registros');
-                data.forEach(registro => {
-                    const row = historialRegistros.insertRow();
-                    const usuarioCell = row.insertCell();
-                    const accionCell = row.insertCell();
-                    const estadoCell = row.insertCell();
-                    const fechaCell = row.insertCell();
-                    const horaCell = row.insertCell();
-
-                    usuarioCell.textContent = registro.usuario;
-                    accionCell.textContent = registro.accion;
-                    estadoCell.textContent = registro.estado_interruptor || 'N/A';
-                    fechaCell.textContent = registro.fecha;
-                    horaCell.textContent = registro.hora;
-                });
-            });
-        */
-    </script>
+    
+   
 </body>
 </html>
