@@ -9,6 +9,6 @@
      $controller->login($usuario, $contrasena);
  }
     else {
-        header("Location: login.php?error=1");
+        header("Location:button.php");
     }
 
