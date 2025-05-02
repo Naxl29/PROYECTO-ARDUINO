@@ -1,4 +1,5 @@
 <?php
+//Apartado para ver el historial
     require_once ("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
     require_once ("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
     $obj = new UsuarioController();

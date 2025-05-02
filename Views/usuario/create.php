@@ -1,4 +1,5 @@
 <?php
+//Vista que contiene el formulario de para crear un nuevo usuario
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
@@ -16,7 +17,6 @@
             <input type="password" id="contrasena" name="contrasena" required>
             <label for="contrasena">Contraseña</label>
         </div>
-
     
         
         <button type="submit" class="button">

@@ -1,4 +1,5 @@
 <?php
+//Acá se muestra el apartado que contiene el botón que encenderá y apagará el bombillo
     require_once ("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
     require_once ("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
 ?>

@@ -1,4 +1,5 @@
 <?php
+//Apartado inicial que contiene las opciones de Iniciar sesión y Registrarse
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/styles.css">
