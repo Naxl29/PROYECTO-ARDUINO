@@ -2,7 +2,7 @@
 require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
 ?>
-    <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/styles.css">
+    <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
 
     <div class="login-box">
         <p>Iniciar sesion</p>
