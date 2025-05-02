@@ -26,14 +26,15 @@ class UsuarioController{
 
     //Función para iniciar sesión
 
-    public function login($usuario, $contrasena){
+    public function login($usuario, $contrasena){   
         $user = $this->model->login($usuario, $contrasena);
         if ($user) {
             session_start();
             $_SESSION['usuario'] = $user['usuario'];
-            header("Location: index.php"); // O a la página que quieras mostrar después de iniciar sesión
+            header("Location: button.php"); // O a la página que quieras mostrar después de iniciar sesión
         } else {
-            header("Location: Views/usuario/login.php?error=1");
+            header("Location: Views/usuario/login.php? error=1");
         }
     }
+    
 }

@@ -23,7 +23,7 @@
                 <div class="inner">Registrar</div>
             </button>
         </form>
-        <p>Ya tienes una cuenta?<a href="inicio_sesion.html" class="a2">Inicia sesion</a></p>
+        <p>Ya tienes una cuenta?<a href="/PROYECTO-ARDUINO/Views/Usuario/login.php " class="a2"> Inicia sesion</a></p>
     </div>
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");

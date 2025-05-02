@@ -33,7 +33,7 @@ class UsuarioModel{
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
   
     }
-    
+
     //Función para mostrar los detalles del usuario creado
     public function show($id){  
         $stmt = $this->PDO->prepare("
@@ -46,4 +46,5 @@ class UsuarioModel{
         $stmt->bindParam(":id", $id);
         return ($stmt->execute()) ? $stmt->fetch() : false;
     }
+    
 }
