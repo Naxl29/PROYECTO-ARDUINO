@@ -2,11 +2,20 @@
 //Vista que contiene el formulario de para crear un nuevo
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
+<<<<<<< HEAD
+=======
+<link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
+    <div class="login-box">
+
+>>>>>>> 5e26f03d14f387b3765dbe6fa9aeda1b1d566833
  <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
  <link rel="stylesheet" href="css/Registro.css">
 <div class="login-box">
     <div class="user-box">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5e26f03d14f387b3765dbe6fa9aeda1b1d566833
         <p>Registrar</p>
         <form action="store.php" method="POST" autocomplete="off">
             <div class="user-box">
@@ -23,7 +32,7 @@
                 <div class="inner">Registrar</div>
             </button>
         </form>
-        <p>Ya tienes una cuenta?<a href="inicio_sesion.html" class="a2">Inicia sesion</a></p>
+        <p>Ya tienes una cuenta?<a href="/PROYECTO-ARDUINO/Views/Usuario/login.php " class="a2"> Inicia sesion</a></p>
     </div>
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
