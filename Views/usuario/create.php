@@ -2,16 +2,13 @@
 //Vista que contiene el formulario de para crear un nuevo
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
-<<<<<<< HEAD
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
     <div class="login-box">
-=======
 
  <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
  <link rel="stylesheet" href="css/Registro.css">
 <div class="login-box">
     <div class="user-box">
->>>>>>> 65d75b07dacb1a3279b042333b4cc12700f15052
         <p>Registrar</p>
         <form action="store.php" method="POST" autocomplete="off">
             <div class="user-box">
