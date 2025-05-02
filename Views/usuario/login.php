@@ -3,9 +3,15 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
 ?>
     <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="css/Registro.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+=======
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+
+>>>>>>> 5d93c01bdaf7b80c9b6b45a8bbcc42c1e85591ff
     <div class="login-box">
         <p>Iniciar sesion</p>
         <form method="post">
@@ -25,3 +31,33 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php
         </form>
         <p>No tienes una cuenta?<a href="/PROYECTO-ARDUINO/Views/usuario/create.php" class="a2"> Registrate!</a></p>
     </div>
+<<<<<<< HEAD
+=======
+
+    <script>
+        <?php
+        session_start(); // Asegúrate de iniciar la sesión en la vista
+
+        if (isset($_SESSION['login_error'])) {
+            $error = $_SESSION['login_error'];
+            echo "Swal.fire({
+                icon: 'error',
+                title: '¡Error al iniciar sesión!',
+                text: '" . $error . "',
+            });";
+            unset($_SESSION['login_error']); // Limpia el error de la sesión
+        }
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_SESSION['login_error'])) {
+            $usuarioController = new UsuarioController();
+            $usuario = $_POST['usuario'];
+            $contrasena = $_POST['contrasena'];
+
+            $usuarioController->login($usuario, $contrasena);
+            // La redirección se maneja en el controlador, así que no necesitamos más lógica aquí para el éxito.
+        }
+        ?>
+    </script>
+</body>
+</html>
+>>>>>>> 5d93c01bdaf7b80c9b6b45a8bbcc42c1e85591ff
