@@ -3,10 +3,7 @@
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
-    <div class="login-box">
-
- <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
- <link rel="stylesheet" href="css/Registro.css">
+<link rel="stylesheet" href="css/Registro.css">
 <div class="login-box">
     <div class="user-box">
         <p>Registrar</p>
@@ -30,3 +27,4 @@
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
 ?>
+

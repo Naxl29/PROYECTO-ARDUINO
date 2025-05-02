@@ -33,7 +33,11 @@ class UsuarioController{
             $_SESSION['usuario'] = $user['usuario'];
             header("Location: button.php"); // O a la página que quieras mostrar después de iniciar sesión
         } else {
+<<<<<<< HEAD
             header("");
+=======
+            header("Location: login.php");
+>>>>>>> 1e33adbfbb43041d3d7cf281e8b263d6f0f86cd3
         }
     }
     
