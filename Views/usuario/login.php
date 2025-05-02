@@ -15,13 +15,11 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php
                 <input required="" name="" type="password">
                 <label>Contraseña</label>
             </div>
-            <a href="boton.html">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                Iniciar
-            </a>
+            <button type="submit" class="button">
+                <div class="blob1"></div>
+                <div class="blob2"></div>
+                <div class="inner">Iniciar</div>
+            </button>
         </form>
         <p>No tienes una cuenta?<a href="registrarse.html" class="a2">Registrate!</a></p>
     </div>

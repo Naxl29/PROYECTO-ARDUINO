@@ -2,12 +2,10 @@
 //Vista que contiene el formulario de para crear un nuvoe
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
-<<<<<<< HEAD
  <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
-=======
  <link rel="stylesheet" href="css/Registro.css">
 
-<<<<<<< HEAD
+
 
 <div class="login-box">
     <div class="user-box">
@@ -35,8 +33,7 @@
             
         <a href="/PROYECTO-ARDUINO/index.php" class="custom-cancel">Cancelar</a>
     </form>
-=======
->>>>>>> 4387e6d726e09860c2fc4635e56c7137fb0b0a55
+
     <div class="login-box">
         <p>Registrar</p>
     
