@@ -1,7 +1,8 @@
 <?php
-//Vista que contiene el formulario de para crear un nuvoe
+//Vista que contiene el formulario de para crear un nuevo
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
+<<<<<<< HEAD
  <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
  <link rel="stylesheet" href="css/Registro.css">
 
@@ -34,9 +35,11 @@
         <a href="/PROYECTO-ARDUINO/index.php" class="custom-cancel">Cancelar</a>
     </form>
 
+=======
+<link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
+>>>>>>> 437907c3e9defdcf35fe6f1b71b7dd31f5691f9f
     <div class="login-box">
         <p>Registrar</p>
-    
         <form action="store.php" method="POST" autocomplete="off">
             <div class="user-box">
                 <input type="text" id="usuario" name="usuario" required>
