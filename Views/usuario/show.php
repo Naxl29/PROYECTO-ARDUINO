@@ -9,7 +9,7 @@ $data = $obj->show($_GET['id']);
 
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
 <div class="container">
-        <h1 class="text-center">Datos de Usuario Registrado</h1>
+        <h1 class="text-center">Detalles del Usuario Registrado</h1>
         <table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>

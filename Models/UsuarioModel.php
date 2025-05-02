@@ -1,5 +1,4 @@
 <?php
-
 class UsuarioModel{
     private $PDO;
 
@@ -25,7 +24,6 @@ class UsuarioModel{
         return ($stmt->execute()) ? $stmt->fetchAll() : false;
     }
 
-    
     // Función para iniciar sesión
     public function login($usuario, $contrasena){
         $stmt = $this->PDO->prepare("SELECT * FROM usuarios WHERE usuario = :usuario AND contrasena = :contrasena");
@@ -34,8 +32,9 @@ class UsuarioModel{
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
     }
-
-      public function show($id){   // Esta función será para mostrar los detalles de cada usuario cuando se crea
+    
+    //Función para mostrar los detalles del usuario creado
+    public function show($id){  
         $stmt = $this->PDO->prepare("
             SELECT 
                 *  
