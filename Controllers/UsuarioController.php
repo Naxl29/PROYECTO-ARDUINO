@@ -26,18 +26,16 @@ class UsuarioController{
 
     //Función para iniciar sesión
 
-    public function login($usuario, $contrasena){   
+    public function login($usuario, $contrasena){
         $user = $this->model->login($usuario, $contrasena);
         if ($user) {
             session_start();
             $_SESSION['usuario'] = $user['usuario'];
             header("Location: button.php"); // O a la página que quieras mostrar después de iniciar sesión
         } else {
-<<<<<<< HEAD
-            header("");
-=======
-            header("Location: login.php");
->>>>>>> 1e33adbfbb43041d3d7cf281e8b263d6f0f86cd3
+            session_start(); // Inicia la sesión si aún no está iniciada
+            $_SESSION['login_error'] = "Usuario o contraseña incorrectos."; // Guarda el mensaje de error en la sesión
+            header("Location: login.php"); // Redirige de vuelta a la página de inicio de sesión
         }
     }
     
