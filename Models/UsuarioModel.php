@@ -33,8 +33,11 @@ class UsuarioModel{
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
   
     }
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
+=======
+>>>>>>> feature/errores
     
     //Función para mostrar los detalles del usuario creado
     public function show($id){  
@@ -48,6 +51,4 @@ class UsuarioModel{
         $stmt->bindParam(":id", $id);
         return ($stmt->execute()) ? $stmt->fetch() : false;
     }
-=======
->>>>>>> feature/orde
 }
