@@ -12,7 +12,7 @@ class Bloque
         date_default_timezone_set('America/Bogota');
     }
     
-
+    // Se agrego esta función para obtener el ultimo hash
     public function obtenerUltimoHash()
     {
         $sql = "SELECT hash FROM blockchain ORDER BY id DESC LIMIT 1";
@@ -28,14 +28,10 @@ class Bloque
         $stmt = $this->PDO->prepare($sql);
         $stmt->bindParam(':nombre', $usuario);
         $stmt->bindParam(':contrasena', $contrasena);
-        if ($stmt->execute()) {
-            return $this->PDO->lastInsertId(); // ID del nuevo usuario
-        } else {
-            return false;
-        }
+        return ($stmt->execute()) ? $this->PDO->lastInsertId() : false; 
     }
 
-    // Función para insertar crear un nuevo bloque utilizando el id de usuario
+    // Se agrego la función createBlo un nuevo bloque utilizando el id de usuario
     public function createBlo($id_usuario, $estado)
     {
         $anteriorHash = $this->obtenerUltimoHash();
@@ -66,6 +62,7 @@ class Bloque
   
     }
 
+    //Se agrego esta función para verificar la contraseña de los usuarios
     public function passwordVeri($usuario, $contrasena) {
         $stmt = $this->PDO->prepare("SELECT contrasena FROM usuarios WHERE usuario = :usuario");
         $stmt->bindParam(':usuario', $usuario);
