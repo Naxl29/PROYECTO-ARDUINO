@@ -23,21 +23,21 @@
                 return $resultado === true;
         }
          
-         //Función para iniciar sesión conectada a los modelo Bloque
-        public function login($usuario, $contrasena) 
-        {
-            $user = $this->model->login($usuario, $contrasena);
-            if ($user) {
-                session_start();
-                $_SESSION['usuario'] = $user['usuario'];
-                header("Location: button.php"); // O a la página que quieras mostrar después de iniciar sesión
-            } else {
-                header("Location: login.php?error=1"); // Redirigir a la página de inicio de sesión con un error
-                session_start(); // Inicia la sesión si aún no está iniciada
-                $_SESSION['login_error'] = "Usuario o contraseña incorrectos."; // Guarda el mensaje de error en la sesión
-                header("Location: login.php"); // Redirige de vuelta a la página de inicio de sesión
-
-            }
-        }
+         //Función para iniciar sesión conectada a los modelo Bloque, lo modifique para su funcionamiento con blockchain
+         public function login($usuario, $contrasena)
+         {
+             $user = $this->model->login($usuario, $contrasena);
+             if ($user) {
+                 session_start();
+ 
+                 $_SESSION['usuario'] = $user['usuario'];
+                 $_SESSION['id_usuario'] = $user['id']; 
+ 
+                 header("Location: button.php");
+ 
+             } else {
+                 header("Location: login.php");
+             }
+         }
     }
 ?>

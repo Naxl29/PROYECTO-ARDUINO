@@ -3,7 +3,7 @@
     class BlockchainController{
         private $model;
 
-        //Función para conectar con el modelo que utiliza la bd
+        //Función para conectar con el modelo que utiliza la base de datos
         public function __construct(){
             require_once __DIR__ . '/../Models/Blockchain.php';
             $this->model = new Blockchain;

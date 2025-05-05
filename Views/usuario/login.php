@@ -2,9 +2,9 @@
 require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/BloqueController.php");
 ?>
+
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
 <link rel="stylesheet" href="css/Registro.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="login-box">
     <p>Iniciar sesión</p>
@@ -27,6 +27,7 @@ require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/BloqueController.php"
 </div>
 
 <script>
+/* Este script es para validar que los campos no esten bacios */
 document.getElementById('campos').addEventListener('submit', function (e) {
     const usuario = document.getElementById('usuario').value.trim();
     const contrasena = document.getElementById('contrasena').value.trim();
