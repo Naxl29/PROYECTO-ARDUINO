@@ -65,6 +65,19 @@ class Bloque
         return ($stmt->rowCount() > 0) ? $stmt->fetch() : false;
   
     }
+
+    public function passwordVeri($usuario, $contrasena) {
+        $stmt = $this->PDO->prepare("SELECT contrasena FROM usuarios WHERE usuario = :usuario");
+        $stmt->bindParam(':usuario', $usuario);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($user && $contrasena === $user['contrasena']) {
+            return true;
+        }
+        return false;
+    }
+    
 }
 
     
