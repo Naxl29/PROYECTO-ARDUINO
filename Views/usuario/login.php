@@ -37,7 +37,7 @@ document.getElementById('campos').addEventListener('submit', function (e) {
             icon: 'warning',
             title: 'Campos vacíos',
             text: 'Por favor, completa todos los campos.'
-        });
+        }); 
     }
 });
 </script>
