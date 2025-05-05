@@ -3,14 +3,12 @@
 require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/BlockchainController.php");
 
-$controller = new BlockchainController();
+$controller = new BlockchainController(); // Cambie el nombre de las variables
 $bloques = $controller->see();
 ?>
 
-<!-- Estilos -->
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/styles.css">
 
-<!-- Botón de regreso -->
 <div class="mb-3">
     <a href="/PROYECTO-ARDUINO/Views/usuario/button.php" class="boton-back" title="Volver al panel">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
@@ -20,7 +18,6 @@ $bloques = $controller->see();
     </a>
 </div>
 
-<!-- Contenido principal -->
 <div class="historial-container">
     <h1 class="titulo-historial">Historial de Acceso e Interruptor</h1>
 

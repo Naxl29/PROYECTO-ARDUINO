@@ -1,5 +1,6 @@
 <?php
 
+// Modelo creado para el manejo de datos y mostrarlos en la vista
 class Blockchain
 {
     private $PDO;
@@ -11,7 +12,7 @@ class Blockchain
         $this->PDO = $con->conexion();
     }
 
-    //Función para mostrar el historial, con simulación blockchain
+    //Función para mostrar el historial, con simulación blockchain, se modifico la el see pasado
     public function see()
     {
         $sql = "SELECT b.id, u.usuario, b.fecha, b.estado, b.anterior_hash, b.hash
