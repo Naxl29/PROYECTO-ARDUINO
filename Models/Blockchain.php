@@ -1,5 +1,6 @@
 <?php
 
+// Modelo creado para el manejo de datos y mostrarlos en la vista
 class Blockchain
 {
     private $PDO;

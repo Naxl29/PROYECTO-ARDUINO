@@ -1,5 +1,6 @@
 <?php
 
+// Modelo creado para manejar la inserción de datos de los usuarios y del blockchain
 class Bloque
 {
     private $PDO;
