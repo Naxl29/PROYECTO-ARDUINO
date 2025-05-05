@@ -48,11 +48,15 @@
         </label>
     </div>
 </body>
+
+
 <script>
+    /* Este script se agrego para pasarle el dado id_usuario de php a JavaScript utilizando json_encode */
     const id_usuario = <?php echo json_encode($_SESSION['id_usuario']); ?>;
 </script>
 
 <script>
+    /* Este script se modifico para manejar el estado del boton, tomando el id_usuario del anterior script */
     document.getElementById("estado_boton").addEventListener("change", function () {
         const estado = this.checked ? '1' : '0';
         console.log("Estado del botón:", estado); 
@@ -64,16 +68,16 @@
             },
             body: `estado=${estado}&id_usuario=${id_usuario}`
         })
-        .then(response => {
+        .then(response => { /* Validación con el servidor */
             if (!response.ok) {
                 throw new Error('Error en la respuesta del servidor: ' + response.status);
             }
             return response.text();
         })
-        .then(data => {
+        .then(data => { /* Validación para obtener la respuesta del servidor */
             console.log("Respuesta del servidor:", data);
         })
-        .catch(error => {
+        .catch(error => { /* Validación por si falla el proceso */
             console.error("Error:", error);
         });
     });
