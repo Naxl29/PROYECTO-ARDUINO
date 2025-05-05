@@ -1,7 +1,14 @@
 <?php
 //Acá se muestra el apartado que contiene el botón que encenderá y apagará el bombillo
+    session_start(); // Añadir inicio de sesión
     require_once ("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
-    require_once ("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
+    require_once ("c://laragon/www/PROYECTO-ARDUINO/Controllers/BloqueController.php");
+
+    // Verificar si el usuario está logueado
+    if (!isset($_SESSION['id_usuario'])) {
+        header("Location: /PROYECTO-ARDUINO/Views/usuario/login.php");
+        exit;
+    }
 ?>
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/styles.css">
 
@@ -24,7 +31,7 @@
     </div>
     <div class="switch-container">
         <label class="switch">
-            <input type="checkbox">
+            <input type="checkbox" id="estado_boton">
             <span class="slider">
                 <span class="star star_1"></span>
                 <span class="star star_2"></span>
@@ -41,3 +48,33 @@
         </label>
     </div>
 </body>
+<script>
+    const id_usuario = <?php echo json_encode($_SESSION['id_usuario']); ?>;
+</script>
+
+<script>
+    document.getElementById("estado_boton").addEventListener("change", function () {
+        const estado = this.checked ? '1' : '0';
+        console.log("Estado del botón:", estado); 
+
+        fetch("/PROYECTO-ARDUINO/Views/usuario/estado_button.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `estado=${estado}&id_usuario=${id_usuario}`
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor: ' + response.status);
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log("Respuesta del servidor:", data);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+</script>

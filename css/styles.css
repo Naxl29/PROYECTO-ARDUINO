@@ -430,3 +430,12 @@ body {
     width: 29px; /* Ajusta este valor al tamaño deseado */
     height: 60px; /* Ajusta este valor al tamaño deseado */
   }
+
+/* Estilo para el hash y el hash anterior */
+.hash-col {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+

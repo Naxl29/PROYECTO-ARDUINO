@@ -1,11 +1,12 @@
 <?php
 //Acá se hará el codigo para mostrar los usuarios y sus detalles
 require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
-require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/UsuarioController.php");
+require_once("c://laragon/www/PROYECTO-ARDUINO/Controllers/BlockchainController.php");
 
-$obj = new UsuarioController();
+$obj = new BlockchainController();
 $data = $obj->show($_GET['id']);
 ?>
+
 
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
 <div class="container">

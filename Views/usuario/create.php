@@ -1,6 +1,7 @@
+
 <?php
 //Vista que contiene el formulario de para crear un nuevo
-    require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
+require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/head.php");
 ?>
 <link rel="stylesheet" href="/PROYECTO-ARDUINO/css/Registro.css">
 <link rel="stylesheet" href="css/Registro.css">
@@ -9,7 +10,7 @@
         <p>Registrar</p>
         <form action="store.php" method="POST" autocomplete="off">
             <div class="user-box">
-                <input type="text" id="usuario" name="usuario" autocomplete="off" required>
+                <input type="text" id="usuario" name="usuario" required>
                 <label for="usuario">Usuario</label>
             </div>
             <div class="user-box">
@@ -22,9 +23,9 @@
                 <div class="inner">Registrar</div>
             </button>
         </form>
-        <p>¿Ya tienes una cuenta?<a href="/PROYECTO-ARDUINO/Views/Usuario/login.php " class="a2"> Inicia sesión</a></p>
+        <p>Ya tienes una cuenta?<a href="/PROYECTO-ARDUINO/Views/Usuario/login.php " class="a2"> Inicia sesion</a></p>
     </div>
+    
 <?php
     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
 ?>
-

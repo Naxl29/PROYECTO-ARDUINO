@@ -19,5 +19,5 @@
 </body>
 
 <?php
-    require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
+     require_once("c://laragon/www/PROYECTO-ARDUINO/Views/head/footer.php");
 ?>

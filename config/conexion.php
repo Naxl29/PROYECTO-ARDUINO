@@ -1,9 +1,8 @@
 <?php
 
-//Conexión con la bd
 class Database {
     private string $host = "localhost";
-    private string $database = "dbprueba";
+    private string $database = "blockchain";
     private string $user = "root";
     private string $password = "";
 
