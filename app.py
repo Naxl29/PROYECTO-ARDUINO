@@ -1,53 +1,50 @@
-from flask import Flask
-from flask import render_template, request
-from flaskext.mysql import MySQL
+from flask import Flask, render_template, request, redirect, url_for
+from conexion import mysql, init_mysql
+from Bloque import createUser, createBlock
+from Blockchain import see , show
 
-app= Flask(__name__)
+app = Flask(__name__)
+init_mysql(app)
 
-#conexión con la base de datos
-mysql= MySQL()
-app.config['MYSQL_DATABASE_HOST']='localhost'
-app.config['MYSQL_DATABASE_USER']='root'
-app.config['MYSQL_DATABASE_PASSWORD']=''
-app.config['MYSQL_DATABASE_DB']='blockchain'
-mysql.init_app(app)
 
-#Función para mostrar todos los registros
 @app.route('/')
 def index():
-
-    sql ="SELECT * FROM blockchain;"
-    conn= mysql.connect()
-    cursor=conn.cursor()
-    cursor.execute(sql)
-    conn.commit()
-
-    blockchain=cursor.fetchall()
-    print(blockchain)
-
-    return render_template('usuarios/index.html', blockchain=blockchain)
-
-#Función para crear nuevos usuarios
-@app.route('/create')
-def create():
-    return render_template('usuarios/create.html')
-
-#Función para almacenar y guardar los datos introducidos en el formulario de crear usuario
-@app.route('/store', methods=['POST'])
-def storage():
-    _usuario=request.form['usuario']
-    _contrasena=request.form['contrasena']
-
-    sql ="INSERT INTO `blockchain`.`usuarios` (`usuario`, `contrasena`) VALUES (%s, %s);"
-    
-    datos=(_usuario,_contrasena)
-
-    conn= mysql.connect()
-    cursor=conn.cursor()
-    cursor.execute(sql, datos)
-    conn.commit()
-
     return render_template('usuarios/index.html')
 
-if __name__== '__main__': 
+@app.route('/store', methods=['POST'])
+def createUser():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        contrasena = request.form['contrasena']
+        createUser(usuario, contrasena)
+        return redirect(url_for('usuarios/button.html'))
+    return render_template('usuarios/create.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        contrasena = request.form['contrasena']
+        user = login(usuario, contrasena)
+        if user:
+            return redirect(url_for('usuarios/button.html', id_usuario=user['id']))
+        else:
+            return "Usuario o contraseña incorrectos"
+    return render_template('login.html')
+
+@app.route('/bloque/<int:id_usuario>', methods=['POST'])
+def createBlock(id_usuario):
+    if request.method == 'POST':
+        estado = request.form['estado']
+        createBlock(id_usuario, estado)
+        return redirect(url_for('usuarios/see.html'))
+    return render_template('crear_bloque.html', id_usuario=id_usuario)
+
+
+@app.route('/see')
+def see():
+    bloques = see()
+    return render_template('usuarios/see.html', bloques=bloques)
+
+if __name__ == '__main__':
     app.run(debug=True)
