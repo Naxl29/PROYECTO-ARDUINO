@@ -1,4 +1,4 @@
-from conexion import mysql # Se importa el archivo de conexion
+from config.conexion import mysql # Se importa el archivo de conexion
 
 
 # Funcion para mostrar historial osea los usuario que encienden y apagan el boton

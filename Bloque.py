@@ -1,4 +1,4 @@
-from conexion import mysql # Se importan el archivo conexion
+from config.conexion import mysql # Se importan el archivo conexion
 import hashlib # Se importan la extencion de el hashlib para simular la creación del blockchain
 from datetime import datetime # Se importa la libreria datetime para manejar fechas
 

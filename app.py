@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for # Se importan las dependencias de Flask
-from conexion import mysql, init_mysql # Se importa en el archivo de conexxion.py y utilizamos la variable mysql
+from config.conexion import mysql, init_mysql # Se importa en el archivo de conexxion.py y utilizamos la variable mysql
 from Bloque import createUser, createBlock # Se importa del archivo Bloque las funciónes de crear usuario, y crear bloque
 from Blockchain import see , show # Se importa el archivo Blockchain las funciones de mostrar usuario creado y el historial
 
