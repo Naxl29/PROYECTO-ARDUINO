@@ -4,37 +4,41 @@ from flaskext.mysql import MySQL
 
 app= Flask(__name__)
 
+#conexión con la base de datos
 mysql= MySQL()
 app.config['MYSQL_DATABASE_HOST']='localhost'
 app.config['MYSQL_DATABASE_USER']='root'
 app.config['MYSQL_DATABASE_PASSWORD']=''
-app.config['MYSQL_DATABASE_DB']='dbprueba'
+app.config['MYSQL_DATABASE_DB']='blockchain'
 mysql.init_app(app)
 
+#Función para mostrar todos los registros
 @app.route('/')
 def index():
 
-    sql ="SELECT * FROM usuarios;"
+    sql ="SELECT * FROM blockchain;"
     conn= mysql.connect()
     cursor=conn.cursor()
     cursor.execute(sql)
     conn.commit()
 
-    usuarios=cursor.fetchall()
-    print(usuarios)
+    blockchain=cursor.fetchall()
+    print(blockchain)
 
-    return render_template('usuarios/index.html')
+    return render_template('usuarios/index.html', blockchain=blockchain)
 
+#Función para crear nuevos usuarios
 @app.route('/create')
 def create():
     return render_template('usuarios/create.html')
 
+#Función para almacenar y guardar los datos introducidos en el formulario de crear usuario
 @app.route('/store', methods=['POST'])
 def storage():
     _usuario=request.form['usuario']
     _contrasena=request.form['contrasena']
 
-    sql ="INSERT INTO `dbprueba`.`usuarios` (`usuario`, `contrasena`) VALUES (%s, %s);"
+    sql ="INSERT INTO `blockchain`.`usuarios` (`usuario`, `contrasena`) VALUES (%s, %s);"
     
     datos=(_usuario,_contrasena)
 
