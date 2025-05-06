@@ -1,5 +1,7 @@
-from conexion import mysql
+from conexion import mysql # Se importa el archivo de conexion
 
+
+# Funcion para mostrar historial osea los usuario que encienden y apagan el boton
 def see():
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -14,6 +16,7 @@ def see():
 
     return bloques
 
+# Funcion para mostar los datos el usuario creado actualmente
 def show(id):
     conn = mysql.connect()
     cursor = conn.cursor(dictionary=True)

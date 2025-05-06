@@ -1,6 +1,6 @@
-from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL # Se importa la extención MySQL para manejar bases de datos
 
-mysql = MySQL()
+mysql = MySQL() # Se utiliza la libreria MySQL de flaskext
 
 def init_mysql(app):
     app.config['MYSQL_DATABASE_HOST'] = 'localhost'
