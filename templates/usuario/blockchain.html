@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial Blockchain</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="mb-3">
+        <a href="{{ url_for('button') }}" class="boton-back" title="Volver al panel">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
+                <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="historial-container">
+        <h1 class="titulo-historial">Historial de Acceso e Interruptor</h1>
+
+        <div class="table-responsive">
+            <table class="historial-table">
+                <thead>
+                    <tr>
+                        <th>Bloque</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Hash Anterior</th>
+                        <th>Hash Actual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bloques %}
+                        {% for bloque in bloques %}
+                            <tr>
+                                <td>{{ bloque.id }}</td>
+                                <td>{{ bloque.usuario }}</td>
+                                <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>
+                                    {% if bloque.estado == '1' or bloque.estado == 1 %}
+                                        <span style="color: green;">Encendido</span>
+                                    {% elif bloque.estado == '0' or bloque.estado == 0 %}
+                                        <span style="color: red;">Apagado</span>
+                                    {% else %}
+                                        <span style="color: gray;">Desconocido</span>
+                                    {% endif %}
+                                </td>
+                                <td class="hash-col" title="{{ bloque.anterior_hash }}">
+                                    {{ bloque.anterior_hash[:20] }}...
+                                </td>
+                                <td class="hash-col" title="{{ bloque.hash }}">
+                                    {{ bloque.hash[:20] }}...
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No hay registros disponibles</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
