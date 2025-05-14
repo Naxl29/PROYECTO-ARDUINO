@@ -90,6 +90,15 @@ def see_blockchain():
     bloques_data = blockchain_instance.see()  
     return render_template('usuario/blockchain.html', bloques=bloques_data)
 
+@app.route('/blockchain/block/hash/<hash>')
+def see_hash_details(hash):
+    blockchain_controller = BlockchainController()
+    bloque = blockchain_controller.get_block_by_hash(hash)
+    if bloque:
+        return render_template('usuario/hash.html', bloque=bloque) 
+    else:
+        return "Bloque no encontrado"
+    
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}
