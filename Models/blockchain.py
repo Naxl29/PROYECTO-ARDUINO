@@ -46,3 +46,4 @@ class Blockchain:
         conn.close()
         
         return usuario
+    

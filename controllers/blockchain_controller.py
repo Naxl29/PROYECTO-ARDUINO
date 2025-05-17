@@ -9,7 +9,7 @@ class BlockchainController:
     
     def see(self):
         return self.model.see()
-
+    
     def get_block_by_hash(self, block_hash):
         conn = self.model.db.conexion() 
         cursor = conn.cursor(dictionary=True)

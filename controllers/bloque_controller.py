@@ -17,7 +17,6 @@ class BloqueController:
     def login(self, usuario, contrasena):
         user = self.model.login(usuario, contrasena)
         if user:
-            session['usuario'] = user['usuario']
-            session['id_usuario'] = user['id']
-            return True
-        return False
+            return user 
+        return None
+

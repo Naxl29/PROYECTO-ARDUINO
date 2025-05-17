@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from datetime import datetime
 import hashlib
 import os
+from controllers.led_controller import LedController
+
 from models.database import Database
 from models.bloque import Bloque
 from models.blockchain import Blockchain
@@ -10,7 +12,6 @@ from controllers.blockchain_controller import BlockchainController
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
-
 
 @app.route('/')
 def index():
@@ -23,12 +24,15 @@ def login():
         contrasena = request.form['contrasena']
         
         bloque_controller = BloqueController()
-        result = bloque_controller.login(usuario, contrasena)
+        user = bloque_controller.login(usuario, contrasena) 
         
-        if result:
+        if user:
+            session['usuario'] = user['usuario']
+            session['id_usuario'] = user['id'] 
             return redirect(url_for('button'))
     
     return render_template('usuario/login.html')
+
 
 @app.route('/usuario/create', methods=['GET', 'POST'])
 def create():
@@ -54,14 +58,28 @@ def show(id):
     
     return render_template('usuario/show.html', usuario=usuario)
 
+@app.route('/usuario/estado_led', methods=['POST'])
+def estado_led():
+    if 'id_usuario' not in session:
+        return jsonify({"success": False, "error": "No hay sesión activa"}), 401
+    
+    estado = request.form.get('estado')
+    
+    led_controller = LedController(pin=13)
+    result = led_controller.manejar_estado(estado)
+    
+    if result:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False, "error": "Estado no válido"}), 400
+
 @app.route('/usuario/button')
 def button():
     if 'usuario' not in session:
         return redirect(url_for('login'))
     
-    id_usuario = session.get('id')
+    id_usuario = session.get('id_usuario') 
     return render_template('usuario/button.html', id_usuario=id_usuario)
-
 
 @app.route('/usuario/save_estado', methods=['POST'])
 def save_estado():
@@ -95,10 +113,10 @@ def see_hash_details(hash):
     blockchain_controller = BlockchainController()
     bloque = blockchain_controller.get_block_by_hash(hash)
     if bloque:
-        return render_template('usuario/hash.html', bloque=bloque) 
+        return render_template('usuario/block_details.html', bloque=bloque)
     else:
         return "Bloque no encontrado"
-    
+
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}

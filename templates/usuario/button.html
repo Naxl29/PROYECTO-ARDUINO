@@ -42,18 +42,37 @@
         </label>
     </div>
     <script>
-        const id_usuario = "{{ session.id_usuario }}";
+        const id_usuario = "{{ id_usuario }}"; 
 
         document.getElementById("estado_boton").addEventListener("change", function() {
             const estado = this.checked ? '1' : '0';
             console.log("Estado del botón:", estado);
 
-            const formData = new FormData();
-            formData.append("estado", estado);
+            // Primero enviar el comando al LED
+            const formDataLed = new FormData();
+            formDataLed.append("estado", estado);
 
-            fetch("{{ url_for('save_estado') }}", {
+            fetch("{{ url_for('estado_led') }}", {
                 method: "POST",
-                body: formData
+                body: formDataLed
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al controlar el LED: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Respuesta del control LED:", data);
+                
+                // Luego guardar el estado en la base de datos
+                const formData = new FormData();
+                formData.append("estado", estado);
+
+                return fetch("{{ url_for('save_estado') }}", {
+                    method: "POST",
+                    body: formData
+                });
             })
             .then(response => {
                 if (!response.ok) {
@@ -79,7 +98,7 @@
                 
                 const mensaje = document.getElementById("mensaje");
                 if (mensaje) {
-                    mensaje.textContent = "Error al guardar el estado: " + error.message;
+                    mensaje.textContent = "Error: " + error.message;
                     mensaje.style.display = "block";
                     mensaje.className = "mensaje error";
                     setTimeout(() => {
@@ -88,6 +107,7 @@
                 }
             });
         });
+
     </script>
 </body>
 </html>
