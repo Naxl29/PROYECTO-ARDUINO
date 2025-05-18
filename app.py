@@ -2,13 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from datetime import datetime
 import hashlib
 import os
-from controllers.led_controller import LedController
+from Controller.led_controller import LedController
 
-from models.database import Database
-from models.bloque import Bloque
-from models.blockchain import Blockchain
-from controllers.bloque_controller import BloqueController
-from controllers.blockchain_controller import BlockchainController
+from Model.database import Database
+from Model.bloque import Bloque
+from Model.blockchain import Blockchain
+from Controller.bloque_controller import BloqueController
+from Controller.blockchain_controller import BlockchainController
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 

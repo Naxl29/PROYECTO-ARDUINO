@@ -1,5 +1,5 @@
 #Controller para el usuario, en el cual se maneja cuando se registra un nuevo usuario y cuando se enciende o se apaga el botón
-from models.bloque import Bloque
+from Model.bloque import Bloque
 from flask import session, redirect, url_for
 
 class BloqueController:

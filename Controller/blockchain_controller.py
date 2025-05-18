@@ -1,5 +1,5 @@
 #Controller para manejar el blockchain, en el cual se muestra el historial y los hashes
-from models.blockchain import Blockchain
+from Model.blockchain import Blockchain
 
 class BlockchainController:
     def __init__(self):

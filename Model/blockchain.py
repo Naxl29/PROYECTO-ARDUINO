@@ -1,5 +1,5 @@
 from datetime import datetime
-from models.database import Database
+from Model.database import Database
 
 class Blockchain:
     def __init__(self):

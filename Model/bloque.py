@@ -1,6 +1,6 @@
 from datetime import datetime
 import hashlib
-from models.database import Database
+from Model.database import Database
 
 class Bloque:
     def __init__(self):
