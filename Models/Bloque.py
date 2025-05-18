@@ -21,6 +21,9 @@ class Bloque:
         return fila['hash'] if fila else '0'
     
     def create_user(self, usuario, contrasena):
+        if self.usuario_existe(usuario):
+            return "Usuario ya registrado"
+        
         conn = self.db.conexion()
         cursor = conn.cursor()
         
@@ -34,7 +37,7 @@ class Bloque:
         conn.close()
         
         return last_id if cursor.rowcount > 0 else False
-    
+
     
     def create_blo(self, id_usuario, estado):
         anterior_hash = self.obtener_ultimo_hash()
@@ -84,3 +87,17 @@ class Bloque:
         if user and contrasena == user['contrasena']:
             return True
         return False
+    
+    def usuario_existe(self, usuario):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        
+        sql = "SELECT id FROM usuarios WHERE usuario = %s"
+        cursor.execute(sql, (usuario,))
+        resultado = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
+        
+        return resultado is not None
+

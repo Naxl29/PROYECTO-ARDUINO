@@ -30,6 +30,9 @@ def login():
             session['usuario'] = user['usuario']
             session['id_usuario'] = user['id'] 
             return redirect(url_for('button'))
+        else:
+            error_message = 'Usuario o contraseña incorrecta'
+            return render_template('usuario/login.html', error_message=error_message)
     
     return render_template('usuario/login.html')
 
@@ -41,15 +44,19 @@ def create():
         contrasena = request.form['contrasena']
         
         bloque_controller = BloqueController()
+
+        if bloque_controller.usuario_existente(usuario):
+            return jsonify({'success': False, 'message': 'El usuario ya está registrado'}), 400
+
         id = bloque_controller.save(usuario, contrasena)
         
         if id:
-            # Aquí devolvemos un JSON para que JavaScript pueda mostrar la alerta
             return jsonify({'success': True, 'id': id})
         else:
-            return render_template('usuario/create.html') # Podrías añadir un mensaje de error aquí
+            return jsonify({'success': False, 'message': 'Error al crear usuario'}), 500
     
     return render_template('usuario/create.html')
+
 
 @app.route('/usuario/show/<int:id>')
 def show(id):

@@ -19,4 +19,7 @@ class BloqueController:
         if user:
             return user 
         return None
+    
+    def usuario_existente(self, usuario):
+        return self.model.usuario_existe(usuario)
 

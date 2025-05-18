@@ -29,7 +29,6 @@
     </div>
 
     <script>
-    /* Este script es para validar que los campos no esten vacios */
     document.getElementById('campos').addEventListener('submit', function (e) {
         const usuario = document.getElementById('usuario').value.trim();
         const contrasena = document.getElementById('contrasena').value.trim();
@@ -44,5 +43,15 @@
         }
     });
     </script>
+    
+    {% if error_message %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al iniciar sesión',
+            text: '{{ error_message }}'
+        });
+    </script>
+    {% endif %}
 </body>
 </html>
