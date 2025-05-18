@@ -14,11 +14,11 @@
             <p>Registrar</p>
             <form id="registroForm" action="{{ url_for('create') }}" method="POST" autocomplete="off">
                 <div class="user-box">
-                    <input type="text" id="usuario" name="usuario" required>
+                    <input type="text" id="usuario" name="usuario">
                     <label for="usuario">Usuario</label>
                 </div>
                 <div class="user-box">
-                    <input type="password" id="contrasena" name="contrasena" required>
+                    <input type="password" id="contrasena" name="contrasena">
                     <label for="contrasena">Contraseña</label>
                 </div>
                 <button type="submit" class="button">
@@ -37,12 +37,48 @@
         const contrasena = document.getElementById('contrasena').value.trim();
 
         if (usuario === '' || contrasena === '') {
-            e.preventDefault(); // Detiene el envío del formulario
+            e.preventDefault(); 
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos vacíos',
                 text: 'Por favor, completa todos los campos.'
             }); 
+        } else {
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: '¡Usuario creado!',
+                        icon: 'success',
+                        draggable: true,
+                        confirmButtonText: 'Ver detalles'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `/usuario/show/${data.id}`;
+                        }
+                    });
+                } else {
+                    // Aquí puedes manejar errores si la creación del usuario falla en el backend
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al crear usuario',
+                        text: 'Hubo un problema al registrar el usuario.'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo conectar con el servidor.'
+                });
+            });
+            e.preventDefault(); // Evitamos la redirección automática del formulario
         }
     });
     </script>

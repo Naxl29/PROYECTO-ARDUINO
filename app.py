@@ -44,7 +44,10 @@ def create():
         id = bloque_controller.save(usuario, contrasena)
         
         if id:
-            return redirect(url_for('show', id=id))
+            # Aquí devolvemos un JSON para que JavaScript pueda mostrar la alerta
+            return jsonify({'success': True, 'id': id})
+        else:
+            return render_template('usuario/create.html') # Podrías añadir un mensaje de error aquí
     
     return render_template('usuario/create.html')
 
