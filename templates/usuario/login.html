@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -12,11 +13,11 @@
         <p>Iniciar sesión</p>
         <form id="campos" method="post" action="{{ url_for('login') }}">
             <div class="user-box">
-                <input type="text" id="usuario" name="usuario" required>
+                <input type="text" id="usuario" name="usuario" autocomplete="off">
                 <label>Usuario</label>
             </div>
             <div class="user-box">
-                <input type="password" id="contrasena" name="contrasena" required>
+                <input type="password" id="contrasena" name="contrasena">
                 <label>Contraseña</label>
             </div>
             <button type="submit" class="button">
@@ -34,7 +35,7 @@
         const contrasena = document.getElementById('contrasena').value.trim();
 
         if (usuario === '' || contrasena === '') {
-            e.preventDefault(); // Detiene el envío del formulario
+            e.preventDefault(); 
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos vacíos',

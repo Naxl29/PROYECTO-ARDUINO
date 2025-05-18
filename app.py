@@ -44,7 +44,10 @@ def create():
         id = bloque_controller.save(usuario, contrasena)
         
         if id:
-            return redirect(url_for('show', id=id))
+            # Aquí devolvemos un JSON para que JavaScript pueda mostrar la alerta
+            return jsonify({'success': True, 'id': id})
+        else:
+            return render_template('usuario/create.html') # Podrías añadir un mensaje de error aquí
     
     return render_template('usuario/create.html')
 
@@ -113,7 +116,7 @@ def see_hash_details(hash):
     blockchain_controller = BlockchainController()
     bloque = blockchain_controller.get_block_by_hash(hash)
     if bloque:
-        return render_template('usuario/block_details.html', bloque=bloque)
+        return render_template('usuario/hash.html', bloque=bloque)
     else:
         return "Bloque no encontrado"
 
