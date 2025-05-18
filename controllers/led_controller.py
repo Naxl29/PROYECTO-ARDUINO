@@ -1,3 +1,4 @@
+#Controller para la luz led del arduino
 import serial
 import time
 import logging
@@ -11,8 +12,6 @@ class LedController:
         Args:
             pin (int): Número de pin donde está conectado el LED en Arduino
             puerto_serial (str): Puerto serial donde está conectado Arduino
-                                 En Windows suele ser 'COM3', 'COM4', etc.
-                                 En Linux/Mac suele ser '/dev/ttyACM0', '/dev/ttyUSB0', etc.
             baudrate (int): Velocidad de comunicación con Arduino
         """
         self.pin = pin
@@ -21,7 +20,6 @@ class LedController:
         self.arduino = None
         self.conectado = False
         
-        # Intentar conectar con Arduino
         self.conectar()
     
     def conectar(self):

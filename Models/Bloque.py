@@ -7,6 +7,7 @@ class Bloque:
         self.db = Database()
     
     
+    #Obtiene el último hash para agregarlo al historial
     def obtener_ultimo_hash(self):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
@@ -20,6 +21,7 @@ class Bloque:
         
         return fila['hash'] if fila else '0'
     
+    #Función para crear un nuevo usuario
     def create_user(self, usuario, contrasena):
         if self.usuario_existe(usuario):
             return "Usuario ya registrado"
@@ -38,7 +40,7 @@ class Bloque:
         
         return last_id if cursor.rowcount > 0 else False
 
-    
+    #Función para crear un nuevo registro al interactuar con el botón
     def create_blo(self, id_usuario, estado):
         anterior_hash = self.obtener_ultimo_hash()
         fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -60,6 +62,7 @@ class Bloque:
         
         return result
     
+    #Función para iniciar sesión
     def login(self, usuario, contrasena):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
@@ -73,6 +76,7 @@ class Bloque:
         
         return user
     
+    #Función para verificar la contraseña del usuario 
     def password_veri(self, usuario, contrasena):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
@@ -88,6 +92,7 @@ class Bloque:
             return True
         return False
     
+    #Función que verifica que el nombre de usuario no exista en la base de datos
     def usuario_existe(self, usuario):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True, buffered=True)

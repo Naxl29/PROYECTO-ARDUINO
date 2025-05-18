@@ -1,3 +1,4 @@
+//Código para encender y apagar el led en el arduino
 const int ledPin = 13;  // Pin donde está conectado el LED
 
 void setup() {

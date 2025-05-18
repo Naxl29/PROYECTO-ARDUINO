@@ -1,3 +1,4 @@
+#Conexión con la base de datos
 import mysql.connector
 from mysql.connector import Error
 

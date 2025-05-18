@@ -49,7 +49,7 @@
             const estado = this.checked ? '1' : '0';
             console.log("Estado del botón:", estado);
 
-            // Primero enviar el comando al LED
+            // Primero envia el comando al LED
             const formDataLed = new FormData();
             formDataLed.append("estado", estado);
 
@@ -66,7 +66,7 @@
             .then(data => {
                 console.log("Respuesta del control LED:", data);
                 
-                // Luego guardar el estado en la base de datos
+                // Luego guarda el estado en la base de datos
                 const formData = new FormData();
                 formData.append("estado", estado);
 

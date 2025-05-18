@@ -17,6 +17,7 @@ app.secret_key = os.urandom(24)
 def index():
     return render_template('index.html')
 
+#Ruta para iniciar sesión con un usuario ya registrado
 @app.route('/usuario/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -36,7 +37,7 @@ def login():
     
     return render_template('usuario/login.html')
 
-
+#Ruta para crear y registrar un nuevo usuario
 @app.route('/usuario/create', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST':
@@ -57,7 +58,7 @@ def create():
     
     return render_template('usuario/create.html')
 
-
+#Ruta para mostrar los detalles del usuario creado
 @app.route('/usuario/show/<int:id>')
 def show(id):
     blockchain_controller = BlockchainController()
@@ -68,6 +69,7 @@ def show(id):
     
     return render_template('usuario/show.html', usuario=usuario)
 
+#Ruta para manejar el estado de la luz led en el arduino
 @app.route('/usuario/estado_led', methods=['POST'])
 def estado_led():
     if 'id_usuario' not in session:
@@ -83,6 +85,7 @@ def estado_led():
     else:
         return jsonify({"success": False, "error": "Estado no válido"}), 400
 
+#Ruta para manejar el botón que enciende y apaga el led
 @app.route('/usuario/button')
 def button():
     if 'usuario' not in session:
@@ -91,6 +94,7 @@ def button():
     id_usuario = session.get('id_usuario') 
     return render_template('usuario/button.html', id_usuario=id_usuario)
 
+#Ruta para guardar el estado del botón después de que se interactúa con él
 @app.route('/usuario/save_estado', methods=['POST'])
 def save_estado():
     if 'id_usuario' not in session:
@@ -106,18 +110,21 @@ def save_estado():
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False, "error": "Error al guardar"}), 500
-    
+
+#Ruta para cerrar sesión
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('index'))
 
+#Ruta para el historial de interacciones con el botón
 @app.route('/blockchain/see')
 def see_blockchain():
     blockchain_instance = Blockchain()  
     bloques_data = blockchain_instance.see()  
     return render_template('usuario/blockchain.html', bloques=bloques_data)
 
+#Ruta para ver los hashes por aparte del historial
 @app.route('/blockchain/block/hash/<hash>')
 def see_hash_details(hash):
     blockchain_controller = BlockchainController()

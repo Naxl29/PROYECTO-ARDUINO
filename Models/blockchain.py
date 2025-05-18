@@ -5,6 +5,7 @@ class Blockchain:
     def __init__(self):
         self.db = Database()
 
+    #Muestra el historial del botón
     def see(self):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
@@ -34,6 +35,7 @@ class Blockchain:
 
         return bloques
 
+    #Muestra los detalles del usuario creado
     def show(self, id):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
