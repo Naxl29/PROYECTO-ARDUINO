@@ -105,4 +105,3 @@ class Bloque:
         conn.close()
         
         return resultado is not None
-
