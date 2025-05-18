@@ -113,7 +113,7 @@ def see_hash_details(hash):
     blockchain_controller = BlockchainController()
     bloque = blockchain_controller.get_block_by_hash(hash)
     if bloque:
-        return render_template('usuario/block_details.html', bloque=bloque)
+        return render_template('usuario/hash.html', bloque=bloque)
     else:
         return "Bloque no encontrado"
 
