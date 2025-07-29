@@ -134,6 +134,49 @@ def see_hash_details(hash):
     else:
         return "Bloque no encontrado"
 
+@app.route('/usuario/dashboard')
+def dashboard():
+    db = Database()
+    conn = db.conexion()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT COUNT(*) AS total_usuarios FROM usuarios")
+    total_usuarios = cursor.fetchone()['total_usuarios']
+
+    cursor.execute("SELECT COUNT(*) AS total_encendidos FROM blockchain WHERE estado = 1")
+    total_encendidos = cursor.fetchone()['total_encendidos']
+
+    cursor.execute("""
+        SELECT u.usuario, b.fecha
+        FROM blockchain b
+        JOIN usuarios u on b.id_usuario = u.id
+        WHERE b.estado = 1
+        ORDER BY b.fecha DESC
+        LIMIT 5
+    """
+    )
+    ultimos_encendidos = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT DATE(fecha) as fecha, COUNT(*) as cantidad
+        FROM blockchain
+        WHERE estado = 1
+        GROUP BY fecha
+        ORDER BY fecha ASC
+    """)
+    grafico_data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'usuario/dashboard.html',
+        total_usuarios=total_usuarios,
+        total_encendidos=total_encendidos,
+        ultimos_encendidos=ultimos_encendidos,
+        grafico_data=grafico_data
+    )
+
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}

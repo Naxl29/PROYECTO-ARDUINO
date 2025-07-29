@@ -549,3 +549,8 @@ td {
   background: radial-gradient(circle 60px at 0% 100%, #00e1ff1a, #0000ff11, transparent);
   position: absolute;
 }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
