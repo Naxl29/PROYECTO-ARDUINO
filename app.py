@@ -113,10 +113,11 @@ def save_estado():
         return jsonify({"success": False, "error": "No hay sesión activa"}), 401
     
     estado = request.form.get('estado')
+    led_id = request.form.get('led_id')
     id_usuario = session['id_usuario']
     
     bloque_controller = BloqueController()
-    result = bloque_controller.save_estado(id_usuario, estado)
+    result = bloque_controller.save_estado(id_usuario, estado, led_id)
     
     if result:
         return jsonify({"success": True}), 200

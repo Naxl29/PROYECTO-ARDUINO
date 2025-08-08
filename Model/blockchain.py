@@ -16,7 +16,8 @@ class Blockchain:
                 b.id_usuario, 
                 u.usuario, 
                 b.fecha, 
-                b.estado, 
+                b.estado,
+                b.led_id, 
                 b.anterior_hash, 
                 b.hash
             FROM blockchain b

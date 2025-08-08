@@ -12,9 +12,9 @@ class BloqueController:
         return id
     
     #Función para guardar el estado del botón (encendido o apagado)
-    def save_estado(self, id_usuario, estado):
+    def save_estado(self, id_usuario, estado, led_id):
         id_usuario = int(id_usuario)
-        resultado = self.model.create_blo(id_usuario, estado)
+        resultado = self.model.create_blo(id_usuario, estado, led_id)
         return resultado
     
     #Función para iniciar sesión
