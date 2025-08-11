@@ -15,12 +15,13 @@ CREATE TABLE IF NOT EXISTS `blockchain` (
   `id_usuario` int NOT NULL,
   `fecha` datetime NOT NULL,
   `estado` tinyint(1) NOT NULL,
+  `led_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `anterior_hash` varchar(64) NOT NULL,
   `hash` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_blockchain_usuarios` (`id_usuario`),
   CONSTRAINT `FK_blockchain_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=211 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -28,8 +29,12 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `usuario` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `contrasena` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `usuarios` (`id`, `usuario`, `contrasena`) VALUES
+	(61, 'n', '12'),
+	(67, 'eduard', '123'),
+	(68, 'harol', '123');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
