@@ -8,13 +8,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>  
+    <div id="glow-container"></div>
+    
     <div class="mb-3">
-        <a href="{{ url_for('index') }}" class="boton-back" title="Salir">
+        <a href="{{ url_for('dashboard') }}" class="boton-back" title="Salir">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
                 <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15zM11 2h.5a.5.5 0 0 1 .5.5V15h-1zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
             </svg>     
         </a>
     </div>
+    
     <div class="bg-gradient">
         <div class="botones">
             <a href="{{ url_for('see_blockchain') }}" class="boton_2" title="Historial">
@@ -24,71 +27,83 @@
             </a>
         </div>
     </div>
-<!-- Botón LED 1 -->
-<label>
-    LED 1
-    <input type="checkbox" class="estado_led" data-led="1">
-</label>
 
-<!-- Botón LED 2 -->
-<label>
-    LED 2
-    <input type="checkbox" class="estado_led" data-led="2">
-</label>
+    <div class="led-control-container">
+        <!-- LED 1 -->
+        <div class="led-switch" data-led="1">
+            <span class="led-text">LED 1</span>
+            <input type="checkbox" class="estado_led" data-led="1" id="led1">
+            <label for="led1" class="led-label"></label>
+        </div>
 
-<!-- Botón LED 3 -->
-<label>
-    LED 3
-    <input type="checkbox" class="estado_led" data-led="3">
-</label>
+        <!-- LED 2 -->
+        <div class="led-switch" data-led="2">
+            <span class="led-text">LED 2</span>
+            <input type="checkbox" class="estado_led" data-led="2" id="led2">
+            <label for="led2" class="led-label"></label>
+        </div>
 
-<!-- Botón TODOS -->
-<label>
-    TODOS
-    <input type="checkbox" class="estado_led" data-led="ALL">
-</label>
+        <!-- LED 3 -->
+        <div class="led-switch" data-led="3">
+            <span class="led-text">LED 3</span>
+            <input type="checkbox" class="estado_led" data-led="3" id="led3">
+            <label for="led3" class="led-label"></label>
+        </div>
 
-<script>
-    document.querySelectorAll(".estado_led").forEach((checkbox) => {
-        checkbox.addEventListener("change", function () {
-            const estado = this.checked ? '1' : '0';
-            const led_id = this.getAttribute("data-led");  // '1', '2', '3' o 'ALL'
+        <!-- TODOS -->
+        <div class="led-switch" data-led="ALL">
+            <span class="led-text">TODOS</span>
+            <input type="checkbox" class="estado_led" data-led="ALL" id="ledAll">
+            <label for="ledAll" class="led-label"></label>
+        </div>
+    </div>
 
-            const formDataLed = new FormData();
-            formDataLed.append("estado", estado);
-            formDataLed.append("led_id", led_id);
+    <script>
+        document.querySelectorAll(".estado_led").forEach((checkbox) => {
+            checkbox.addEventListener("change", function () {
+                const estado = this.checked ? '1' : '0';
+                const led_id = this.getAttribute("data-led");
 
-            fetch("{{ url_for('estado_led') }}", {
-                method: "POST",
-                body: formDataLed
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Error al controlar LED: " + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(`LED ${led_id} →`, data);
-            })
-             const formDataGuardar = new FormData();
-            formDataGuardar.append("estado", estado);
-            formDataGuardar.append("led_id", led_id);
+                const formDataLed = new FormData();
+                formDataLed.append("estado", estado);
+                formDataLed.append("led_id", led_id);
 
-            fetch("/usuario/save_estado", {
-                method: "POST",
-                body: formDataGuardar
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Estado guardado:", data);
-            })
-            .catch(error => {
-                console.error("Error al guardar estado:", error);
+                fetch("{{ url_for('estado_led') }}", {
+                    method: "POST",
+                    body: formDataLed
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al controlar LED: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(`LED ${led_id} →`, data);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+
+                const formDataGuardar = new FormData();
+                formDataGuardar.append("estado", estado);
+                formDataGuardar.append("led_id", led_id);
+
+                fetch("/usuario/save_estado", {
+                    method: "POST",
+                    body: formDataGuardar
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Estado guardado:", data);
+                })
+                .catch(error => {
+                    console.error("Error al guardar estado:", error);
+                });
             });
         });
-    });
-</script>
-
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/effects.js') }}"></script>
 </body>
 </html>
