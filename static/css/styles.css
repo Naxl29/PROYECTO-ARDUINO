@@ -549,3 +549,479 @@ td {
   background: radial-gradient(circle 60px at 0% 100%, #00e1ff1a, #0000ff11, transparent);
   position: absolute;
 }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+/*Fondo principal*/
+body {
+    background: linear-gradient(to bottom, #0d0d0d, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff; /* Color de texto general claro */
+}
+
+h2 {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.card {
+    background-color: rgba(20, 30, 48, 0.95);
+    border-radius: 15px;
+    border: none;
+    color: #ffffff; /* Texto claro dentro de las tarjetas */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+}
+
+.card-header {
+    background-color: transparent;
+    font-weight: bold;
+    color: #ffffff; /* Texto claro en encabezado de tarjeta */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.list-group-item {
+    background-color: rgba(30, 40, 60, 0.9);
+    border: none;
+    color: #e0e0e0; /* Texto claro en la lista */
+}
+
+.badge {
+    background-color: #0dcaf0;
+    color: #000000; /* Texto oscuro en badge para buen contraste */
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+canvas {
+    background-color: transparent;
+}
+
+/* ---------*/
+
+/* Contenedor de fuegos artificiales */
+#glow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.spark {
+    position: absolute;
+    width: 4px;
+    height: 15px;
+    background: linear-gradient(to bottom, #fff, #00ffff, transparent);
+    border-radius: 50px;
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 
+        0 0 8px #00ffff,
+        0 0 15px #00ffff,
+        0 0 25px rgba(0, 255, 255, 0.5);
+    animation: sparkFly 1.2s ease-out forwards;
+}
+
+.spark::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -1px;
+    width: 6px;
+    height: 21px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(0, 255, 255, 0.4), transparent);
+    border-radius: 50px;
+    opacity: 0.6;
+    filter: blur(1px);
+}
+
+.spark::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 
+        0 0 3px #fff,
+        0 0 6px #00ffff;
+}
+
+@keyframes sparkFly {
+    0% { 
+        opacity: 1; 
+        transform: scale(1) rotate(0deg); 
+        filter: brightness(2);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(1.1) rotate(var(--rotation)) translate(calc(var(--x) * 0.1), calc(var(--y) * 0.1));
+        filter: brightness(1.8);
+    }
+    30% {
+        opacity: 0.9;
+        transform: scale(1) rotate(calc(var(--rotation) * 1.5)) translate(calc(var(--x) * 0.5), calc(var(--y) * 0.6));
+        filter: brightness(1.4);
+    }
+    60% {
+        opacity: 0.6;
+        transform: scale(0.8) rotate(calc(var(--rotation) * 2)) translate(calc(var(--x) * 0.8), calc(var(--y) * 1.2));
+        filter: brightness(1);
+    }
+    85% {
+        opacity: 0.3;
+        transform: scale(0.5) rotate(calc(var(--rotation) * 2.5)) translate(var(--x), calc(var(--y) * 1.5));
+        filter: brightness(0.6);
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0.2) rotate(calc(var(--rotation) * 3)) translate(calc(var(--x) * 1.2), calc(var(--y) * 2));
+        filter: brightness(0);
+    }
+}
+
+/* Para las micro-chispas */
+.spark.micro {
+    width: 2px;
+    height: 8px;
+    animation: microSparkFly 0.6s ease-out forwards;
+}
+
+@keyframes microSparkFly {
+    0% { 
+        opacity: 1; 
+        transform: scale(1);
+        filter: brightness(3);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.2) rotate(var(--rotation)) translate(calc(var(--x) * 0.7), calc(var(--y) * 0.7));
+        filter: brightness(1.5);
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0) rotate(calc(var(--rotation) * 2)) translate(var(--x), var(--y));
+        filter: brightness(0);
+    }
+}
+  /* Título estilo neón más grande y sin fondo */
+  .neon-title {
+      position: absolute;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 5rem; /* más grande */
+      color: #00faff;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 8px;
+      background: none; /* sin fondo */
+      padding: 0;
+      text-shadow:
+          0 0 10px #0ff,
+          0 0 20px #0ff,
+          0 0 40px #00f,
+          0 0 80px #00f;
+      animation: flicker 1.5s infinite alternate;
+  }
+  
+  @keyframes flicker {
+      from { opacity: 1; }
+      to { opacity: 0.85; }
+  }
+
+/* -- */
+/* ===== ESTILOS PARA BOTONES LED ===== */
+
+/* Contenedor principal de los LEDs */
+.led-control-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    padding: 40px;
+    background: rgba(10, 20, 30, 0.9);
+    border-radius: 20px;
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.2),
+        inset 0 0 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+/* Cada botón LED */
+.led-switch {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.led-switch input {
+    display: none;
+}
+
+.led-label {
+    position: relative;
+    width: 160px;
+    height: 70px;
+    background: #1a1a1a;
+    border-radius: 35px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid #333;
+    box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.5),
+        0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Círculo del switch */
+.led-label::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 
+        0 0 10px rgba(0, 0, 0, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Texto del LED */
+.led-text {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+/* LED 1 - Rojo */
+.led-switch[data-led="1"] .led-text {
+    color: #ff4444;
+    text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.led-switch[data-led="1"] input:checked + .led-label {
+    background: linear-gradient(45deg, #ff4444, #ff6666);
+    border-color: #ff4444;
+    box-shadow: 
+        0 0 30px rgba(255, 68, 68, 0.6),
+        inset 0 0 20px rgba(255, 68, 68, 0.2);
+}
+
+.led-switch[data-led="1"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ffcccc);
+    box-shadow: 
+        0 0 20px rgba(255, 68, 68, 0.8),
+        inset 0 0 10px rgba(255, 68, 68, 0.3);
+}
+
+/* LED 2 - Verde */
+.led-switch[data-led="2"] .led-text {
+    color: #44ff44;
+    text-shadow: 0 0 10px rgba(68, 255, 68, 0.5);
+}
+
+.led-switch[data-led="2"] input:checked + .led-label {
+    background: linear-gradient(45deg, #44ff44, #66ff66);
+    border-color: #44ff44;
+    box-shadow: 
+        0 0 30px rgba(68, 255, 68, 0.6),
+        inset 0 0 20px rgba(68, 255, 68, 0.2);
+}
+
+.led-switch[data-led="2"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ccffcc);
+    box-shadow: 
+        0 0 20px rgba(68, 255, 68, 0.8),
+        inset 0 0 10px rgba(68, 255, 68, 0.3);
+}
+
+/* LED 3 - Azul */
+.led-switch[data-led="3"] .led-text {
+    color: #4444ff;
+    text-shadow: 0 0 10px rgba(68, 68, 255, 0.5);
+}
+
+.led-switch[data-led="3"] input:checked + .led-label {
+    background: linear-gradient(45deg, #4444ff, #6666ff);
+    border-color: #4444ff;
+    box-shadow: 
+        0 0 30px rgba(68, 68, 255, 0.6),
+        inset 0 0 20px rgba(68, 68, 255, 0.2);
+}
+
+.led-switch[data-led="3"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ccccff);
+    box-shadow: 
+        0 0 20px rgba(68, 68, 255, 0.8),
+        inset 0 0 10px rgba(68, 68, 255, 0.3);
+}
+
+/* TODOS - Multicolor */
+.led-switch[data-led="ALL"] .led-text {
+    background: linear-gradient(45deg, #ff4444, #44ff44, #4444ff, #ffff44);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 2s linear infinite;
+}
+
+@keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+.led-switch[data-led="ALL"] input:checked + .led-label {
+    background: linear-gradient(45deg, #ff4444, #44ff44, #4444ff, #ffff44);
+    border-color: #00ffff;
+    box-shadow: 
+        0 0 40px rgba(255, 255, 255, 0.8),
+        inset 0 0 20px rgba(255, 255, 255, 0.2);
+    animation: rainbow-glow 1s linear infinite;
+}
+
+@keyframes rainbow-glow {
+    0% { box-shadow: 0 0 40px rgba(255, 68, 68, 0.8), inset 0 0 20px rgba(255, 68, 68, 0.2); }
+    33% { box-shadow: 0 0 40px rgba(68, 255, 68, 0.8), inset 0 0 20px rgba(68, 255, 68, 0.2); }
+    66% { box-shadow: 0 0 40px rgba(68, 68, 255, 0.8), inset 0 0 20px rgba(68, 68, 255, 0.2); }
+    100% { box-shadow: 0 0 40px rgba(255, 68, 68, 0.8), inset 0 0 20px rgba(255, 68, 68, 0.2); }
+}
+
+.led-switch[data-led="ALL"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 
+        0 0 25px rgba(255, 255, 255, 1),
+        inset 0 0 15px rgba(255, 255, 255, 0.5);
+    animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+/* Efectos hover */
+.led-label:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.4),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Indicadores de estado */
+.led-switch::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #333;
+    border: 2px solid #555;
+    transition: all 0.3s ease;
+}
+
+.led-switch[data-led="1"] input:checked ~ .led-switch::after,
+.led-switch[data-led="1"]:has(input:checked)::after {
+    background: #ff4444;
+    border-color: #ff6666;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+}
+
+.led-switch[data-led="2"] input:checked ~ .led-switch::after,
+.led-switch[data-led="2"]:has(input:checked)::after {
+    background: #44ff44;
+    border-color: #66ff66;
+    box-shadow: 0 0 15px rgba(68, 255, 68, 0.8);
+}
+
+.led-switch[data-led="3"] input:checked ~ .led-switch::after,
+.led-switch[data-led="3"]:has(input:checked)::after {
+    background: #4444ff;
+    border-color: #6666ff;
+    box-shadow: 0 0 15px rgba(68, 68, 255, 0.8);
+}
+
+.led-switch[data-led="ALL"] input:checked ~ .led-switch::after,
+.led-switch[data-led="ALL"]:has(input:checked)::after {
+    background: #ffffff;
+    border-color: #00ffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+    animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .led-control-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 30px;
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    .led-switch {
+        width: 180px;
+        height: 80px;
+    }
+    
+    .led-label {
+        width: 140px;
+        height: 60px;
+        border-radius: 30px;
+    }
+    
+    .led-label::before {
+        width: 44px;
+        height: 44px;
+        top: 5px;
+        left: 5px;
+    }
+    
+    .led-switch input:checked + .led-label::before {
+        left: 86px;
+    }
+}

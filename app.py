@@ -13,6 +13,15 @@ from Controller.blockchain_controller import BlockchainController
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
 
+led_controller = None
+
+def get_led_controller():
+    global led_controller
+    if led_controller is None:
+        led_controller = LedController()
+    return led_controller
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -30,7 +39,7 @@ def login():
         if user:
             session['usuario'] = user['usuario']
             session['id_usuario'] = user['id'] 
-            return redirect(url_for('button'))
+            return redirect(url_for('dashboard'))
         else:
             error_message = 'Usuario o contraseña incorrecta'
             return render_template('usuario/login.html', error_message=error_message)
@@ -47,14 +56,14 @@ def create():
         bloque_controller = BloqueController()
 
         if bloque_controller.usuario_existente(usuario):
-            return jsonify({'success': False, 'message': 'El usuario ya está registrado'}), 400
+            return jsonify({'success': False, 'message': 'El usuario ya está registrado'}), 200
 
         id = bloque_controller.save(usuario, contrasena)
         
         if id:
-            return jsonify({'success': True, 'id': id})
+            return jsonify({'success': True, 'message': 'Usuario creado correctamente', 'id': id})
         else:
-            return jsonify({'success': False, 'message': 'Error al crear usuario'}), 500
+            return jsonify({'success': False, 'message': 'Error al crear usuario'}), 200
     
     return render_template('usuario/create.html')
 
@@ -74,16 +83,19 @@ def show(id):
 def estado_led():
     if 'id_usuario' not in session:
         return jsonify({"success": False, "error": "No hay sesión activa"}), 401
-    
-    estado = request.form.get('estado')
-    
-    led_controller = LedController(pin=13)
-    result = led_controller.manejar_estado(estado)
-    
+
+    estado = request.form.get('estado')  # '1' o '0'
+    led_id = request.form.get('led_id')  # '1', '2', '3' o 'ALL'
+
+    if not led_id or led_id not in ['1', '2', '3', 'ALL']:
+        return jsonify({"success": False, "error": "LED ID inválido"}), 400
+
+    result = get_led_controller().manejar_estado(estado, led_id)
+
     if result:
         return jsonify({"success": True}), 200
     else:
-        return jsonify({"success": False, "error": "Estado no válido"}), 400
+        return jsonify({"success": False, "error": "Error al controlar LED"}), 500
 
 #Ruta para manejar el botón que enciende y apaga el led
 @app.route('/usuario/button')
@@ -101,10 +113,11 @@ def save_estado():
         return jsonify({"success": False, "error": "No hay sesión activa"}), 401
     
     estado = request.form.get('estado')
+    led_id = request.form.get('led_id')
     id_usuario = session['id_usuario']
     
     bloque_controller = BloqueController()
-    result = bloque_controller.save_estado(id_usuario, estado)
+    result = bloque_controller.save_estado(id_usuario, estado, led_id)
     
     if result:
         return jsonify({"success": True}), 200
@@ -133,6 +146,49 @@ def see_hash_details(hash):
         return render_template('usuario/hash.html', bloque=bloque)
     else:
         return "Bloque no encontrado"
+
+@app.route('/usuario/dashboard')
+def dashboard():
+    db = Database()
+    conn = db.conexion()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT COUNT(*) AS total_usuarios FROM usuarios")
+    total_usuarios = cursor.fetchone()['total_usuarios']
+
+    cursor.execute("SELECT COUNT(*) AS total_encendidos FROM blockchain WHERE estado = 1")
+    total_encendidos = cursor.fetchone()['total_encendidos']
+
+    cursor.execute("""
+        SELECT u.usuario, b.fecha
+        FROM blockchain b
+        JOIN usuarios u on b.id_usuario = u.id
+        WHERE b.estado = 1
+        ORDER BY b.fecha DESC
+        LIMIT 5
+    """
+    )
+    ultimos_encendidos = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT DATE(fecha) as fecha, COUNT(*) as cantidad
+        FROM blockchain
+        WHERE estado = 1
+        GROUP BY fecha
+        ORDER BY fecha ASC
+    """)
+    grafico_data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'usuario/dashboard.html',
+        total_usuarios=total_usuarios,
+        total_encendidos=total_encendidos,
+        ultimos_encendidos=ultimos_encendidos,
+        grafico_data=grafico_data
+    )
 
 @app.context_processor
 def inject_now():

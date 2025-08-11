@@ -41,18 +41,18 @@ class Bloque:
         return last_id if cursor.rowcount > 0 else False
 
     #Función para crear un nuevo registro al interactuar con el botón
-    def create_blo(self, id_usuario, estado):
+    def create_blo(self, id_usuario, estado, led_id):
         anterior_hash = self.obtener_ultimo_hash()
         fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        datos = fecha + estado + anterior_hash
+        datos = fecha + estado + led_id + anterior_hash  
         hash_value = hashlib.sha256(datos.encode()).hexdigest()
         
         conn = self.db.conexion()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO blockchain (id_usuario, fecha, estado, anterior_hash, hash)
-                VALUES (%s, %s, %s, %s, %s)"""
-        cursor.execute(sql, (id_usuario, fecha, estado, anterior_hash, hash_value))
+        sql = """INSERT INTO blockchain (id_usuario, fecha, estado, led_id, anterior_hash, hash)
+                VALUES (%s, %s, %s, %s, %s, %s)"""
+        cursor.execute(sql, (id_usuario, fecha, estado, led_id, anterior_hash, hash_value))
         conn.commit()
         
         result = cursor.rowcount > 0
