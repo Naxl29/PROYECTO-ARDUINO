@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <div id="glow-container"></div>
     <div class="mb-3">
         <a href="{{ url_for('button') }}" class="boton-back" title="Volver al panel">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
@@ -67,5 +68,6 @@
             </table>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/clic.js') }}"></script>
 </body>
 </html>

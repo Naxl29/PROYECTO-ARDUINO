@@ -23,22 +23,27 @@ class Bloque:
     
     #Función para crear un nuevo usuario
     def create_user(self, usuario, contrasena):
+        # Verificar si el usuario ya existe
         if self.usuario_existe(usuario):
-            return "Usuario ya registrado"
+            return False  # o lanzar una excepción específica
         
         conn = self.db.conexion()
         cursor = conn.cursor()
         
-        sql = "INSERT INTO usuarios (usuario, contrasena) VALUES (%s, %s)"
-        cursor.execute(sql, (usuario, contrasena))
-        conn.commit()
-        
-        last_id = cursor.lastrowid
-        
-        cursor.close()
-        conn.close()
-        
-        return last_id if cursor.rowcount > 0 else False
+        try:
+            sql = "INSERT INTO usuarios (usuario, contrasena) VALUES (%s, %s)"
+            cursor.execute(sql, (usuario, contrasena))
+            conn.commit()
+            
+            last_id = cursor.lastrowid
+            return last_id if cursor.rowcount > 0 else False
+            
+        except Exception as e:
+            conn.rollback()
+            return False
+        finally:
+            cursor.close()
+            conn.close()
 
     #Función para crear un nuevo registro al interactuar con el botón
     def create_blo(self, id_usuario, estado, led_id):

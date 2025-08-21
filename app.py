@@ -53,17 +53,24 @@ def create():
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
         
+        # Validar que los campos no estén vacíos
+        if not usuario.strip() or not contrasena.strip():
+            return jsonify({'success': False, 'message': 'Todos los campos son obligatorios'}), 400
+        
         bloque_controller = BloqueController()
 
         if bloque_controller.usuario_existente(usuario):
-            return jsonify({'success': False, 'message': 'El usuario ya está registrado'}), 200
-
-        id = bloque_controller.save(usuario, contrasena)
-        
-        if id:
-            return jsonify({'success': True, 'message': 'Usuario creado correctamente', 'id': id})
-        else:
-            return jsonify({'success': False, 'message': 'Error al crear usuario'}), 200
+            return jsonify({'success': False, 'message': 'El usuario ya está registrado'}), 400
+        try:
+            id = bloque_controller.save(usuario, contrasena)
+            
+            if id:
+                return jsonify({'success': True, 'message': 'Usuario creado correctamente', 'id': id}), 201
+            else:
+                return jsonify({'success': False, 'message': 'Error al crear usuario'}), 500
+                
+        except Exception as e:
+            return jsonify({'success': False, 'message': 'Error al crear usuario - posiblemente ya existe'}), 409
     
     return render_template('usuario/create.html')
 
