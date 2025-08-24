@@ -1,13 +1,14 @@
 #Conexión con la base de datos
 import mysql.connector
 from mysql.connector import Error
+from config import Config
 
 class Database:
     def __init__(self):
-        self.host = "localhost"
-        self.database = "blockchain"
-        self.user = "root"
-        self.password = ""
+        self.host = Config.DB_HOST
+        self.database = Config.DB_DATABASE
+        self.user = Config.DB_USER
+        self.password = Config.DB_PASSWORD
         
     def conexion(self):
         try:

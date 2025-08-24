@@ -2,11 +2,13 @@
 import serial
 import time
 import logging
+from config import Config # Importamos el archivo de configuración
 
 class LedController:
-    def __init__(self, puerto_serial='COM3', baudrate=9600):
-        self.puerto_serial = puerto_serial
-        self.baudrate = baudrate
+
+    def __init__(self):
+        self.puerto_serial = Config.ARDUINO_PORT # Puerto serial del Arduino
+        self.baudrate = Config.ARDUINO_BAUDRATE # Baudrate para la comunicación
         self.arduino = None
         self.conectado = False
         self.conectar()

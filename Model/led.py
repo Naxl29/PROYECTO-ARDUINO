@@ -1,10 +1,11 @@
 import serial
 import time
+from config import Config # Importamos el archivo de configuración
 
 class Led:
-    def __init__(self, puerto='COM3', baudrate=9600, timeout=1):
-        self.puerto = puerto
-        self.baudrate = baudrate
+    def __init__(self, timeout=1):
+        self.puerto = Config.ARDUINO_PORT
+        self.baudrate = Config.ARDUINO_BAUDRATE
         self.timeout = timeout
         try:
             self.serial = serial.Serial(self.puerto, self.baudrate, timeout=self.timeout)
