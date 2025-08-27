@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
             formDataLed.append("estado", estado);
             formDataLed.append("led_id", led_id);
 
-            fetch(urlEstadoLed, {   // 👈 usar variable global
+            fetch(urlEstadoLed, {   // se usa la variable global
                 method: "POST",
                 body: formDataLed
             })
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             formDataGuardar.append("estado", estado);
             formDataGuardar.append("led_id", led_id);
 
-            fetch(urlGuardarEstado, {   // 👈 usar variable global
+            fetch(urlGuardarEstado, {   // acá tambien se usa la variable global
                 method: "POST",
                 body: formDataGuardar
             })

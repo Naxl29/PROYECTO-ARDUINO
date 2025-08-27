@@ -44,10 +44,10 @@ class LedController:
         """
         Cambia el estado de un LED específico o todos.
         estado: '1' (encender), '0' (apagar)
-        led_id: '1', '2', '3' o 'ALL'
+        led_id: '1', '2', '3', '4' o 'ALL'
         """
         try:
-            if led_id not in ['1', '2', '3', 'ALL']:
+            if led_id not in ['1', '2', '3', '4', 'ALL']:
                 return False
 
             comando = f"ON{led_id}" if estado == "1" else f"OFF{led_id}"
