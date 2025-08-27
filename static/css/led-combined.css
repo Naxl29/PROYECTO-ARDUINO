@@ -218,6 +218,27 @@ body {
         inset 0 0 10px rgba(68, 68, 255, 0.3);
 }
 
+.led-switch[data-led="4"] .led-text {
+    color: #e5ff00;
+    text-shadow: 0 0 10px rgb(251, 255, 0);
+}
+
+.led-switch[data-led="4"] input:checked + .led-label {
+    background: linear-gradient(45deg, #fbff00, #d9ff00);
+    border-color: #fbff00;
+    box-shadow: 
+        0 0 30px rgb(251, 255, 0),
+        inset 0 0 20px rgba(68, 68, 255, 0.2);
+}
+
+.led-switch[data-led="4"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ccccff);
+    box-shadow: 
+        0 0 20px rgb(251, 255, 0),
+        inset 0 0 10px rgba(68, 68, 255, 0.3);
+}
+
 .led-switch[data-led="ALL"] .led-text {
     background: linear-gradient(45deg, #ff4444, #44ff44, #4444ff, #ffff44);
     -webkit-background-clip: text;
