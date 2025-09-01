@@ -239,6 +239,90 @@ body {
         inset 0 0 10px rgba(68, 68, 255, 0.3);
 }
 
+.led-switch[data-led="5"] .led-text {
+    color: #ff4444;
+    text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.led-switch[data-led="5"] input:checked + .led-label {
+    background: linear-gradient(45deg, #ff4444, #ff6666);
+    border-color: #ff4444;
+    box-shadow: 
+        0 0 30px rgba(255, 68, 68, 0.6),
+        inset 0 0 20px rgba(255, 68, 68, 0.2);
+}
+
+.led-switch[data-led="5"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ffcccc);
+    box-shadow: 
+        0 0 20px rgba(255, 68, 68, 0.8),
+        inset 0 0 10px rgba(255, 68, 68, 0.3);
+}
+
+.led-switch[data-led="6"] .led-text {
+    color: #44ff44;
+    text-shadow: 0 0 10px rgba(68, 255, 68, 0.5);
+}
+
+.led-switch[data-led="6"] input:checked + .led-label {
+    background: linear-gradient(45deg, #44ff44, #66ff66);
+    border-color: #44ff44;
+    box-shadow: 
+        0 0 30px rgba(68, 255, 68, 0.6),
+        inset 0 0 20px rgba(68, 255, 68, 0.2);
+}
+
+.led-switch[data-led="6"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ccffcc);
+    box-shadow: 
+        0 0 20px rgba(68, 255, 68, 0.8),
+        inset 0 0 10px rgba(68, 255, 68, 0.3);
+}
+
+.led-switch[data-led="7"] .led-text {
+    color: #4444ff;
+    text-shadow: 0 0 10px rgba(68, 68, 255, 0.5);
+}
+
+.led-switch[data-led="7"] input:checked + .led-label {
+    background: linear-gradient(45deg, #4444ff, #6666ff);
+    border-color: #4444ff;
+    box-shadow: 
+        0 0 30px rgba(68, 68, 255, 0.6),
+        inset 0 0 20px rgba(68, 68, 255, 0.2);
+}
+
+.led-switch[data-led="7"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ccccff);
+    box-shadow: 
+        0 0 20px rgba(68, 68, 255, 0.8),
+        inset 0 0 10px rgba(68, 68, 255, 0.3);
+}
+
+.led-switch[data-led="8"] .led-text {
+    color: #e5ff00;
+    text-shadow: 0 0 10px rgb(251, 255, 0);
+}
+
+.led-switch[data-led="8"] input:checked + .led-label {
+    background: linear-gradient(45deg, #fbff00, #d9ff00);
+    border-color: #fbff00;
+    box-shadow: 
+        0 0 30px rgb(251, 255, 0),
+        inset 0 0 20px rgba(68, 68, 255, 0.2);
+}
+
+.led-switch[data-led="8"] input:checked + .led-label::before {
+    left: 96px;
+    background: linear-gradient(145deg, #ffffff, #ccccff);
+    box-shadow: 
+        0 0 20px rgb(251, 255, 0),
+        inset 0 0 10px rgba(68, 68, 255, 0.3);
+}
+
 .led-switch[data-led="ALL"] .led-text {
     background: linear-gradient(45deg, #ff4444, #44ff44, #4444ff, #ffff44);
     -webkit-background-clip: text;
