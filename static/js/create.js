@@ -9,7 +9,10 @@ document.getElementById('registroForm').addEventListener('submit', function (e) 
         Swal.fire({
             icon: 'warning',
             title: 'Campos vacíos',
-            text: 'Por favor, completa todos los campos.'
+            text: 'Por favor, completa todos los campos.',
+            background: '#2D3A5A',
+            color: '#fff',
+            confirmButtonColor: '#8B5CF6'
         });
         return;
     }
@@ -24,7 +27,10 @@ document.getElementById('registroForm').addEventListener('submit', function (e) 
             Swal.fire({
                 title: '¡Usuario creado!',
                 icon: 'success',
-                confirmButtonText: 'Ver detalles'
+                confirmButtonText: 'Ver detalles',
+                background: '#2D3A5A',
+                color: '#fff',
+                confirmButtonColor: '#8B5CF6'
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = `/usuario/show/${data.id}`;
@@ -34,7 +40,10 @@ document.getElementById('registroForm').addEventListener('submit', function (e) 
             Swal.fire({
                 icon: 'error',
                 title: 'Error al crear usuario',
-                text: 'Usuario ya existente.'
+                text: 'Usuario ya existente.',
+                background: '#2D3A5A',
+                color: '#fff',
+                confirmButtonColor: '#8B5CF6'
             });
         }
     })
@@ -43,7 +52,10 @@ document.getElementById('registroForm').addEventListener('submit', function (e) 
         Swal.fire({
             icon: 'error',
             title: 'Error de conexión',
-            text: 'No se pudo conectar con el servidor.'
+            text: 'No se pudo conectar con el servidor.',
+            background: '#2D3A5A',
+            color: '#fff',
+            confirmButtonColor: '#8B5CF6'
         });
     });
 });

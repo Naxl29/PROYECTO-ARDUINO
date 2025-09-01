@@ -5,27 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <div class="login-box">
-        <p>Iniciar sesión</p>
+    <div class="login-container">
+        <h1 class="login-title">INICIA</h1>
+        <p class="login-subtitle">PARA CONTINUAR</p>
         <form id="campos" method="post" action="{{ url_for('login') }}">
-            <div class="user-box">
-                <input type="text" id="usuario" name="usuario" autocomplete="off">
-                <label>Usuario</label>
+            <div class="input-group">
+                <div class="input-container">
+                    <i class="fas fa-user icon"></i>
+                    <input type="text" id="usuario" name="usuario" autocomplete="off" placeholder="usuario" required>
+                </div>
             </div>
-            <div class="user-box">
-                <input type="password" id="contrasena" name="contrasena">
-                <label>Contraseña</label>
+            <div class="input-group">
+                <div class="input-container">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="••••••••••••" required>
+                </div>
             </div>
-            <button type="submit" class="button">
-                <div class="blob1"></div>
-                <div class="inner">Iniciar</div>
-            </button>
+            <button type="submit" class="login-btn">INICIAR</button>
         </form>
-        <p>¿No tienes una cuenta? <a href="{{ url_for('create') }}" class="a2">¡Regístrate!</a></p>
+        <p style="color: #bfc8e2; margin-top: 20px; font-size: 0.9rem;">¿No tienes una cuenta? <a href="{{ url_for('create') }}" style="color: #6C63FF; text-decoration: none;">¡Regístrate!</a></p>
     </div>
 
     <script>
@@ -38,7 +41,10 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos vacíos',
-                text: 'Por favor, completa todos los campos.'
+                text: 'Por favor, completa todos los campos.',
+                background: '#2D3A5A',
+                color: '#fff',
+                confirmButtonColor: '#6C63FF'
             }); 
         }
     });
@@ -49,7 +55,10 @@
         Swal.fire({
             icon: 'error',
             title: 'Error al iniciar sesión',
-            text: '{{ error_message }}'
+            text: '{{ error_message }}',
+            background: '#2D3A5A',
+            color: '#fff',
+            confirmButtonColor: '#6C63FF'
         });
     </script>
     {% endif %}
