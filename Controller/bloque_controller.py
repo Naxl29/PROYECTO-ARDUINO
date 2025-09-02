@@ -16,14 +16,30 @@ class BloqueController:
         id_usuario = int(id_usuario)
         id_objeto = int(led_id)  # ID del LED como objeto
         
-        # Para el registro del estado, asumimos duración mínima y gasto básico
-        # Si es encendido, registramos tiempo estimado; si es apagado, tiempo 0
-        if estado == '1':  # LED encendido
-            duracion = 1.0  # 1 minuto como duración base
-            gasto = 0.05    # Gasto estimado en unidades de energía
-        else:  # LED apagado
-            duracion = 0.0  # Sin duración cuando se apaga
-            gasto = 0.0     # Sin gasto cuando se apaga
+        # Obtener información del objeto desde la base de datos
+        objeto_info = self.model.get_objeto_info(id_objeto)
+        
+        if not objeto_info:
+            # Si no se encuentra el objeto, usar valores por defecto
+            duracion = 0.0
+            gasto = 0.0
+        else:
+            # Usar los valores reales de la base de datos
+            potencia_w = objeto_info['potencia_w']
+            consumo_wh = objeto_info['consumo_wh']
+            
+            if estado == '1':  # LED encendido
+                # Al encender, solo registramos el momento de inicio
+                duracion = 0.0  # Sin duración al encender
+                gasto = 0.0     # Sin gasto al encender
+            else:  # LED apagado
+                # Al apagar, calculamos la duración real desde el último encendido
+                duracion_real = self.model.calcular_duracion(id_usuario, id_objeto)
+                duracion = duracion_real if duracion_real else 0.0
+                
+                # Calcular gasto real basado en la duración real de uso
+                # consumo_wh * (duracion_minutos / 60) para convertir a horas
+                gasto = consumo_wh * (duracion / 60.0) if duracion > 0 else 0.0
             
         resultado = self.model.create_blo(id_usuario, id_objeto, duracion, estado, gasto)
         return resultado
