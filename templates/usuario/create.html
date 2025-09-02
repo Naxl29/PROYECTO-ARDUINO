@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -23,12 +23,12 @@
             <div class="input-group">
                 <div class="input-container">
                     <i class="fas fa-lock icon"></i>
-                    <input type="password" id="contrasena" name="contrasena" placeholder="••••••••••••" required>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="contraseña" required>
                 </div>
             </div>
             <button type="submit" class="login-btn">REGISTRAR</button>
         </form>
-        <p style="color: rgba(255, 255, 255, 0.8); margin-top: 20px; font-size: 0.9rem; position: relative; z-index: 2;">¿Ya tienes una cuenta? <a href="{{ url_for('login') }}" style="color: #6C63FF; text-decoration: none;">Inicia sesión</a></p>
+        <p class="auth-link-create">¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión</a></p>
     </div>
 
     <script src="{{ url_for('static', filename='js/create.js') }}"></script>

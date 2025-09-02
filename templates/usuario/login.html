@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -17,49 +17,25 @@
             <div class="input-group">
                 <div class="input-container">
                     <i class="fas fa-user icon"></i>
-                    <input type="text" id="usuario" name="usuario" autocomplete="off" placeholder="usuario" required>
+                    <input type="text" id="usuario" name="usuario" autocomplete="off" placeholder="usuario">
                 </div>
             </div>
             <div class="input-group">
                 <div class="input-container">
                     <i class="fas fa-lock icon"></i>
-                    <input type="password" id="contrasena" name="contrasena" placeholder="••••••••••••" required>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="contraseña">
                 </div>
             </div>
             <button type="submit" class="login-btn">INICIAR</button>
         </form>
-        <p style="color: #bfc8e2; margin-top: 20px; font-size: 0.9rem;">¿No tienes una cuenta? <a href="{{ url_for('create') }}" style="color: #6C63FF; text-decoration: none;">¡Regístrate!</a></p>
+        <p class="auth-link">¿No tienes una cuenta? <a href="{{ url_for('create') }}">¡Regístrate!</a></p>
     </div>
 
-    <script>
-    document.getElementById('campos').addEventListener('submit', function (e) {
-        const usuario = document.getElementById('usuario').value.trim();
-        const contrasena = document.getElementById('contrasena').value.trim();
-
-        if (usuario === '' || contrasena === '') {
-            e.preventDefault(); 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Campos vacíos',
-                text: 'Por favor, completa todos los campos.',
-                background: '#2D3A5A',
-                color: '#fff',
-                confirmButtonColor: '#6C63FF'
-            }); 
-        }
-    });
-    </script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
     
     {% if error_message %}
     <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error al iniciar sesión',
-            text: '{{ error_message }}',
-            background: '#2D3A5A',
-            color: '#fff',
-            confirmButtonColor: '#6C63FF'
-        });
+        showErrorMessage('{{ error_message }}');
     </script>
     {% endif %}
 </body>
