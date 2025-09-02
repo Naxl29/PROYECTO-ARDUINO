@@ -6,7 +6,7 @@ class Bloque:
     def __init__(self):
         self.db = Database()
     
-    
+    #Se omitirá esto por el momento para la actualización del proyecto
     #Obtiene el último hash para agregarlo al historial
     def obtener_ultimo_hash(self):
         conn = self.db.conexion()
@@ -46,18 +46,15 @@ class Bloque:
             conn.close()
 
     #Función para crear un nuevo registro al interactuar con el botón
-    def create_blo(self, id_usuario, estado, led_id):
-        anterior_hash = self.obtener_ultimo_hash()
+    def create_blo(self, id_usuario, id_objeto, duracion, estado, gasto):
         fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        datos = fecha + estado + led_id + anterior_hash  
-        hash_value = hashlib.sha256(datos.encode()).hexdigest()
         
         conn = self.db.conexion()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO blockchain (id_usuario, fecha, estado, led_id, anterior_hash, hash)
+        sql = """INSERT INTO reporte (id_usuario, id_objeto, fecha, duracion, estado, gasto)
                 VALUES (%s, %s, %s, %s, %s, %s)"""
-        cursor.execute(sql, (id_usuario, fecha, estado, led_id, anterior_hash, hash_value))
+        cursor.execute(sql, (id_usuario, id_objeto, fecha, duracion, estado, gasto))
         conn.commit()
         
         result = cursor.rowcount > 0
