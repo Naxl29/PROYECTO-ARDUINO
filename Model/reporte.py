@@ -6,25 +6,49 @@ class Reporte:
         self.db = Database()
 
     #Muestra los reportes de historial al encender cada botón
-    def see(self):
+    def see(self, id_usuario=None, user_role='USER'):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
 
-        sql = """
-            SELECT r.id, 
-            r.id_usuario, 
-            o.objeto, 
-            o.potencia_w, 
-            o.consumo_wh, 
-            r.fecha, 
-            r.duracion_minutos, 
-            r.estado, 
-            r.gasto
-            FROM reportes r
-            JOIN objetos o ON r.id_objeto = o.id
-            ORDER BY r.id DESC 
-            """
-        cursor.execute(sql)
+        if user_role == 'ADMIN':
+            # Admin ve todos los reportes
+            sql = """
+                SELECT r.id, 
+                r.id_usuario, 
+                u.usuario,
+                o.objeto, 
+                o.potencia_w, 
+                o.consumo_wh, 
+                r.fecha, 
+                r.duracion_minutos, 
+                r.estado, 
+                r.gasto
+                FROM reportes r
+                JOIN objetos o ON r.id_objeto = o.id
+                LEFT JOIN usuarios u ON r.id_usuario = u.id
+                ORDER BY r.id DESC 
+                """
+            cursor.execute(sql)
+        else:
+            # Usuario normal y niño solo ven sus propios reportes
+            sql = """
+                SELECT r.id, 
+                r.id_usuario, 
+                u.usuario,
+                o.objeto, 
+                o.potencia_w, 
+                o.consumo_wh, 
+                r.fecha, 
+                r.duracion_minutos, 
+                r.estado, 
+                r.gasto
+                FROM reportes r
+                JOIN objetos o ON r.id_objeto = o.id
+                LEFT JOIN usuarios u ON r.id_usuario = u.id
+                WHERE r.id_usuario = %s
+                ORDER BY r.id DESC 
+                """
+            cursor.execute(sql, (id_usuario,))
 
         bloques = []
         for fila in cursor.fetchall():

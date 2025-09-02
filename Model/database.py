@@ -1,7 +1,7 @@
 #Conexión con la base de datos
 import mysql.connector
 from mysql.connector import Error
-from config import Config
+from config.config import Config
 
 class Database:
     def __init__(self):
