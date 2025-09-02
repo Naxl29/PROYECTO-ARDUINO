@@ -7,7 +7,7 @@ load_dotenv()
 class Config:   
     # Base de datos
     DB_HOST = os.getenv('DB_HOST', 'localhost')
-    DB_DATABASE = os.getenv('DB_DATABASE', 'blockchain')
+    DB_DATABASE = os.getenv('DB_DATABASE', 'arduino')
     DB_USER = os.getenv('DB_USER', 'root')
     DB_PASSWORD = os.getenv('DB_PASSWORD', '')
     

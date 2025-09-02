@@ -18,18 +18,21 @@
     </div>
 
     <div class="historial-container">
-        <h1 class="titulo-historial">Historial</h1>
+        <h1 class="titulo-historial">Reporte</h1>
 
         <div class="table-responsive">
             <table class="historial-table">
                 <thead>
                     <tr>
-                        <th>Bloque</th>
+                        <th>Id</th>
                         <th>Usuario</th>
+                        <th>Objeto</th>
+                        <th>Potencia (W)</th>
+                        <th>Consumo (kWh/h)</th>
                         <th>Fecha</th>
+                        <th>Duración</th>
                         <th>Estado</th>
-                        <th>Botón</th>
-                        <th>Hash</th>
+                        <th>Gasto</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +41,11 @@
                             <tr>
                                 <td>{{ bloque.id }}</td>
                                 <td>{{ bloque.usuario }}</td>
+                                <td>{{ bloque.objeto }}</td>
+                                <td>{{ bloque.potencia_w }}</td>
+                                <td>{{ bloque.consumo_wh }}</td>
                                 <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ bloque.duracion_minutos }}</td>
                                 <td>
                                     {% if bloque.estado == '1' or bloque.estado == 1 %}
                                         <span style="color: green;">Encendido</span>
@@ -48,15 +55,7 @@
                                         <span style="color: gray;">Desconocido</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ bloque.led_id }}</td>
-                                <td>
-                                    <a href="{{ url_for('see_hash_details', hash=bloque.hash) }}" title="Ver hashes">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                        </svg>
-                                    </a>
-                                </td>
+                                <td>{{ bloque.gasto }}</td>
                             </tr>
                         {% endfor %}
                     {% else %}

@@ -6,9 +6,9 @@ from Controller.led_controller import LedController
 
 from Model.database import Database
 from Model.bloque import Bloque
-from Model.blockchain import Blockchain
+from Model.reporte import Reporte
 from Controller.bloque_controller import BloqueController
-from Controller.blockchain_controller import BlockchainController
+from Controller.reporte_controller import ReporteController
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
@@ -77,8 +77,8 @@ def create():
 #Ruta para mostrar los detalles del usuario creado
 @app.route('/usuario/show/<int:id>')
 def show(id):
-    blockchain_controller = BlockchainController()
-    usuario = blockchain_controller.show(id)
+    reporte_controller = ReporteController()
+    usuario = reporte_controller.show(id)
     
     if not usuario:
         return redirect(url_for('index'))
@@ -140,15 +140,16 @@ def logout():
 #Ruta para el historial de interacciones con el botón
 @app.route('/blockchain/see')
 def see_blockchain():
-    blockchain_instance = Blockchain()  
-    bloques_data = blockchain_instance.see()  
-    return render_template('usuario/blockchain.html', bloques=bloques_data)
+    reporte_instance = Reporte()  
+    bloques_data = reporte_instance.see()  
+    return render_template('usuario/reporte.html', bloques=bloques_data)
 
+#Esta ruta no se utilizará en la nueva actualización
 #Ruta para ver los hashes por aparte del historial
 @app.route('/blockchain/block/hash/<hash>')
 def see_hash_details(hash):
-    blockchain_controller = BlockchainController()
-    bloque = blockchain_controller.get_block_by_hash(hash)
+    reporte_controller = ReporteController()
+    bloque = reporte_controller.get_block_by_hash(hash)
     if bloque:
         return render_template('usuario/hash.html', bloque=bloque)
     else:
@@ -163,12 +164,12 @@ def dashboard():
     cursor.execute("SELECT COUNT(*) AS total_usuarios FROM usuarios")
     total_usuarios = cursor.fetchone()['total_usuarios']
 
-    cursor.execute("SELECT COUNT(*) AS total_encendidos FROM blockchain WHERE estado = 1")
+    cursor.execute("SELECT COUNT(*) AS total_encendidos FROM reportes WHERE estado = 1")
     total_encendidos = cursor.fetchone()['total_encendidos']
 
     cursor.execute("""
         SELECT u.usuario, b.fecha
-        FROM blockchain b
+        FROM reportes b
         JOIN usuarios u on b.id_usuario = u.id
         WHERE b.estado = 1
         ORDER BY b.fecha DESC
@@ -179,7 +180,7 @@ def dashboard():
 
     cursor.execute("""
         SELECT DATE(fecha) as fecha, COUNT(*) as cantidad
-        FROM blockchain
+        FROM reportes
         WHERE estado = 1
         GROUP BY fecha
         ORDER BY fecha ASC

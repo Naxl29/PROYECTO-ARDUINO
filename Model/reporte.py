@@ -1,28 +1,28 @@
 from datetime import datetime
 from Model.database import Database
 
-class Blockchain:
+class Reporte:
     def __init__(self):
         self.db = Database()
 
-    #Muestra el historial del botón
+    #Muestra los reportes de historial al encender cada botón
     def see(self):
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
 
         sql = """
-            SELECT 
-                b.id, 
-                b.id_usuario, 
-                u.usuario, 
-                b.fecha, 
-                b.estado,
-                b.led_id, 
-                b.anterior_hash, 
-                b.hash
-            FROM blockchain b
-            JOIN usuarios u ON b.id_usuario = u.id
-            ORDER BY b.id DESC
+            SELECT r.id, 
+            r.id_usuario, 
+            o.objeto, 
+            o.potencia_w, 
+            o.consumo_wh, 
+            r.fecha, 
+            r.duracion_minutos, 
+            r.estado, 
+            r.gasto
+            FROM reportes r
+            JOIN objetos o ON r.id_objeto = o.id
+            ORDER BY r.id DESC 
             """
         cursor.execute(sql)
 
