@@ -47,7 +47,7 @@ class LedController:
         led_id: '1', '2', '3', '4' , '5', '6', '7', '8' o 'ALL'
         """
         try:
-            if led_id not in ['1', '2', '3', '4', '5', '6', '7', '8' 'ALL']:
+            if led_id not in ['1', '2', '3', '4', '5', '6', '7', '8','ALL']:
                 return False
 
             comando = f"ON{led_id}" if estado == "1" else f"OFF{led_id}"

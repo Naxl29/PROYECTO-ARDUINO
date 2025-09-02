@@ -94,7 +94,7 @@ def estado_led():
     estado = request.form.get('estado')  # '1' o '0'
     led_id = request.form.get('led_id')  # '1', '2', '3', '4','5', '6', '7', '8'o 'ALL'
 
-    if not led_id or led_id not in ['1', '2', '3', '4', '5', '6', '7', '8' 'ALL']:
+    if not led_id or led_id not in ['1', '2', '3', '4', '5', '6', '7', '8', 'ALL']:
         return jsonify({"success": False, "error": "LED ID inválido"}), 400
 
     result = get_led_controller().manejar_estado(estado, led_id)
