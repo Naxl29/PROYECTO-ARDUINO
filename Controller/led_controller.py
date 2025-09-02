@@ -62,3 +62,7 @@ class LedController:
         except Exception as e:
             logging.error(f"Error al manejar estado del LED: {str(e)}")
             return False
+
+
+
+
