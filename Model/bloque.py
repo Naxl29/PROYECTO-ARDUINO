@@ -1,6 +1,7 @@
 from datetime import datetime
 import hashlib
 from Model.database import Database
+from datetime import datetime
 
 class Bloque:
     def __init__(self):
@@ -148,3 +149,46 @@ class Bloque:
         conn.close()
         
         return resultado is not None
+    
+    #Función para obtener información del objeto (potencia y consumo)
+    def get_objeto_info(self, id_objeto):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True)
+        
+        sql = "SELECT objeto, potencia_w, consumo_wh FROM objetos WHERE id = %s"
+        cursor.execute(sql, (id_objeto,))
+        resultado = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
+        
+        return resultado
+    
+    #Función para calcular la duración real de uso entre encendido y apagado
+    def calcular_duracion(self, id_usuario, id_objeto):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True)
+        
+        # Buscar el último registro de encendido (estado = 1) para este usuario y objeto
+        sql = """
+            SELECT fecha FROM reportes 
+            WHERE id_usuario = %s AND id_objeto = %s AND estado = 1 
+            ORDER BY fecha DESC LIMIT 1
+        """
+        cursor.execute(sql, (id_usuario, id_objeto))
+        ultimo_encendido = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
+        
+        if ultimo_encendido:
+            fecha_encendido = ultimo_encendido['fecha']
+            fecha_actual = datetime.now()
+            
+            # Calcular diferencia en minutos
+            diferencia = fecha_actual - fecha_encendido
+            duracion_minutos = diferencia.total_seconds() / 60.0
+            
+            return round(duracion_minutos, 2)  # Redondear a 2 decimales
+        
+        return 0.0  # Si no hay registro de encendido previo
