@@ -2,7 +2,7 @@
 import serial
 import time
 import logging
-from config import Config # Importamos el archivo de configuración
+from config.config import Config # Importamos el archivo de configuración
 
 class LedController:
 

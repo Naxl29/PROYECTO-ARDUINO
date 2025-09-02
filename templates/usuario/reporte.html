@@ -25,7 +25,9 @@
                 <thead>
                     <tr>
                         <th>Id</th>
+                        {% if user_role == 'ADMIN' %}
                         <th>Usuario</th>
+                        {% endif %}
                         <th>Objeto</th>
                         <th>Potencia (W)</th>
                         <th>Consumo (kWh/h)</th>
@@ -40,7 +42,9 @@
                         {% for bloque in bloques %}
                             <tr>
                                 <td>{{ bloque.id }}</td>
-                                <td>{{ bloque.usuario }}</td>
+                                {% if user_role == 'ADMIN' %}
+                                <td>{{ bloque.usuario if bloque.usuario else 'Desconocido' }}</td>
+                                {% endif %}
                                 <td>{{ bloque.objeto }}</td>
                                 <td>{{ bloque.potencia_w }}</td>
                                 <td>{{ bloque.consumo_wh }}</td>
@@ -60,7 +64,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="6" class="text-center">No hay registros disponibles</td>
+                            <td colspan="{% if user_role == 'ADMIN' %}9{% else %}8{% endif %}" class="text-center">No hay registros disponibles</td>
                         </tr>
                     {% endif %}
                 </tbody>

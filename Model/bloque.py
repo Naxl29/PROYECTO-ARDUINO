@@ -52,7 +52,7 @@ class Bloque:
         conn = self.db.conexion()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO reporte (id_usuario, id_objeto, fecha, duracion, estado, gasto)
+        sql = """INSERT INTO reportes (id_usuario, id_objeto, fecha, duracion_minutos, estado, gasto)
                 VALUES (%s, %s, %s, %s, %s, %s)"""
         cursor.execute(sql, (id_usuario, id_objeto, fecha, duracion, estado, gasto))
         conn.commit()
@@ -69,14 +69,55 @@ class Bloque:
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
         
-        sql = "SELECT * FROM usuarios WHERE usuario = %s AND contrasena = %s"
-        cursor.execute(sql, (usuario, contrasena))
-        user = cursor.fetchone()
+        try:
+            # Intentar con la consulta que incluye roles
+            sql = """
+                SELECT u.*, r.rol 
+                FROM usuarios u
+                LEFT JOIN roles_usuarios ru ON u.id = ru.id_usuario
+                LEFT JOIN roles r ON ru.id_rol = r.id
+                WHERE u.usuario = %s AND u.contrasena = %s
+            """
+            cursor.execute(sql, (usuario, contrasena))
+            user = cursor.fetchone()
+            
+        except Exception as e:
+            # Si las tablas de roles no existen, usar consulta simple
+            print(f"Error con roles, usando consulta simple: {e}")
+            sql = "SELECT *, 'USER' as rol FROM usuarios WHERE usuario = %s AND contrasena = %s"
+            cursor.execute(sql, (usuario, contrasena))
+            user = cursor.fetchone()
         
         cursor.close()
         conn.close()
         
         return user
+    
+    #Función para obtener el rol del usuario
+    def get_user_role(self, id_usuario):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True)
+        
+        try:
+            sql = """
+                SELECT r.rol 
+                FROM roles r
+                JOIN roles_usuarios ru ON r.id = ru.id_rol
+                WHERE ru.id_usuario = %s
+            """
+            cursor.execute(sql, (id_usuario,))
+            result = cursor.fetchone()
+            
+            cursor.close()
+            conn.close()
+            
+            return result['rol'] if result else 'USER'
+            
+        except Exception as e:
+            print(f"Error obteniendo rol: {e}")
+            cursor.close()
+            conn.close()
+            return 'USER'
     
     #Función para verificar la contraseña del usuario 
     def password_veri(self, usuario, contrasena):

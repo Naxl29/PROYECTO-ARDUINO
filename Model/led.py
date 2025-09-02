@@ -1,6 +1,6 @@
 import serial
 import time
-from config import Config # Importamos el archivo de configuración
+from config.config import Config # Importamos el archivo de configuración
 
 class Led:
     def __init__(self, timeout=1):

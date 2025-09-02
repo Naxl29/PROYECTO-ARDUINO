@@ -37,10 +37,10 @@ CREATE TABLE IF NOT EXISTS `reportes` (
   `estado` tinyint(1) NOT NULL,
   `gasto` float NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK__roles_usuarios` (`id_usuario`),
-  KEY `FK__objetos` (`id_objeto`),
-  CONSTRAINT `FK__objetos` FOREIGN KEY (`id_objeto`) REFERENCES `objetos` (`id`),
-  CONSTRAINT `FK__roles_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `roles_usuarios` (`id`)
+  KEY `FK_reportes_usuarios` (`id_usuario`),
+  KEY `FK_reportes_objetos` (`id_objeto`),
+  CONSTRAINT `FK_reportes_objetos` FOREIGN KEY (`id_objeto`) REFERENCES `objetos` (`id`),
+  CONSTRAINT `FK_reportes_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `reportes` (`id`, `id_usuario`, `id_objeto`, `fecha`, `duracion_minutos`, `estado`, `gasto`) VALUES

@@ -14,7 +14,18 @@ class BloqueController:
     #Función para guardar el estado del botón (encendido o apagado)
     def save_estado(self, id_usuario, estado, led_id):
         id_usuario = int(id_usuario)
-        resultado = self.model.create_blo(id_usuario, estado, led_id)
+        id_objeto = int(led_id)  # ID del LED como objeto
+        
+        # Para el registro del estado, asumimos duración mínima y gasto básico
+        # Si es encendido, registramos tiempo estimado; si es apagado, tiempo 0
+        if estado == '1':  # LED encendido
+            duracion = 1.0  # 1 minuto como duración base
+            gasto = 0.05    # Gasto estimado en unidades de energía
+        else:  # LED apagado
+            duracion = 0.0  # Sin duración cuando se apaga
+            gasto = 0.0     # Sin gasto cuando se apaga
+            
+        resultado = self.model.create_blo(id_usuario, id_objeto, duracion, estado, gasto)
         return resultado
     
     #Función para iniciar sesión
