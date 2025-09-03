@@ -1,0 +1,350 @@
+:root {
+    --primary-color: #00bcd4; /* Azul eléctrico / Cian para acentos */
+    --secondary-color: #6c757d; /* Gris para elementos secundarios */
+    --background-dark: #1a202c; /* Azul oscuro casi negro */
+    --surface-dark: #2d3748; /* Azul grisáceo para tarjetas */
+    --text-light: #e2e8f0; /* Blanco roto para texto principal */
+    --text-muted: #a0aec0; /* Gris claro para texto secundario */
+    --gradient-sidebar: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    --gradient-card-header: linear-gradient(135deg, #007bff 0%, #00bcd4 100%); /* Azul a Cian */
+    --shadow-light: rgba(0, 0, 0, 0.15);
+    --shadow-dark: rgba(0, 0, 0, 0.4);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif; /* Nueva fuente más moderna y legible */
+    color: var(--text-light);
+    overflow-x: hidden;
+}
+
+body {
+    background-color: var(--background-dark);
+    position: relative;
+    overflow-y: hidden; /* Controla el overflow global */
+}
+
+#glow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0; /* Asegurarse de que esté detrás del contenido */
+}
+
+.spark {
+    position: absolute;
+    background: rgba(0, 188, 212, 0.7); /* Color cian para los destellos */
+    border-radius: 50%;
+    filter: blur(5px);
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%) rotate(var(--rotation));
+    opacity: 0;
+    animation: sparkFly 10s infinite ease-out; /* Animación más sutil */
+}
+
+@keyframes sparkFly {
+    0% {
+        opacity: 0;
+        transform: translate(var(--x-start, 0), var(--y-start, 0)) rotate(var(--rotation)) scale(0.5);
+    }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.8; }
+    100% {
+        opacity: 0;
+        transform: translate(var(--x-end, 100vw), var(--y-end, 100vh)) rotate(var(--rotation)) scale(1.5);
+    }
+}
+
+/* Contenedor principal del layout */
+.main-layout {
+    height: calc(100vh - 40px);
+    width: calc(100vw - 40px);
+    display: flex;
+    overflow: hidden;
+    border-radius: 15px;
+    margin: 20px;
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    position: relative;
+    z-index: 1; /* Asegurar que el layout esté por encima de los sparks */
+}
+
+/* Barra lateral */
+.sidebar {
+    width: 260px; /* Un poco más de espacio */
+    background: var(--gradient-sidebar);
+    box-shadow: 4px 0 15px var(--shadow-dark);
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    z-index: 100;
+    border-radius: 15px 0 0 15px; /* Bordes redondeados solo a la izquierda */
+}
+
+.app-logo h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+}
+
+.app-logo .text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Estilos de los enlaces de la barra lateral */
+.sidebar .nav-link {
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--surface-dark);
+    color: var(--primary-color);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--primary-color); /* Fondo del color primario */
+    color: var(--background-dark); /* Texto oscuro para contraste */
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.4); /* Brillo del color primario */
+    font-weight: 600;
+}
+
+.sidebar .nav-link.active svg {
+    fill: var(--background-dark); /* Ícono también oscuro */
+}
+
+
+.sidebar .nav-link svg {
+    margin-right: 15px;
+    fill: var(--text-light); /* Color por defecto de los íconos */
+    transition: fill 0.3s ease;
+}
+
+.sidebar .nav-link:hover svg {
+    fill: var(--primary-color);
+}
+
+.sidebar .dropdown-menu {
+    background-color: var(--surface-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .dropdown-item {
+    color: var(--text-light);
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .dropdown-item:hover {
+    background-color: var(--primary-color);
+    color: var(--background-dark);
+}
+
+.divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 15px 0;
+}
+
+/* Área de contenido principal */
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 40px;
+    background-color: var(--surface-dark); /* Un azul grisáceo más claro para el contenido */
+    border-radius: 0 15px 15px 0; /* Bordes redondeados solo a la derecha */
+}
+
+/* Cabecera de bienvenida */
+.welcome-header {
+    background: var(--gradient-card-header); /* Nuevo degradado vibrante */
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 5px 20px var(--shadow-light);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.welcome-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.welcome-header p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.welcome-header svg {
+    fill: white;
+}
+
+/* Estilos para las tarjetas de estadísticas */
+.card.stat-card {
+    background: var(--background-dark); /* Fondo oscuro para contraste */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-light);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px var(--shadow-dark);
+    padding: 20px;
+}
+
+.card.stat-card .card-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.card.stat-card .display-4 {
+    font-weight: 700;
+    color: var(--primary-color); /* Número resaltado con el color primario */
+}
+
+.card.stat-card .icon-primary {
+    fill: var(--primary-color);
+}
+
+/* Estilos para las tarjetas de datos (lista y gráfico) */
+.card.data-card {
+    background: var(--surface-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px var(--shadow-dark);
+}
+
+.card.data-card .card-header {
+    background: var(--surface-dark); /* Fondo del header igual que la card */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px 15px 0 0;
+    padding: 20px;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.card.data-card .card-header svg {
+    fill: var(--primary-color);
+}
+
+.card.data-card .list-group-item {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    transition: background-color 0.3s ease;
+}
+
+.card.data-card .list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.card.data-card .list-group-item strong {
+    color: var(--text-light);
+}
+
+.card.data-card .list-group-item .text-info {
+    fill: var(--primary-color); /* Iconos de usuario en la lista */
+}
+
+.card.data-card .badge.bg-secondary {
+    background-color: var(--secondary-color) !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+/* Botón de acción principal */
+.btn-action-primary {
+    background: var(--gradient-card-header); /* Degradado del header para el botón */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px var(--shadow-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.btn-action-primary:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    color: white; /* Asegurar que el color del texto no cambie */
+}
+
+/* Imagen de hero */
+.hero-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    transition: transform 0.5s ease-in-out;
+}
+
+.hero-image:hover {
+    transform: scale(1.03);
+}
+
+/* Gráficos Chart.js */
+canvas {
+    max-height: 300px; /* Altura máxima para el gráfico */
+}
+
+/* Pequeños ajustes para pantallas más pequeñas */
+@media (max-width: 992px) {
+    .main-layout {
+        flex-direction: column;
+        height: auto;
+        margin: 10px;
+        width: calc(100vw - 20px);
+    }
+
+    .sidebar {
+        width: 100%;
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+        box-shadow: none;
+    }
+
+    .sidebar .nav-link {
+        justify-content: center;
+    }
+
+    .sidebar .nav-link svg {
+        margin-right: 10px;
+    }
+
+    .content {
+        border-radius: 0 0 15px 15px;
+        margin-left: 0;
+        padding: 30px;
+    }
+
+    .welcome-header {
+        padding: 20px;
+    }
+
+    .welcome-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .welcome-header p {
+        font-size: 1rem;
+    }
+
+    .hero-image {
+        margin-bottom: 30px;
+    }
+}
