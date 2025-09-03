@@ -24,11 +24,7 @@
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
             </svg>
-<<<<<<< HEAD
-            <span class="username">{{ session.usuario }} ({{ user_role }})</span>
-=======
             <span class="text-white fw-bold">{{ session.usuario }}</span>
->>>>>>> feature/Estilo_dashboard
         </div>
         <hr class="divider">
         <ul class="nav flex-column mb-auto">
@@ -68,27 +64,6 @@
         </a>
     </div>
 
-<<<<<<< HEAD
-    <!-- Contenedor de LEDs (estilo del segundo archivo con mejoras) -->
-    <div class="led-control-container">
-        {% for led_id in role_config.permissions.accessible_leds %}
-            {% if led_id != 'ALL' %}
-        <!-- LED {{ led_id }} - {{ led_names[led_id] }} -->
-        <div class="led-switch" data-led="{{ led_id }}">
-            <span class="led-text">{{ led_names[led_id] }}</span>
-            <input type="checkbox" class="estado_led" data-led="{{ led_id }}" id="led{{ led_id }}">
-            <label for="led{{ led_id }}" class="led-label"></label>
-        </div>
-            {% endif %}
-        {% endfor %}
-        
-        {% if 'ALL' in role_config.permissions.accessible_leds %}
-        <!-- Botón especial ENCENDER TODOS (solo ADMIN) -->
-        <div class="led-switch" data-led="ALL">
-            <span class="led-text">{{ led_names['ALL'] }}</span>
-            <input type="checkbox" class="estado_led" data-led="ALL" id="ledAll">
-            <label for="ledAll" class="led-label"></label>
-=======
     <div class="content flex-grow-1 p-4 d-flex justify-content-center align-items-center">
         <div class="card data-card led-control-card">
             <div class="card-header">
@@ -147,9 +122,7 @@
                     <label for="ledAll" class="led-label"></label>
                 </div>
             </div>
->>>>>>> feature/Estilo_dashboard
         </div>
-        {% endif %}
     </div>
 </div>
 
