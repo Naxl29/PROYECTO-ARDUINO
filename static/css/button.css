@@ -1,0 +1,133 @@
+/* Estilos específicos para el control de LEDs */
+.led-control-card {
+    width: 100%;
+    max-width: 600px;
+}
+
+.led-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+.led-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.led-switch:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.led-text {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.led-label {
+    display: block;
+    cursor: pointer;
+    width: 60px;
+    height: 34px;
+    background-color: var(--background-dark);
+    border: 2px solid var(--surface-dark);
+    border-radius: 34px;
+    position: relative;
+    transition: background-color 0.4s, box-shadow 0.4s;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+.led-label:after {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background-color: var(--text-light);
+    top: 4px;
+    left: 4px;
+    transition: left 0.4s, background-color 0.4s;
+}
+
+.estado_led {
+    display: none;
+}
+
+/* Colores de encendido originales y mejorados */
+.estado_led[data-led="1"]:checked + .led-label {
+    background-color: #ff4444; /* Rojo original */
+    box-shadow: 0 0 10px #ff4444, 0 0 20px #ff4444;
+}
+
+.estado_led[data-led="1"]:checked + .led-label:after {
+    left: calc(100% - 30px);
+}
+
+.estado_led[data-led="2"]:checked + .led-label {
+    background-color: #44ff44; /* Verde original */
+    box-shadow: 0 0 10px #44ff44, 0 0 20px #44ff44;
+}
+
+.estado_led[data-led="2"]:checked + .led-label:after {
+    left: calc(100% - 30px);
+}
+
+.estado_led[data-led="3"]:checked + .led-label {
+    background-color: #4444ff; /* Azul original */
+    box-shadow: 0 0 10px #4444ff, 0 0 20px #4444ff;
+}
+
+.estado_led[data-led="3"]:checked + .led-label:after {
+    left: calc(100% - 30px);
+}
+
+/* Resto de los LEDs con colores mejorados */
+.estado_led[data-led="4"]:checked + .led-label {
+    background-color: #ffff44;
+    box-shadow: 0 0 10px #ffff44, 0 0 20px #ffff44;
+}
+
+.estado_led[data-led="5"]:checked + .led-label {
+    background-color: #ff44ff;
+    box-shadow: 0 0 10px #ff44ff, 0 0 20px #ff44ff;
+}
+
+.estado_led[data-led="6"]:checked + .led-label {
+    background-color: #44ffff;
+    box-shadow: 0 0 10px #44ffff, 0 0 20px #44ffff;
+}
+
+.estado_led[data-led="7"]:checked + .led-label {
+    background-color: #ff8c00;
+    box-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00;
+}
+
+.estado_led[data-led="8"]:checked + .led-label {
+    background-color: #8a2be2;
+    box-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2;
+}
+
+/* Estilo para el switch "TODOS" */
+.led-switch.all-switch .led-text {
+    color: var(--glow-color);
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+.estado_led[data-led="ALL"]:checked + .led-label {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    box-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
+}
+
+.estado_led[data-led="ALL"]:checked + .led-label:after {
+    background-color: #fff;
+    left: calc(100% - 30px);
+}
