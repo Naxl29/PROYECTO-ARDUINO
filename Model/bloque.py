@@ -192,3 +192,17 @@ class Bloque:
             return round(duracion_minutos, 2)  # Redondear a 2 decimales
         
         return 0.0  # Si no hay registro de encendido previo
+    
+    #Función para obtener todos los objetos de la tabla
+    def get_all_objetos(self):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True)
+        
+        sql = "SELECT id, objeto, potencia_w, consumo_wh FROM objetos"
+        cursor.execute(sql)
+        resultados = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+        
+        return resultados
