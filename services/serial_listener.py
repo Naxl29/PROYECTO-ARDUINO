@@ -1,4 +1,4 @@
-#Archivo que escucha datos del arduino y los procesa
+# Archivo que escucha datos del arduino y los procesa
 import serial
 import json
 import time
@@ -21,7 +21,7 @@ except ImportError as e:
 
 # CONFIGURACIÓN
 
-SERIAL_PORT = "COM3"  # Ajustar puerto. "
+SERIAL_PORT = "COM3" # Ajustar puerto.
 BAUD_RATE = 9600
 
 # Gestion de eventos de bombillas
@@ -38,7 +38,15 @@ def procesar_dato_arduino(line: str, controller: MiController):
             estado = data['estado']
             consumo = data['consumo']
             
-            controller.manejar_evento_bombilla(bombilla_id, estado, consumo)
+            # CAMBIOS CLAVE:
+            # 1. Se agrega un valor de duración.
+            # Si tu Arduino no la envía, debes simularla.
+            # Para pruebas, usaremos una duración fija.
+            # Lo ideal es que el Arduino también la envíe.
+            duracion_simulada_s = 60.0 # Ejemplo: 60 segundos
+            
+            # 2. La llamada a la función se actualiza con la nueva variable.
+            controller.manejar_evento_bombilla(bombilla_id, estado, duracion_simulada_s, consumo)
             
         else:
             logging.error(f"Datos incompletos o incorrectos recibidos: {data}")

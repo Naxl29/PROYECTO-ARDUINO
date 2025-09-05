@@ -283,7 +283,7 @@ def get_led_name(led_id):
     return LED_NAMES.get(led_id, f'LED {led_id}')
 
 # Nueva ruta para obtener el consumo actual total en formato JSON
-@app.route('/api/consumo/actal')
+@app.route('/api/consumo/actual')
 def get_consumo_actual():
     ml_controller = get_ml_controller()
     consumo_actual = ml_controller.obtener_consumo_actual_total()
