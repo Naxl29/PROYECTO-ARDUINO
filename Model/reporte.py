@@ -26,6 +26,7 @@ class Reporte:
                 FROM reportes r
                 JOIN objetos o ON r.id_objeto = o.id
                 LEFT JOIN usuarios u ON r.id_usuario = u.id
+                WHERE r.estado = 0
                 ORDER BY r.id DESC 
                 """
             cursor.execute(sql)
@@ -45,7 +46,7 @@ class Reporte:
                 FROM reportes r
                 JOIN objetos o ON r.id_objeto = o.id
                 LEFT JOIN usuarios u ON r.id_usuario = u.id
-                WHERE r.id_usuario = %s
+                WHERE r.id_usuario = %s AND r.estado = 0
                 ORDER BY r.id DESC 
                 """
             cursor.execute(sql, (id_usuario,))
