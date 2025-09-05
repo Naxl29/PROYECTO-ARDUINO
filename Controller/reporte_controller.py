@@ -10,8 +10,10 @@ class ReporteController:
         return self.model.show(id)
     
     #Muestra el reporte
-    def see(self):
-        return self.model.see()
+    def see(self, id_usuario=None, user_role=None):
+        bloques = self.model.see(id_usuario, user_role)
+        total_gasto = sum(b['gasto'] for b in bloques) if bloques else 0
+        return bloques, total_gasto
     
     #Esta función queda inactiva para la nueva actualización del proyecto
     #Función para mostrar el historial de los hashes (hash anterior y hash actual)

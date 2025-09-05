@@ -160,9 +160,10 @@ def see_blockchain():
     id_usuario = session.get('id_usuario')
     user_role = session.get('rol', 'USER')
     
-    reporte_instance = Reporte()  
-    bloques_data = reporte_instance.see(id_usuario, user_role)  
-    return render_template('usuario/reporte.html', bloques=bloques_data, user_role=user_role)
+    reporte_controller = ReporteController()
+    bloques, total_gasto = reporte_controller.see(id_usuario, user_role)
+
+    return render_template('usuario/reporte.html', bloques=bloques, total_gasto=total_gasto, user_role=user_role)
 
 #Esta ruta no se utilizará en la nueva actualización
 #Ruta para ver los hashes por aparte del historial
