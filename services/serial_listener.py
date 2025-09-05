@@ -1,86 +1,59 @@
-# Archivo que escucha datos del arduino y los procesa
 import serial
+import requests
 import json
 import time
-import sys
-import os
-import logging
-from datetime import datetime
 
-# Agregar la ruta del proyecto al path de Python
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-try:
-    from Controller.ml_controller import MiController
-except ImportError as e:
-    logging.error(f"Error al importar MiController: {e}")
-    logging.error("Asegúrate de que la ruta del proyecto esté en el PYTHONPATH.")
-    sys.exit(1)
-
+# -------------------------
 # CONFIGURACIÓN
-
-SERIAL_PORT = "COM3" # Ajustar puerto.
+# -------------------------
+SERIAL_PORT = "COM3"   # Ajustar según el puerto de tu Arduino ("/dev/ttyUSB0")
 BAUD_RATE = 9600
+FLASK_URL = "http://127.0.0.1:5000/predict"  # Tu servidor Flask
 
-# Gestion de eventos de bombillas
-def procesar_dato_arduino(line: str, controller: MiController):
-    try:
-        if not line.startswith('{'):
-            logging.warning("El formato de datos no es JSON. Asegúrate de que el Arduino lo envíe así.")
-            return
-
-        data = json.loads(line)
-        
-        if 'id' in data and 'estado' in data and 'consumo' in data:
-            bombilla_id = data['id']
-            estado = data['estado']
-            consumo = data['consumo']
-            
-            # CAMBIOS CLAVE:
-            # 1. Se agrega un valor de duración.
-            # Si tu Arduino no la envía, debes simularla.
-            # Para pruebas, usaremos una duración fija.
-            # Lo ideal es que el Arduino también la envíe.
-            duracion_simulada_s = 60.0 # Ejemplo: 60 segundos
-            
-            # 2. La llamada a la función se actualiza con la nueva variable.
-            controller.manejar_evento_bombilla(bombilla_id, estado, duracion_simulada_s, consumo)
-            
-        else:
-            logging.error(f"Datos incompletos o incorrectos recibidos: {data}")
-
-    except json.JSONDecodeError:
-        logging.error(f"Error de formato JSON en la línea: {line}")
-    except Exception as e:
-        logging.error(f"Error procesando datos: {e}")
-
-# Función principal
+# -------------------------
+# ESCUCHAR SERIAL
+# -------------------------
 def main():
-    controller = MiController()
     try:
-        logging.info(f"Conectando a {SERIAL_PORT} a {BAUD_RATE} baudios...")
+        print(f"Conectando a {SERIAL_PORT} a {BAUD_RATE} baudios...")
         arduino = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-        time.sleep(2)
+        time.sleep(2)  # Esperar a que Arduino reinicie
 
-        logging.info("Conectado a Arduino. cargando datos...")
+        print(" Conectado a Arduino. Escuchando datos...")
 
         while True:
             if arduino.in_waiting > 0:
                 line = arduino.readline().decode("utf-8").strip()
+
                 if line:
-                    logging.info(f"Recibido de Arduino: {line}")
-                    procesar_dato_arduino(line, controller)
+                    print(f"Recibido de Arduino: {line}")
+
+                    try:
+                        # Esperamos que Arduino mande algo como: "potencia:200,tiempo:120"
+                        data = json.loads(line) if line.startswith("{") else None
+                        if not data:
+                            # Parseo manual si es "potencia=200,tiempo=120"
+                            parts = line.split(",")
+                            data = {
+                                "potencia": float(parts[0].split("=")[1]),
+                                "tiempo": float(parts[1].split("=")[1]),
+                            }
+
+                        # Llamar al endpoint Flask
+                        response = requests.post(FLASK_URL, json=data)
+                        if response.status_code == 200:
+                            result = response.json()
+                            print(f"Consumo: {result['consumo_kwh']} kWh |  Costo: {result['costo_cop']} COP")
+                        else:
+                            print(f" Error en Flask: {response.text}")
+
+                    except Exception as e:
+                        print(f"Error procesando línea: {line} | {e}")
 
     except serial.SerialException as e:
-        logging.error(f"No se pudo abrir el puerto serial {SERIAL_PORT}: {e}")
+        print(f"No se pudo abrir el puerto serial {SERIAL_PORT}: {e}")
     except KeyboardInterrupt:
-        logging.info("\nListener detenido manualmente.")
-    finally:
-        if 'arduino' in locals() and arduino.is_open:
-            arduino.close()
-            logging.info("Conexión serial cerrada.")
+        print("\n Listener detenido manualmente.")
 
 if __name__ == "__main__":
     main()
