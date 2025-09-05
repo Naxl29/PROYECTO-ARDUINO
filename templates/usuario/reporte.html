@@ -3,61 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial Blockchain</title>
+    <title>Historial - {{ session.usuario }}</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dasboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reporte.css') }}">
 </head>
 <body>
-    <div id="glow-container"></div>
-    <div class="mb-3">
-        <a href="{{ url_for('button') }}" class="boton-back" title="Volver al panel">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708.708L5.707 7.5H11.5z"/>
+
+<div id="glow-container"></div>
+    
+<div class="d-flex main-layout">
+    <div class="sidebar d-flex flex-column p-4 text-center">
+        <a href="{{ url_for('dashboard') }}" class="d-block mb-4 app-logo">
+            <h1 class="text-white">LED<span class="text-primary">Control</span></h1>
+        </a>
+        <div class="d-flex align-items-center justify-content-center mb-4 user-info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-circle me-2" viewBox="0 0 16 16">
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
             </svg>
+            <span class="text-white fw-bold">{{ session.usuario }}</span>
+        </div>
+        <hr class="divider">
+        <ul class="nav flex-column mb-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-grid-fill me-2" viewBox="0 0 16 16">
+                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm10 0A1.5 1.5 0 0 1 12.5 1h3A1.5 1.5 0 0 1 17 2.5v3A1.5 1.5 0 0 1 15.5 7h-3A1.5 1.5 0 0 1 11 5.5zm-10 10A1.5 1.5 0 0 1 2.5 11h3a1.5 1.5 0 0 1 1.5 1.5v3A1.5 1.5 0 0 1 5.5 17h-3A1.5 1.5 0 0 1 1 15.5zm10 0A1.5 1.5 0 0 1 12.5 11h3a1.5 1.5 0 0 1 1.5 1.5v3A1.5 1.5 0 0 1 15.5 17h-3A1.5 1.5 0 0 1 11 15.5z"/>
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('button') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-lightbulb-fill me-2" viewBox="0 0 16 16">
+                        <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.459-.31L4.279 10.92c-.094-.218-.25-.423-.453-.618A5.984 5.984 0 0 1 2 6"/>
+                        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.495v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    Control LED
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ url_for('see_blockchain') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-journal-text me-2" viewBox="0 0 16 16">
+                        <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
+                        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
+                    </svg>
+                    Historial
+                </a>
+            </li>
+        </ul>
+        <a class="nav-link text-danger mt-auto" href="{{ url_for('logout') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-right me-2" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+            </svg>
+            Cerrar Sesión
         </a>
     </div>
 
-    <div class="historial-container">
-        <h1 class="titulo-historial">Reporte</h1>
-
-        <div class="table-responsive">
-            <table class="historial-table">
-                <thead>
-                    <tr>
-                        <th>Objeto</th>
-                        {% if user_role == 'ADMIN' %}
-                        <th>Usuario</th>
-                        {% endif %}
-                        <th>Fecha</th>
-                        <th>Duración</th>
-                        <th>Consumo (kWh/h)</th>
-                        <th>Potencia (W)</th>
-                        <th>Gasto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if bloques %}
-                        {% for bloque in bloques %}
-                            <tr>
-                                <td>{{ bloque.objeto }}</td>
-                                {% if user_role == 'ADMIN' %}
-                                <td>{{ bloque.usuario if bloque.usuario else 'Desconocido' }}</td>
-                                {% endif %}
-                                <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                <td>{{ bloque.duracion_minutos }} Min</td>
-                                <td>{{ bloque.consumo_wh }}</td>
-                                <td>{{ bloque.potencia_w }}</td>
-                                <td>${{ "%.2f"|format(bloque.gasto) }} COP</td>
-                        {% endfor %}
-                    {% else %}
+    <div class="content flex-grow-1 p-4 d-flex flex-column align-items-center">
+        <div class="historial-container">
+            <h1 class="titulo-historial">Reporte</h1>
+            <div class="table-responsive">
+                <table class="historial-table">
+                    <thead>
                         <tr>
-                            <td colspan="{% if user_role == 'ADMIN' %}9{% else %}8{% endif %}" class="text-center">No hay registros disponibles</td>
+                            <th>Objeto</th>
+                            {% if user_role == 'ADMIN' %}
+                            <th>Usuario</th>
+                            {% endif %}
+                            <th>Fecha</th>
+                            <th>Duración</th>
+                            <th>Potencia (W)</th>
+                            <th>Consumo (kWh/h)</th>
+                            <th>Gasto</th>
                         </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% if bloques %}
+                            {% for bloque in bloques %}
+                                <tr>
+                                    <td>{{ bloque.objeto }}</td>
+                                    {% if user_role == 'ADMIN' %}
+                                    <td>{{ bloque.usuario if bloque.usuario else 'Desconocido' }}</td>
+                                    {% endif %}
+                                    <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>{{ bloque.duracion_minutos }} Min</td>
+                                    <td>{{ bloque.potencia_w }}</td>
+                                    <td>{{ bloque.consumo_wh }}</td>
+                                    <td>${{ "%.2f"|format(bloque.gasto) }} COP</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="{% if user_role == 'ADMIN' %}9{% else %}8{% endif %}" class="text-center">No hay registros disponibles</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/clic.js') }}"></script>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
