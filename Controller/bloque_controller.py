@@ -44,6 +44,24 @@ class BloqueController:
         resultado = self.model.create_blo(id_usuario, id_objeto, duracion, estado, gasto)
         return resultado
     
+    #Función privada para procesar el estado del LED
+    def _procesar_estado_led(self, id_usuario, estado, id_objeto):
+            objeto_info = self.model.get_objeto_info(id_objeto)
+
+            if not objeto_info:
+                duracion = 0.0
+                gasto = 0.0
+            else:
+                if estado == "1":  # Objeto encendido
+                    duracion = 0.0
+                    gasto = 0.0
+                else:  # Objeto apagado
+                    duracion_real = self.model.calcular_duracion(id_usuario, id_objeto)
+                    duracion = duracion_real if duracion_real else 0.0
+                    gasto = self.model.calcular_gasto(id_objeto, duracion) if duracion > 0 else 0.0
+
+            return self.model.create_blo(id_usuario, id_objeto, duracion, estado, gasto)
+        
     #Función para iniciar sesión
     def login(self, usuario, contrasena):
         user = self.model.login(usuario, contrasena)
@@ -54,4 +72,3 @@ class BloqueController:
     #Función para validar que no se puedan crear dos usuarios iguales
     def usuario_existente(self, usuario):
         return self.model.usuario_existe(usuario)
-

@@ -192,3 +192,30 @@ class Bloque:
             return round(duracion_minutos, 2)  # Redondear a 2 decimales
         
         return 0.0  # Si no hay registro de encendido previo
+
+    #Función para obtener todos los objetos de la tabla
+    def get_all_objetos(self):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True)
+        
+        sql = "SELECT id, objeto, potencia_w, consumo_wh FROM objetos"
+        cursor.execute(sql)
+        resultados = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+        
+        return resultados
+
+    # Función para calcular el gasto en base a consumo y duración
+    def calcular_gasto(self, id_objeto, duracion_minutos, tarifa_cop_kwh=1000):
+        objeto_info = self.get_objeto_info(id_objeto)
+        if not objeto_info:
+            return 0.0
+
+        potencia_w = objeto_info['potencia_w']
+        duracion_horas = duracion_minutos / 60
+        consumo_kwh = (potencia_w * duracion_horas) / 1000
+        gasto = consumo_kwh * tarifa_cop_kwh  # Multiplica por la tarifa
+
+        return round(gasto, 2)
