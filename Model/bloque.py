@@ -185,9 +185,11 @@ class Bloque:
             fecha_encendido = ultimo_encendido['fecha']
             fecha_actual = datetime.now()
             
-            # Calcular diferencia en minutos
-            diferencia = fecha_actual - fecha_encendido
-            duracion_minutos = diferencia.total_seconds() / 60.0
+            # Diferencia real en segundos
+            diferencia_segundos = (fecha_actual - fecha_encendido).total_seconds()
+
+             # Simulación: cada segundo equivale a 10 minutos
+            duracion_minutos = diferencia_segundos * 10
             
             return round(duracion_minutos, 2)  # Redondear a 2 decimales
         
