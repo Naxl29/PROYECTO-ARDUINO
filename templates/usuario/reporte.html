@@ -71,16 +71,14 @@
                 <table class="historial-table">
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            <th>Objeto</th>
                             {% if user_role == 'ADMIN' %}
                             <th>Usuario</th>
                             {% endif %}
-                            <th>Objeto</th>
-                            <th>Potencia (W)</th>
-                            <th>Consumo (kWh/h)</th>
                             <th>Fecha</th>
                             <th>Duración</th>
-                            <th>Estado</th>
+                            <th>Potencia (W)</th>
+                            <th>Consumo (kWh/h)</th>
                             <th>Gasto</th>
                         </tr>
                     </thead>
@@ -88,25 +86,15 @@
                         {% if bloques %}
                             {% for bloque in bloques %}
                                 <tr>
-                                    <td>{{ bloque.id }}</td>
+                                    <td>{{ bloque.objeto }}</td>
                                     {% if user_role == 'ADMIN' %}
                                     <td>{{ bloque.usuario if bloque.usuario else 'Desconocido' }}</td>
                                     {% endif %}
-                                    <td>{{ bloque.objeto }}</td>
+                                    <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>{{ bloque.duracion_minutos }} Min</td>
                                     <td>{{ bloque.potencia_w }}</td>
                                     <td>{{ bloque.consumo_wh }}</td>
-                                    <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                    <td>{{ bloque.duracion_minutos }}</td>
-                                    <td>
-                                        {% if bloque.estado == '1' or bloque.estado == 1 %}
-                                            <span style="color: green;">Encendido</span>
-                                        {% elif bloque.estado == '0' or bloque.estado == 0 %}
-                                            <span style="color: red;">Apagado</span>
-                                        {% else %}
-                                            <span style="color: gray;">Desconocido</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ bloque.gasto }}</td>
+                                    <td>${{ "%.2f"|format(bloque.gasto) }} COP</td>
                                 </tr>
                             {% endfor %}
                         {% else %}
