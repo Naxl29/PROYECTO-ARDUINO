@@ -49,7 +49,7 @@
                                 <td>{{ bloque.potencia_w }}</td>
                                 <td>{{ bloque.consumo_wh }}</td>
                                 <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                <td>{{ bloque.duracion_minutos }}</td>
+                                <td>{{ bloque.duracion_minutos }} Min</td>
                                 <td>
                                     {% if bloque.estado == '1' or bloque.estado == 1 %}
                                         <span style="color: green;">Encendido</span>
@@ -59,8 +59,9 @@
                                         <span style="color: gray;">Desconocido</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ bloque.gasto }}</td>
-                            </tr>
+                                <td>
+                                    ${{ "%.2f"|format(bloque.gasto) }} COP
+                                </td>
                         {% endfor %}
                     {% else %}
                         <tr>

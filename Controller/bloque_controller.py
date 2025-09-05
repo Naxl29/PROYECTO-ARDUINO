@@ -32,16 +32,13 @@ class BloqueController:
             duracion = 0.0
             gasto = 0.0
         else:
-            potencia_w = objeto_info["potencia_w"]
-            consumo_wh = objeto_info["consumo_wh"]
-
             if estado == "1":  # Objeto encendido
                 duracion = 0.0
                 gasto = 0.0
             else:  # Objeto apagado
                 duracion_real = self.model.calcular_duracion(id_usuario, id_objeto)
                 duracion = duracion_real if duracion_real else 0.0
-                gasto = consumo_wh * (duracion / 60.0) if duracion > 0 else 0.0
+                gasto = self.model.calcular_gasto(id_objeto, duracion) if duracion > 0 else 0.0
 
         return self.model.create_blo(id_usuario, id_objeto, duracion, estado, gasto)
     
