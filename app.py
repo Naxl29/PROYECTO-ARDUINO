@@ -11,6 +11,16 @@ from Model.bloque import Bloque
 from Model.reporte import Reporte
 from Controller.bloque_controller import BloqueController
 from Controller.reporte_controller import ReporteController
+from Controller.ml_controller import MiController
+
+# Variable global para el controlador del modelo ML
+ml_controller = None
+
+def get_ml_controller(): # Inicializa y devuelve la instancia del controlador del modelo ML
+    global ml_controller
+    if ml_controller is None:
+        ml_controller = MiController()
+    return ml_controller
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
@@ -271,6 +281,22 @@ def get_led_name(led_id):
     Obtiene el nombre descriptivo de un LED
     """
     return LED_NAMES.get(led_id, f'LED {led_id}')
+
+# Nueva ruta para obtener el consumo actual total en formato JSON
+@app.route('/api/consumo/actual')
+def get_consumo_actual():
+    ml_controller = get_ml_controller()
+    consumo_actual = ml_controller.obtener_consumo_actual_total()
+    return jsonify({"consumo_actual_watts": consumo_actual})
+
+@app.route('/api/consumo/prediccion')
+def get_consumo_prediccion():
+    ml_controller = get_ml_controller()
+    prediccion = ml_controller.predecir_consumo_proximo_mes()
+    if prediccion is not None:
+        return jsonify({"prediccion_proximo_mes": prediccion})
+    else:
+        return jsonify({"error": "No se pudo generar la predicción"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
