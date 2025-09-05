@@ -44,6 +44,7 @@
                                 <td>{{ bloque.usuario if bloque.usuario else 'Desconocido' }}</td>
                                 {% endif %}
                                 <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+<<<<<<< HEAD
                                 <td>{{ bloque.duracion_minutos }}</td>
                                 <td>
                                     {% if bloque.estado == '1' or bloque.estado == 1 %}
@@ -56,6 +57,8 @@
                                 </td>
                                 <td>{{ bloque.gasto }}</td>
                             </tr>
+=======
+>>>>>>> a762ce27291315025e7f6310e9c17a33df540732
                                 <td>{{ bloque.duracion_minutos }} Min</td>
                                 <td>{{ bloque.consumo_wh }}</td>
                                 <td>{{ bloque.potencia_w }}</td>
