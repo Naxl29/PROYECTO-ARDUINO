@@ -1,19 +1,15 @@
 // JavaScript para confirmación de cierre de sesión
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Logout script cargado'); // Debug
-    
     // Buscar todos los enlaces de logout
     const logoutLinks = document.querySelectorAll('a[href*="logout"]');
-    console.log('Enlaces de logout encontrados:', logoutLinks.length); // Debug
     
     logoutLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
             e.preventDefault(); // Prevenir la navegación inmediata
-            console.log('Click en logout detectado'); // Debug
             
-            // Mostrar confirmación con SweetAlert2 si está disponible
+            // Mostrar confirmación con SweetAlert2 si está disponible, sino usar confirm nativo
             if (typeof Swal !== 'undefined') {
-                console.log('Usando SweetAlert2'); // Debug
+                // Usar SweetAlert2 para una mejor experiencia
                 Swal.fire({
                     title: '¿Cerrar Sesión?',
                     text: '¿Estás seguro de que quieres cerrar tu sesión?',
@@ -26,11 +22,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Si confirma, redirigir al logout
                         window.location.href = link.href;
                     }
                 });
             } else {
-                console.log('Usando confirm nativo'); // Debug
                 // Fallback a confirm nativo si no hay SweetAlert2
                 const confirmed = confirm('¿Estás seguro de que quieres cerrar tu sesión?');
                 if (confirmed) {
@@ -40,4 +36,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-

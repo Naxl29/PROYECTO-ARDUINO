@@ -4,6 +4,7 @@ import hashlib
 import os
 from functools import wraps
 from Controller.led_controller import LedController
+from Controller.ml_controller import MLController
 from config.roles_config import ROLES, LED_NAMES
 
 from Model.database import Database
@@ -272,6 +273,20 @@ def get_led_name(led_id):
     Obtiene el nombre descriptivo de un LED
     """
     return LED_NAMES.get(led_id, f'LED {led_id}')
+
+
+@app.route('/ml/prediccion_mensual')
+def prediccion_mensual():
+    """Ruta para obtener la predicción del recibo mensual"""
+    if 'id_usuario' not in session:
+        return jsonify({'error': 'No autorizado'}), 401
+    
+    try:
+        ml_controller = MLController()
+        prediccion = ml_controller.predecir_recibo_mensual()
+        return jsonify(prediccion)
+    except Exception as e:
+        return jsonify({'error': str(e), 'exitoso': False}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

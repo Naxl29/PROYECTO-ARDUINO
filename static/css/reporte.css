@@ -1,3 +1,181 @@
+/* Estilos para el contenedor que tiene el total y el botón en esquinas opuestas */
+.total-prediccion-container {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Estilos del total con diseño azul */
+.total-gasto-card {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #0099cc 100%);
+    border-radius: 12px;
+    padding: 20px 30px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(0, 191, 255, 0.3);
+    border: 1px solid rgba(0, 191, 255, 0.2);
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.total-gasto-card svg {
+    color: rgba(255, 255, 255, 0.9);
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.total-gasto-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.total-gasto-amount {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulseGlow {
+    from {
+        box-shadow: 0 8px 25px rgba(0, 191, 255, 0.3);
+    }
+    to {
+        box-shadow: 0 8px 35px rgba(0, 191, 255, 0.5);
+    }
+}
+
+/* Estilos para el botón de predicción ML - mismo estilo azul */
+.btn-prediccion-ml {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #0099cc 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 20px 30px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 191, 255, 0.3);
+    border: 1px solid rgba(0, 191, 255, 0.2);
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.btn-prediccion-ml:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 35px rgba(0, 191, 255, 0.5);
+    background: linear-gradient(135deg, #0088bb 0%, #007aa3 100%);
+}
+
+.btn-prediccion-ml svg {
+    margin-right: 8px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+    .total-prediccion-container {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .total-gasto-card, .btn-prediccion-ml {
+        padding: 15px 20px;
+        width: auto;
+    }
+    
+    .total-gasto-amount {
+        font-size: 1.2rem;
+    }
+}
+
+/* Estilos para el modal de predicción */
+.modal-dark .modal-content {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+}
+
+.modal-dark .modal-header {
+    border-bottom: 1px solid var(--card-border);
+    background: linear-gradient(135deg, var(--accent-color) 0%, #0099cc 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-dark .modal-body {
+    background-color: var(--card-bg);
+    color: var(--text-light);
+}
+
+.modal-dark .modal-footer {
+    border-top: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    border-radius: 0 0 12px 12px;
+}
+
+.prediccion-card {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #0099cc 100%);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 191, 255, 0.3);
+}
+
+.prediccion-header h6 {
+    margin-bottom: 15px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.prediccion-value {
+    margin: 20px 0;
+}
+
+.value-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.value-currency {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-left: 8px;
+    opacity: 0.9;
+}
+
+.prediccion-info {
+    margin-top: 15px;
+}
+
+.prediccion-loading {
+    padding: 40px 20px;
+}
+
+.prediccion-loading .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+@media (max-width: 768px) {
+    .btn-prediccion-ml {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    
+    .value-amount {
+        font-size: 2rem;
+    }
+}
 :root {
     --background-dark: #121212;
     --surface-dark: #1e1e1e;
