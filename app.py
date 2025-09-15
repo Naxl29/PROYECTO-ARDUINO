@@ -1,17 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from datetime import datetime
-import hashlib
 import os
-from functools import wraps
+
+# Controladores
 from Controller.led_controller import LedController
 from Controller.ml_controller import MLController
-from config.roles_config import ROLES, LED_NAMES
-
-from Model.database import Database
-from Model.bloque import Bloque
-from Model.reporte import Reporte
+from Controller.dashboard_controller import DashboardController
 from Controller.bloque_controller import BloqueController
 from Controller.reporte_controller import ReporteController
+
+# Configuración y utilidades
+from config.roles_config import ROLES, LED_NAMES
+from utils.auth_utils import can_control_led, get_role_info, check_session, get_user_info
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
@@ -92,12 +92,13 @@ def show(id):
 #Ruta para manejar el estado de la luz led en el arduino
 @app.route('/usuario/estado_led', methods=['POST'])
 def estado_led():
-    if 'id_usuario' not in session:
+    if not check_session():
         return jsonify({"success": False, "error": "No hay sesión activa"}), 401
 
     estado = request.form.get('estado')  # '1' o '0'
     led_id = request.form.get('led_id')  # '1', '2', '3', '4','5', '6', '7', '8'o 'ALL'
-    user_role = session.get('rol', 'USER')
+    user_info = get_user_info()
+    user_role = user_info['rol']
 
     if not led_id or led_id not in ['1', '2', '3', '4', '5', '6', '7', '8', 'ALL']:
         return jsonify({"success": False, "error": "LED ID inválido"}), 400
@@ -116,14 +117,14 @@ def estado_led():
 #Ruta para manejar el botón que enciende y apaga el led
 @app.route('/usuario/button')
 def button():
-    if 'usuario' not in session:
+    if not check_session():
         return redirect(url_for('login'))
     
-    id_usuario = session.get('id_usuario')
-    user_role = session.get('rol', 'USER')
+    user_info = get_user_info()
+    user_role = user_info['rol']
     
     return render_template('usuario/button.html', 
-                         id_usuario=id_usuario, 
+                         id_usuario=user_info['id_usuario'], 
                          user_role=user_role,
                          led_names=LED_NAMES,
                          role_config=ROLES.get(user_role, ROLES['USER']))
@@ -131,20 +132,37 @@ def button():
 #Ruta para guardar el estado del botón después de que se interactúa con él
 @app.route('/usuario/save_estado', methods=['POST'])
 def save_estado():
-    if 'id_usuario' not in session:
+    if not check_session():
         return jsonify({"success": False, "error": "No hay sesión activa"}), 401
     
     estado = request.form.get('estado')
     led_id = request.form.get('led_id')
-    id_usuario = session['id_usuario']
+    user_info = get_user_info()
     
     bloque_controller = BloqueController()
-    result = bloque_controller.save_estado(id_usuario, estado, led_id)
+    result = bloque_controller.save_estado(user_info['id_usuario'], estado, led_id)
     
     if result:
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False, "error": "Error al guardar"}), 500
+
+# Ruta para obtener todos los estados de los LEDs
+@app.route('/led/get_estados', methods=['GET'])
+def get_estados():
+    if not check_session():
+        return jsonify({"success": False, "error": "No hay sesión activa"}), 401
+    
+    user_info = get_user_info()
+    bloque_controller = BloqueController()
+    
+    # Obtener el último estado de cada LED para este usuario
+    estados = bloque_controller.get_current_states(user_info['id_usuario'])
+    
+    if estados is not None:
+        return jsonify({"success": True, "estados": estados}), 200
+    else:
+        return jsonify({"success": False, "error": "Error al obtener estados"}), 500
 
 #Ruta para cerrar sesión
 @app.route('/logout')
@@ -155,16 +173,15 @@ def logout():
 #Ruta para el historial de interacciones con el botón
 @app.route('/blockchain/block')
 def see_blockchain():
-    if 'usuario' not in session:
+    if not check_session():
         return redirect(url_for('login'))
     
-    id_usuario = session.get('id_usuario')
-    user_role = session.get('rol', 'USER')
+    user_info = get_user_info()
     
     reporte_controller = ReporteController()
-    bloques, total_gasto = reporte_controller.see(id_usuario, user_role)
+    bloques, total_gasto = reporte_controller.see(user_info['id_usuario'], user_info['rol'])
 
-    return render_template('usuario/reporte.html', bloques=bloques, total_gasto=total_gasto, user_role=user_role)
+    return render_template('usuario/reporte.html', bloques=bloques, total_gasto=total_gasto, user_role=user_info['rol'])
 
 #Esta ruta no se utilizará en la nueva actualización
 #Ruta para ver los hashes por aparte del historial
@@ -179,106 +196,31 @@ def see_hash_details(hash):
 
 @app.route('/usuario/dashboard')
 def dashboard():
-    if 'usuario' not in session:
+    if not check_session():
         return redirect(url_for('login'))
     
-    user_role = session.get('rol', 'USER')
+    user_info = get_user_info()
+    user_role = user_info['rol']
     role_info = get_role_info(user_role)
     
-    db = Database()
-    conn = db.conexion()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT COUNT(*) AS total_usuarios FROM usuarios")
-    total_usuarios = cursor.fetchone()['total_usuarios']
-
-    cursor.execute("SELECT COUNT(*) AS total_encendidos FROM reportes WHERE estado = 1")
-    total_encendidos = cursor.fetchone()['total_encendidos']
-
-    cursor.execute("""
-        SELECT u.usuario, b.fecha
-        FROM reportes b
-        JOIN usuarios u on b.id_usuario = u.id
-        WHERE b.estado = 1
-        ORDER BY b.fecha DESC
-        LIMIT 5
-    """
-    )
-    ultimos_encendidos = cursor.fetchall()
-
-    cursor.execute("""
-        SELECT DATE(fecha) as fecha, COUNT(*) as cantidad
-        FROM reportes
-        WHERE estado = 1
-        GROUP BY fecha
-        ORDER BY fecha ASC
-    """)
-    grafico_data = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return render_template(
-        'usuario/dashboard.html',
-        total_usuarios=total_usuarios,
-        total_encendidos=total_encendidos,
-        ultimos_encendidos=ultimos_encendidos,
-        grafico_data=grafico_data,
-        user_role=user_role,
-        role_info=role_info
-    )
+    dashboard_controller = DashboardController()
+    stats = dashboard_controller.get_dashboard_stats(user_role)
+    
+    if not stats:
+        flash('Error al cargar el dashboard', 'error')
+        return redirect(url_for('index'))
+    
+    stats['role_info'] = role_info
+    return render_template('usuario/dashboard.html', **stats)
 
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}
 
-# Decorador para verificar permisos
-def require_role(allowed_roles):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if 'id_usuario' not in session:
-                return redirect(url_for('login'))
-            
-            user_role = session.get('rol', 'USER')
-            if user_role not in allowed_roles:
-                flash('No tienes permisos para acceder a esta función', 'error')
-                return redirect(url_for('dashboard'))
-            
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
-
-# Función para verificar permisos de LED
-def can_control_led(led_id, user_role):
-    """
-    Verifica si un usuario puede controlar un LED específico según su rol
-    """
-    if user_role not in ROLES:
-        return False
-    
-    allowed_leds = ROLES[user_role]['permissions']['accessible_leds']
-    return led_id in allowed_leds
-
-# Función para obtener información del rol
-def get_role_info(user_role):
-    """
-    Obtiene la información completa del rol del usuario
-    """
-    return ROLES.get(user_role, ROLES['USER'])
-
-# Función para obtener nombre del LED
-def get_led_name(led_id):
-    """
-    Obtiene el nombre descriptivo de un LED
-    """
-    return LED_NAMES.get(led_id, f'LED {led_id}')
-
-
 @app.route('/ml/prediccion_mensual')
 def prediccion_mensual():
     """Ruta para obtener la predicción del recibo mensual"""
-    if 'id_usuario' not in session:
+    if not check_session():
         return jsonify({'error': 'No autorizado'}), 401
     
     try:

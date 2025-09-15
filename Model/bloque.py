@@ -13,7 +13,7 @@ class Bloque:
         conn = self.db.conexion()
         cursor = conn.cursor(dictionary=True)
         
-        sql = "SELECT hash FROM blockchain ORDER BY id DESC LIMIT 1"
+        sql = "SELECT hash FROM reportes ORDER BY id DESC LIMIT 1"
         cursor.execute(sql)
         fila = cursor.fetchone()
         
@@ -221,3 +221,40 @@ class Bloque:
         gasto = consumo_kwh * tarifa_cop_kwh  # Multiplica por la tarifa
 
         return round(gasto, 2)
+    
+    # Función para obtener el estado actual de todos los LEDs de un usuario
+    def get_current_led_states(self, id_usuario):
+        conn = self.db.conexion()
+        cursor = conn.cursor(dictionary=True)
+        
+        try:
+            # Consulta para obtener el último estado de cada LED para este usuario
+            sql = """
+                SELECT DISTINCT r.id_objeto, r.estado
+                FROM reportes r
+                WHERE r.id_usuario = %s 
+                AND r.fecha = (
+                    SELECT MAX(r2.fecha)
+                    FROM reportes r2
+                    WHERE r2.id_usuario = r.id_usuario 
+                    AND r2.id_objeto = r.id_objeto
+                )
+                ORDER BY r.id_objeto
+            """
+            cursor.execute(sql, (id_usuario,))
+            resultados = cursor.fetchall()
+            
+            # Convertir los resultados a un diccionario {led_id: estado}
+            estados = {}
+            for resultado in resultados:
+                estados[str(resultado['id_objeto'])] = resultado['estado']
+            
+            return estados
+            
+        except Exception as e:
+            print(f"Error al obtener estados de LEDs: {e}")
+            return None
+            
+        finally:
+            cursor.close()
+            conn.close()

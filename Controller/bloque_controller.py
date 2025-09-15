@@ -53,3 +53,7 @@ class BloqueController:
     #Función para validar que no se puedan crear dos usuarios iguales
     def usuario_existente(self, usuario):
         return self.model.usuario_existe(usuario)
+    
+    #Función para obtener el estado actual de todos los LEDs de un usuario
+    def get_current_states(self, id_usuario):
+        return self.model.get_current_led_states(id_usuario)
