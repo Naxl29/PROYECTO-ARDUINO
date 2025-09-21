@@ -16,8 +16,8 @@ class Config:
     DEBUG = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
     
     # Arduino
-    ARDUINO_PORT = os.getenv('ARDUINO_PORT', 'COM3')
-    ARDUINO_BAUDRATE = int(os.getenv('ARDUINO_BAUDRATE', '9600'))
+    ARDUINO_IP = os.getenv('ARDUINO_IP', '192.168.101.77')
+    BASE_URL = f"http://{ARDUINO_IP}/"
     
     # Logging
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
