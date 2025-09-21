@@ -52,8 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const allButton = document.querySelector('.estado_led[data-led="ALL"]');
         
         if (allButton) {
-            const allChecked = Array.from(individualLEDs).every(led => led.checked);
-            allButton.checked = allChecked;
+            // El botón "APAGAR TODOS" se activa si hay al menos una luz encendida
+            const anyChecked = Array.from(individualLEDs).some(led => led.checked);
+            allButton.checked = anyChecked;
         }
     }
 
@@ -61,13 +62,19 @@ document.addEventListener("DOMContentLoaded", () => {
         // Obtener todos los checkboxes excepto el "ALL"
         const individualLEDs = document.querySelectorAll('.estado_led[data-led]:not([data-led="ALL"])');
         
-        // Activar/desactivar todos los LEDs individuales simultáneamente
+        // El botón "APAGAR TODOS" siempre apaga todas las luces (estado = '0')
         individualLEDs.forEach((ledCheckbox) => {
-            ledCheckbox.checked = (estado === '1');
+            ledCheckbox.checked = false; // Siempre apagar
             // Disparar el evento change para cada LED individual
             const led_id = ledCheckbox.getAttribute("data-led");
-            handleSingleLED(led_id, estado);
+            handleSingleLED(led_id, '0'); // Siempre enviar estado '0' (apagado)
         });
+        
+        // Desactivar el botón "APAGAR TODOS" después de apagar todo
+        const allButton = document.querySelector('.estado_led[data-led="ALL"]');
+        if (allButton) {
+            allButton.checked = false;
+        }
     }
 
     function handleSingleLED(led_id, estado) {
@@ -80,7 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
             body: formDataLed
         })
         .then(r => r.json())
-        .then(data => console.log(`LED ${led_id} →`, data))
+        .then(data => {
+            console.log(`LED ${led_id} →`, data);
+            // Actualizar el estado del botón "APAGAR TODOS" después de cambiar un LED individual
+            updateAllButton();
+        })
         .catch(err => console.error("Error LED:", err));
 
         const formDataGuardar = new FormData();

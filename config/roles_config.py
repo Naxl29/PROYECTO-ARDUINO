@@ -38,5 +38,5 @@ LED_NAMES = {
     '6': 'LAVADORA',
     '7': 'NEVERA',
     '8': 'TELEVISOR',
-    'ALL': 'ENCENDER TODOS'
+    'ALL': 'APAGAR TODOS'
 }
