@@ -10,7 +10,7 @@ class EnergiaModel:
         """Obtiene el promedio de gasto en COP de TODOS los reportes"""
         try:
             conn = self.db.conexion()
-            cursor = conn.cursor(dictionary=True)
+            cursor = conn.cursor()
             cursor.execute("SELECT AVG(gasto) as promedio FROM reportes WHERE gasto > 0")
             resultado = cursor.fetchone()
             cursor.close()
@@ -23,7 +23,7 @@ class EnergiaModel:
         """Obtiene el gasto total del mes actual"""
         try:
             conn = self.db.conexion()
-            cursor = conn.cursor(dictionary=True)
+            cursor = conn.cursor()
             cursor.execute("""
                 SELECT SUM(gasto) as gasto_mes 
                 FROM reportes 
@@ -42,7 +42,7 @@ class EnergiaModel:
         """Obtiene datos básicos de reportes con fecha y gasto"""
         try:
             conn = self.db.conexion()
-            cursor = conn.cursor(dictionary=True)
+            cursor = conn.cursor()
             cursor.execute("""
                 SELECT 
                     MONTH(fecha) as mes,

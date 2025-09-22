@@ -9,7 +9,7 @@ class DashboardController:
         Obtiene todas las estadísticas necesarias para el dashboard
         """
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         try:
             # Total de usuarios

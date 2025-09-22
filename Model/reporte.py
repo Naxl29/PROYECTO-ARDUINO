@@ -8,7 +8,7 @@ class Reporte:
     #Muestra los reportes de historial al encender cada botón
     def see(self, id_usuario=None, user_role='USER'):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
 
         if user_role == 'ADMIN':
             # Admin ve todos los reportes
@@ -64,7 +64,7 @@ class Reporte:
     #Muestra los detalles del usuario creado
     def show(self, id):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         sql = "SELECT * FROM usuarios WHERE id = %s LIMIT 1"
         cursor.execute(sql, (id,))

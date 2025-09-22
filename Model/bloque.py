@@ -11,7 +11,7 @@ class Bloque:
     #Obtiene el último hash para agregarlo al historial
     def obtener_ultimo_hash(self):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         sql = "SELECT hash FROM reportes ORDER BY id DESC LIMIT 1"
         cursor.execute(sql)
@@ -68,7 +68,7 @@ class Bloque:
     #Función para iniciar sesión
     def login(self, usuario, contrasena):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         try:
             # Intentar con la consulta que incluye roles
@@ -97,7 +97,7 @@ class Bloque:
     #Función para obtener el rol del usuario
     def get_user_role(self, id_usuario):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         try:
             sql = """
@@ -123,7 +123,7 @@ class Bloque:
     #Función para verificar la contraseña del usuario 
     def password_veri(self, usuario, contrasena):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         sql = "SELECT contrasena FROM usuarios WHERE usuario = %s"
         cursor.execute(sql, (usuario,))
@@ -153,7 +153,7 @@ class Bloque:
     #Función para obtener información del objeto (potencia y consumo)
     def get_objeto_info(self, id_objeto):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         sql = "SELECT objeto, potencia_w, consumo_wh FROM objetos WHERE id = %s"
         cursor.execute(sql, (id_objeto,))
@@ -167,7 +167,7 @@ class Bloque:
     #Función para calcular la duración real de uso entre encendido y apagado
     def calcular_duracion(self, id_usuario, id_objeto):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         # Buscar el último registro de encendido (estado = 1) para este usuario y objeto
         sql = """
@@ -198,7 +198,7 @@ class Bloque:
     #Función para obtener todos los objetos de la tabla
     def get_all_objetos(self):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         sql = "SELECT id, objeto, potencia_w, consumo_wh FROM objetos"
         cursor.execute(sql)
@@ -225,7 +225,7 @@ class Bloque:
     # Función para obtener el estado actual de todos los LEDs de un usuario
     def get_current_led_states(self, id_usuario):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         
         try:
             # Consulta para obtener el último estado de cada LED para este usuario
