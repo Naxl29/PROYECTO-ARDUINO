@@ -16,7 +16,11 @@ class Config:
     DEBUG = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
     
     # Arduino
-    ARDUINO_IP = os.getenv('ARDUINO_IP', '192.168.101.77')
+    ARDUINO_IP = os.getenv('ARDUINO_IP', '10.7.61.17')
+    # 10.7.61.17 SENA
+    # 192.168.101.77 CASA LISSETH
+    # 192.168.101.74 CASA CARLOS
+
     BASE_URL = f"http://{ARDUINO_IP}/"
     
     # Logging
