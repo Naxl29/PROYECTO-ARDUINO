@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const allButton = document.querySelector('.estado_led[data-led="ALL"]');
         
         if (allButton) {
-            // El botón "APAGAR TODOS" se activa si hay al menos una luz encendida
+            // El botón "APAGAR TODOS" se activa si hay al menos un LED encendido
             const anyChecked = Array.from(individualLEDs).some(led => led.checked);
             allButton.checked = anyChecked;
         }
@@ -62,15 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
         // Obtener todos los checkboxes excepto el "ALL"
         const individualLEDs = document.querySelectorAll('.estado_led[data-led]:not([data-led="ALL"])');
         
-        // El botón "APAGAR TODOS" siempre apaga todas las luces (estado = '0')
+        // El botón "APAGAR TODOS" SOLO apaga, nunca enciende
+        // Apagar solo los LEDs que están encendidos
         individualLEDs.forEach((ledCheckbox) => {
-            ledCheckbox.checked = false; // Siempre apagar
-            // Disparar el evento change para cada LED individual
-            const led_id = ledCheckbox.getAttribute("data-led");
-            handleSingleLED(led_id, '0'); // Siempre enviar estado '0' (apagado)
+            if (ledCheckbox.checked) {
+                ledCheckbox.checked = false;
+                const led_id = ledCheckbox.getAttribute("data-led");
+                handleSingleLED(led_id, '0');
+            }
         });
         
-        // Desactivar el botón "APAGAR TODOS" después de apagar todo
+        // Después de apagar todos, desactivar el botón "APAGAR TODOS"
         const allButton = document.querySelector('.estado_led[data-led="ALL"]');
         if (allButton) {
             allButton.checked = false;
