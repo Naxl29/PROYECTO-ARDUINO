@@ -13,13 +13,13 @@ services:
       - key: FLASK_SECRET_KEY
         generateValue: true
       - key: DB_HOST
-        value: ""
+        value: "metro.proxy.rlwy.net"
       - key: DB_DATABASE
-        value: "arduino"
+        value: "railway"
       - key: DB_USER
-        value: ""
+        value: "root"
       - key: DB_PASSWORD
-        value: ""
+        value: "UVNmQTYpkxztSKbassprbcQoIRXzSQOU"
       - key: ARDUINO_IP
         value: "192.168.101.77"
       - key: ARDUINO_PORT
