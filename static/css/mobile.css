@@ -329,8 +329,71 @@
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
         min-height: calc(100vh - 120px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: smooth !important;
+    }
+    
+    /* Dashboard específico - permitir scroll */
+    .content[data-page="dashboard"] {
+        overflow-y: auto !important;
+        height: 100vh !important;
+        padding-top: 80px !important;
+        scroll-padding-top: 80px !important;
+    }
+    
+    /* Cards del dashboard scrolleables */
+    .dashboard-cards {
+        width: 100% !important;
+        max-width: 400px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding-bottom: 40px !important;
+    }
+    
+    /* Asegurar que las cards no interfieran con el scroll */
+    .card {
+        touch-action: auto !important;
+        overflow: visible !important;
+    }
+    
+    .card-body {
+        touch-action: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Dashboard page específica */
+    .dashboard-page .content {
+        height: 100vh !important;
+        overflow-y: scroll !important;
+        scroll-behavior: smooth !important;
+    }
+    
+    /* Mejorar scroll en todos los elementos */
+    * {
+        scroll-behavior: smooth !important;
+    }
+    
+    /* Asegurar que el body no interfiera con el scroll */
+    body.is-mobile {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Prevenir interferencia del navbar con el scroll */
+    body:not(.mobile-nav-open) {
+        overflow-y: auto !important;
+    }
+    
+    body.mobile-nav-open {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
     }
     
     /* Tablas responsivas */
@@ -538,6 +601,12 @@
         height: 100vh !important;
         background: rgba(0, 0, 0, 0.8) !important;
         z-index: 999 !important;
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    .mobile-nav-overlay.show {
+        display: block !important;
     }
     
     .mobile-nav {

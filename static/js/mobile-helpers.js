@@ -18,13 +18,20 @@
         }
     }
     
-    // Prevenir zoom al hacer doble tap en iOS
+    // Prevenir zoom al hacer doble tap en iOS (mejorado)
     function preventDoubleZoom() {
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             const now = (new Date()).getTime();
+            // Solo prevenir si es realmente un doble tap y no está en elementos scrolleables
             if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
+                // No prevenir si el elemento padre es scrolleable
+                const target = event.target;
+                const scrollableParent = target.closest('[data-scrollable], .table-responsive, .content, .card-body, .overflow-auto, .overflow-scroll');
+                
+                if (!scrollableParent) {
+                    event.preventDefault();
+                }
             }
             lastTouchEnd = now;
         }, false);
@@ -51,6 +58,31 @@
     function adjustViewportHeight() {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
+        
+        // Marcar elementos scrolleables
+        const scrollableElements = document.querySelectorAll('.content, .card-body, .table-responsive');
+        scrollableElements.forEach(el => {
+            el.setAttribute('data-scrollable', 'true');
+        });
+    }
+    
+    // Mejorar scroll en dashboard
+    function improveDashboardScroll() {
+        const content = document.querySelector('.content');
+        const dashboard = document.querySelector('[data-page="dashboard"], .dashboard');
+        
+        if (content && isMobile()) {
+            // Asegurar que el contenido sea scrolleable
+            content.style.overflowY = 'auto';
+            content.style.webkitOverflowScrolling = 'touch';
+            content.style.touchAction = 'pan-y';
+            
+            // Si es dashboard, agregar clase especial
+            if (dashboard || window.location.pathname.includes('dashboard')) {
+                content.setAttribute('data-page', 'dashboard');
+                document.body.classList.add('dashboard-page');
+            }
+        }
     }
     
     // Ocultar sidebar en móvil al cargar
@@ -105,6 +137,7 @@
             preventDoubleZoom();
             enhanceTouchExperience();
             hideSidebarOnMobile();
+            improveDashboardScroll();
         }
         
         makeTablesResponsive();

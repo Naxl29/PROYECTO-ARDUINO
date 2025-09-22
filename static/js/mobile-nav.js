@@ -13,8 +13,9 @@
         }
         if (mobileNavOverlay) {
             mobileNavOverlay.style.display = 'block';
+            mobileNavOverlay.classList.add('show');
         }
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('mobile-nav-open');
         
         // Accessibility
         if (mobileNavToggle) {
@@ -28,8 +29,9 @@
         }
         if (mobileNavOverlay) {
             mobileNavOverlay.style.display = 'none';
+            mobileNavOverlay.classList.remove('show');
         }
-        document.body.style.overflow = '';
+        document.body.classList.remove('mobile-nav-open');
         
         // Accessibility
         if (mobileNavToggle) {
@@ -39,15 +41,38 @@
     
     // Event listeners
     if (mobileNavToggle) {
-        mobileNavToggle.addEventListener('click', openMobileNav);
+        mobileNavToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openMobileNav();
+        });
     }
     
     if (mobileNavClose) {
-        mobileNavClose.addEventListener('click', closeMobileNav);
+        mobileNavClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeMobileNav();
+        });
     }
     
     if (mobileNavOverlay) {
         mobileNavOverlay.addEventListener('click', closeMobileNav);
+    }
+    
+    // Cerrar al hacer clic fuera del menú (mejorado)
+    document.addEventListener('click', function(e) {
+        if (mobileNav && mobileNav.classList.contains('active')) {
+            // Si el clic no es dentro del menú ni del botón toggle
+            if (!mobileNav.contains(e.target) && !mobileNavToggle.contains(e.target)) {
+                closeMobileNav();
+            }
+        }
+    });
+    
+    // Prevenir que clics dentro del menú lo cierren
+    if (mobileNav) {
+        mobileNav.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     }
     
     // Cerrar menú al hacer clic en un enlace
