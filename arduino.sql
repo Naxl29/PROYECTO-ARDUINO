@@ -7,8 +7,12 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE DATABASE IF NOT EXISTS `arduino` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `arduino`;
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(50) NOT NULL,
+  `contrasena` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `objetos` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -17,16 +21,6 @@ CREATE TABLE IF NOT EXISTS `objetos` (
   `consumo_wh` float NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `objetos` (`id`, `objeto`, `potencia_w`, `consumo_wh`) VALUES
-	(1, 'LUZ SALA', 60, 0.06),
-	(2, 'LUZ COCINA', 60, 0.06),
-	(3, 'LUZ HABITACIÓN', 60, 0.06),
-	(4, 'LUZ BAÑO', 60, 0.06),
-	(5, 'AIRE ACONDICIONADO', 800, 0.8),
-	(6, 'LAVADORA', 500, 0.5),
-	(7, 'NEVERA', 200, 0.2),
-	(8, 'TELEVISOR', 150, 0.15);
 
 CREATE TABLE IF NOT EXISTS `reportes` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -43,21 +37,11 @@ CREATE TABLE IF NOT EXISTS `reportes` (
   CONSTRAINT `FK_reportes_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `reportes` (`id`, `id_usuario`, `id_objeto`, `fecha`, `duracion_minutos`, `estado`, `gasto`) VALUES
-	(1, 1, 1, '2025-09-02 07:25:28', 20, 1, 0.02),
-	(2, 1, 5, '2025-09-02 10:15:00', 30, 1, 0.4),
-	(3, 1, 5, '2025-09-02 10:15:00', 30, 1, 0.4);
-
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int NOT NULL AUTO_INCREMENT,
   `rol` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `roles` (`id`, `rol`) VALUES
-	(1, 'ADMIN'),
-	(2, 'USER'),
-	(3, 'CHILD');
 
 CREATE TABLE IF NOT EXISTS `roles_usuarios` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -70,22 +54,43 @@ CREATE TABLE IF NOT EXISTS `roles_usuarios` (
   CONSTRAINT `FK__usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `roles_usuarios` (`id`, `id_usuario`, `id_rol`) VALUES
-	(1, 1, 1),
-	(2, 2, 2),
-	(3, 3, 3);
+-- 🔹 Limpiar tablas antes de insertar
+TRUNCATE TABLE objetos;
+TRUNCATE TABLE reportes;
+TRUNCATE TABLE roles;
+TRUNCATE TABLE roles_usuarios;
+TRUNCATE TABLE usuarios;
 
-CREATE TABLE IF NOT EXISTS `usuarios` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `usuario` varchar(50) NOT NULL,
-  `contrasena` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- 🔹 Insertar datos
+INSERT INTO `objetos` (`id`, `objeto`, `potencia_w`, `consumo_wh`) VALUES
+	(1, 'LUZ SALA', 60, 0.06),
+	(2, 'LUZ COCINA', 60, 0.06),
+	(3, 'LUZ HABITACIÓN', 60, 0.06),
+	(4, 'LUZ BAÑO', 60, 0.06),
+	(5, 'AIRE ACONDICIONADO', 800, 0.8),
+	(6, 'LAVADORA', 500, 0.5),
+	(7, 'NEVERA', 200, 0.2),
+	(8, 'TELEVISOR', 150, 0.15);
 
 INSERT INTO `usuarios` (`id`, `usuario`, `contrasena`) VALUES
 	(1, 'ADMIN', '123456'),
 	(2, 'USER', '123456'),
 	(3, 'CHILD', '123456');
+
+INSERT INTO `reportes` (`id`, `id_usuario`, `id_objeto`, `fecha`, `duracion_minutos`, `estado`, `gasto`) VALUES
+	(1, 1, 1, '2025-09-02 07:25:28', 20, 1, 0.02),
+	(2, 1, 5, '2025-09-02 10:15:00', 30, 1, 0.4),
+	(3, 1, 5, '2025-09-02 10:15:00', 30, 1, 0.4);
+
+INSERT INTO `roles` (`id`, `rol`) VALUES
+	(1, 'ADMIN'),
+	(2, 'USER'),
+	(3, 'CHILD');
+
+INSERT INTO `roles_usuarios` (`id`, `id_usuario`, `id_rol`) VALUES
+	(1, 1, 1),
+	(2, 2, 2),
+	(3, 3, 3);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

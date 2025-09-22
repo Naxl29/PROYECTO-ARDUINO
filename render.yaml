@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: proyecto-arduino
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 2 -k gthread -b 0.0.0.0:$PORT app:app
+    autoDeploy: true
+    envVars:
+      - key: FLASK_DEBUG
+        value: "false"
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: DB_HOST
+        value: ""
+      - key: DB_DATABASE
+        value: "arduino"
+      - key: DB_USER
+        value: ""
+      - key: DB_PASSWORD
+        value: ""
+      - key: ARDUINO_IP
+        value: "192.168.101.77"
+      - key: ARDUINO_PORT
+        value: "/dev/null"
+      - key: ARDUINO_BAUDRATE
+        value: "9600"
