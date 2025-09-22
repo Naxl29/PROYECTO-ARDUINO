@@ -222,26 +222,28 @@ class Bloque:
 
         return round(gasto, 2)
     
-    # Función para obtener el estado actual de todos los LEDs de un usuario
+    # Función para obtener el estado actual de todos los LEDs (estado global)
     def get_current_led_states(self, id_usuario):
         conn = self.db.conexion()
         cursor = conn.cursor()
         
         try:
-            # Consulta para obtener el último estado de cada LED para este usuario
+            # Consulta simplificada para obtener el último estado de cada LED independientemente del usuario
             sql = """
-                SELECT DISTINCT r.id_objeto, r.estado
-                FROM reportes r
-                WHERE r.id_usuario = %s 
-                AND r.fecha = (
-                    SELECT MAX(r2.fecha)
-                    FROM reportes r2
-                    WHERE r2.id_usuario = r.id_usuario 
-                    AND r2.id_objeto = r.id_objeto
-                )
-                ORDER BY r.id_objeto
+                SELECT 
+                    r1.id_objeto, 
+                    r1.estado
+                FROM reportes r1
+                INNER JOIN (
+                    SELECT 
+                        id_objeto,
+                        MAX(id) as max_id
+                    FROM reportes
+                    GROUP BY id_objeto
+                ) r2 ON r1.id_objeto = r2.id_objeto AND r1.id = r2.max_id
+                ORDER BY r1.id_objeto
             """
-            cursor.execute(sql, (id_usuario,))
+            cursor.execute(sql)
             resultados = cursor.fetchall()
             
             # Convertir los resultados a un diccionario {led_id: estado}
