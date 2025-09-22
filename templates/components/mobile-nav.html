@@ -1,0 +1,118 @@
+<!-- Navegación móvil hamburguesa -->
+<nav class="mobile-nav-container">
+    <!-- Botón hamburguesa -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Abrir menú de navegación">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+    </button>
+
+    <!-- Overlay para cerrar menú al tocar fuera -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+    <!-- Menú de navegación móvil -->
+    <aside class="mobile-nav" id="mobileNav">
+        <!-- Header del menú -->
+        <div class="mobile-nav-header">
+            <div class="mobile-nav-logo">
+                <h2 class="text-primary">LED<span class="text-white">Control</span></h2>
+            </div>
+            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Información del usuario (solo si está logueado) -->
+        {% if session.usuario %}
+        <div class="mobile-nav-user">
+            <div class="user-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                </svg>
+            </div>
+            <div class="user-info">
+                <p class="user-name">{{ session.usuario }}</p>
+                <p class="user-role">{{ user_role or 'Usuario' }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navegación principal -->
+        <nav class="mobile-nav-links">
+            {% if session.usuario %}
+                <!-- Menú para usuarios autenticados -->
+                <a href="{{ url_for('dashboard') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm10 0A1.5 1.5 0 0 1 12.5 1h3A1.5 1.5 0 0 1 17 2.5v3A1.5 1.5 0 0 1 15.5 7h-3A1.5 1.5 0 0 1 11 5.5zm-10 10A1.5 1.5 0 0 1 2.5 11h3a1.5 1.5 0 0 1 1.5 1.5v3A1.5 1.5 0 0 1 5.5 17h-3A1.5 1.5 0 0 1 1 15.5zm10 0A1.5 1.5 0 0 1 12.5 11h3a1.5 1.5 0 0 1 1.5 1.5v3A1.5 1.5 0 0 1 15.5 17h-3A1.5 1.5 0 0 1 11 15.5z"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{{ url_for('button') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.459-.31L4.279 10.92c-.094-.218-.25-.423-.453-.618A5.984 5.984 0 0 1 2 6"/>
+                        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.495v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    <span>Control LED</span>
+                </a>
+
+                <a href="{{ url_for('see_blockchain') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .34 0 .534.112.707a1 1 0 0 0 .274.194C13.978 3.692 14 4.049 14 4.5s-.022.808-.614 1.093a1 1 0 0 0-.274.194c-.112.173-.112.367-.112.707v.003a2.5 2.5 0 0 1-5 0 2.5 2.5 0 0 1-5 0v-.003c0-.34 0-.534-.112-.707a1 1 0 0 0-.274-.194C2.022 5.308 2 4.951 2 4.5s.022-.808.614-1.093a1 1 0 0 0 .274-.194C3 3.034 3 2.84 3 2.5"/>
+                        <path d="M3 7.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .34 0 .534.112.707a1 1 0 0 0 .274.194C13.978 8.692 14 9.049 14 9.5s-.022.808-.614 1.093a1 1 0 0 0-.274.194c-.112.173-.112.367-.112.707v.003a2.5 2.5 0 0 1-5 0 2.5 2.5 0 0 1-5 0v-.003c0-.34 0-.534-.112-.707a1 1 0 0 0-.274-.194C2.022 10.308 2 9.951 2 9.5s.022-.808.614-1.093a1 1 0 0 0 .274-.194C3 8.034 3 7.84 3 7.5"/>
+                    </svg>
+                    <span>Historial</span>
+                </a>
+
+                {% if user_role == 'admin' %}
+                <a href="{{ url_for('hash_view') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"/>
+                        <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64a.715.715 0 0 1 .012-.013l.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354a.512.512 0 0 1-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5M8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3"/>
+                    </svg>
+                    <span>Verificar Hash</span>
+                </a>
+
+                <a href="{{ url_for('reporte') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                    </svg>
+                    <span>Reportes</span>
+                </a>
+                {% endif %}
+
+                <div class="mobile-nav-divider"></div>
+
+                <a href="{{ url_for('logout') }}" class="mobile-nav-link mobile-nav-logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
+                        <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            {% else %}
+                <!-- Menú para usuarios no autenticados -->
+                <a href="{{ url_for('login') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                    <span>Iniciar Sesión</span>
+                </a>
+
+                <a href="{{ url_for('create') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                        <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+                    </svg>
+                    <span>Registrarse</span>
+                </a>
+            {% endif %}
+        </nav>
+    </aside>
+</nav>
+
+<script src="{{ url_for('static', filename='js/mobile-nav.js') }}"></script>

@@ -1,0 +1,452 @@
+/* ===========================================
+   NAVEGACIÓN MÓVIL HAMBURGUESA
+=========================================== */
+
+/* Contenedor principal de navegación móvil */
+.mobile-nav-container {
+    position: relative;
+    z-index: 1000;
+}
+
+/* Botón hamburguesa */
+.mobile-nav-toggle {
+    display: none; /* Oculto por defecto, se muestra en mobile */
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-nav-toggle:hover,
+.mobile-nav-toggle:focus {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
+}
+
+.mobile-nav-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Overlay para cerrar menú */
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+/* Menú principal */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--surface-dark) 0%, #1a1a1a 100%);
+    border-right: 1px solid #333;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    padding: 0;
+    overflow-y: auto;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-nav.active {
+    left: 0;
+}
+
+/* Header del menú */
+.mobile-nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.25rem;
+    border-bottom: 1px solid #333;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.mobile-nav-logo h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.mobile-nav-close {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary-color);
+}
+
+/* Información del usuario */
+.mobile-nav-user {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem;
+    border-bottom: 1px solid #333;
+    background: rgba(0, 191, 255, 0.05);
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: white;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.user-role {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+/* Enlaces de navegación */
+.mobile-nav-links {
+    padding: 1rem 0;
+}
+
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    font-weight: 500;
+    font-size: 1rem;
+    min-height: 56px; /* Touch target */
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link:focus {
+    background: rgba(0, 191, 255, 0.1);
+    border-left-color: var(--primary-color);
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.mobile-nav-link svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.mobile-nav-link:hover svg {
+    transform: scale(1.1);
+}
+
+/* Enlace activo */
+.mobile-nav-link.active {
+    background: rgba(0, 191, 255, 0.15);
+    border-left-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Separador */
+.mobile-nav-divider {
+    height: 1px;
+    background: #333;
+    margin: 1rem 1.25rem;
+}
+
+/* Enlace de logout especial */
+.mobile-nav-logout {
+    margin-top: 1rem;
+    color: var(--error-color) !important;
+    border-left-color: transparent !important;
+}
+
+.mobile-nav-logout:hover,
+.mobile-nav-logout:focus {
+    background: rgba(255, 51, 51, 0.1) !important;
+    border-left-color: var(--error-color) !important;
+}
+
+/* ===========================================
+   RESPONSIVE BREAKPOINTS
+=========================================== */
+
+/* Mostrar navegación móvil solo en dispositivos móviles */
+@media (max-width: 768px) {
+    .mobile-nav-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ocultar sidebar desktop */
+    .sidebar {
+        display: none !important;
+    }
+    
+    /* Ajustar contenido principal */
+    .main-layout {
+        padding-left: 0 !important;
+    }
+    
+    .content-area {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Ajustes para móviles muy pequeños */
+@media (max-width: 480px) {
+    .mobile-nav {
+        width: 280px;
+        left: -280px;
+    }
+    
+    .mobile-nav-header {
+        padding: 1.25rem 1rem;
+    }
+    
+    .mobile-nav-link {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+    }
+    
+    .mobile-nav-user {
+        padding: 1rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .user-name {
+        font-size: 1rem;
+    }
+}
+
+/* Landscape móvil */
+@media (orientation: landscape) and (max-height: 600px) {
+    .mobile-nav-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .mobile-nav-user {
+        padding: 1rem 1.25rem;
+    }
+    
+    .mobile-nav-link {
+        padding: 0.75rem 1.25rem;
+        min-height: 48px;
+    }
+}
+
+/* ===========================================
+   INTEGRACIÓN CON LAYOUT EXISTENTE
+=========================================== */
+
+/* Header responsivo para páginas internas */
+.responsive-header {
+    display: none;
+    background: var(--surface-dark);
+    border-bottom: 1px solid #333;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+@media (max-width: 768px) {
+    .responsive-header {
+        display: block;
+    }
+}
+
+.responsive-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.responsive-header-title {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Asegurar que el contenido no quede debajo del botón hamburguesa */
+@media (max-width: 768px) {
+    .main-content,
+    .container-fluid-responsive {
+        padding-top: 2rem; /* Espacio para el botón hamburguesa */
+    }
+}
+
+/* ===========================================
+   ANIMACIONES Y TRANSICIONES
+=========================================== */
+
+/* Animación de entrada del menú */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.mobile-nav.active {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+/* Animación del overlay */
+.mobile-nav-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-nav.active ~ .mobile-nav-overlay {
+    opacity: 1;
+}
+
+/* Animación de los enlaces */
+.mobile-nav-link {
+    transform: translateX(-10px);
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav.active .mobile-nav-link {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Stagger animation para los enlaces */
+.mobile-nav.active .mobile-nav-link:nth-child(1) { transition-delay: 0.05s; }
+.mobile-nav.active .mobile-nav-link:nth-child(2) { transition-delay: 0.1s; }
+.mobile-nav.active .mobile-nav-link:nth-child(3) { transition-delay: 0.15s; }
+.mobile-nav.active .mobile-nav-link:nth-child(4) { transition-delay: 0.2s; }
+.mobile-nav.active .mobile-nav-link:nth-child(5) { transition-delay: 0.25s; }
+.mobile-nav.active .mobile-nav-link:nth-child(6) { transition-delay: 0.3s; }
+
+/* ===========================================
+   ACCESIBILIDAD
+=========================================== */
+
+/* Focus states mejorados */
+.mobile-nav-toggle:focus,
+.mobile-nav-close:focus,
+.mobile-nav-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Indicador de estado activo para screen readers */
+.mobile-nav-link.active::before {
+    content: "Página actual: ";
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Reducir movimiento para usuarios que lo prefieren */
+@media (prefers-reduced-motion: reduce) {
+    .mobile-nav {
+        transition: none;
+    }
+    
+    .mobile-nav-link {
+        transition: none;
+        transform: none;
+    }
+    
+    .mobile-nav-toggle {
+        transition: none;
+    }
+}
+
+/* ===========================================
+   THEME DARK/LIGHT SUPPORT (Future)
+=========================================== */
+
+/* Preparado para tema claro en el futuro */
+@media (prefers-color-scheme: light) {
+    /* Los estilos actuales son para tema oscuro */
+    /* Aquí se pueden agregar overrides para tema claro */
+}
+
+/* ===========================================
+   DEBUGGING (Remover en producción)
+=========================================== */
+
+/* 
+.mobile-nav-container::after {
+    content: 'Mobile Nav Debug';
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: red;
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+    z-index: 9999;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-nav-container::after {
+        display: block;
+    }
+}
+*/

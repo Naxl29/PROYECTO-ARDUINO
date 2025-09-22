@@ -9,8 +9,15 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dasboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/show.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    
+    <!-- Mobile helpers -->
+    <script src="{{ url_for('static', filename='js/mobile-helpers.js') }}"></script>
 </head>
 <body>
+
+<!-- Navegación móvil (solo visible en móvil) -->
+{% include 'components/mobile-nav.html' %}
 
 <div id="glow-container"></div>
 

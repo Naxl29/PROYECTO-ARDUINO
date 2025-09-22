@@ -3,7 +3,7 @@ html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #fff;
 }
 
@@ -19,6 +19,18 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
+    min-height: 100vh;
+    min-height: 100dvh; /* Para móviles con barras de navegación dinámicas */
+}
+
+/* Optimización para móvil */
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll; /* Mejor performance en móvil */
+        background-size: cover;
+        background-position: center top;
+        padding: 1rem;
+    }
 }
 
 .main-content {
@@ -31,30 +43,63 @@ body {
     z-index: 2; 
 }
 
-/* Contenedor que difumina el fondo solo en el centro */
+/* Contenedor que difumina el fondo solo en el centro - RESPONSIVO */
 .content-box {
-    position: absolute;
-    width: 600px;
-    height: 300px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    z-index: 1; 
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    min-height: 300px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* Estilos del texto neón */
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .content-box {
+        width: 95%;
+        min-height: auto;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin: 1rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-box {
+        width: 100%;
+        padding: 1.2rem;
+        border-radius: 12px;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* Estilos del texto neón - RESPONSIVO */
 .neon-text {
-    font-size: 4rem;
+    font-size: clamp(2rem, 8vw, 4rem); /* Responsive font size */
     color: #fff;
     text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
     animation: glow 1.5s infinite alternate;
-    margin: 0;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Ajuste específico para móvil */
+@media (max-width: 480px) {
+    .neon-text {
+        font-size: 2.5rem;
+        text-shadow: 0 0 3px #ff005e, 0 0 6px #ff005e, 0 0 12px #ff005e, 0 0 24px #ff005e;
+        margin-bottom: 1.5rem;
+    }
 }
 
 @keyframes glow {
@@ -66,33 +111,85 @@ body {
     }
 }
 
-/* Estilos para el contenedor de botones */
+/* Estilos para el contenedor de botones - RESPONSIVO */
 .button-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
-    margin-top: 40px;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
 }
 
-/* Estilos de los botones neón */
+/* Responsive para móvil */
+@media (max-width: 480px) {
+    .button-container {
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+/* Estilos de los botones neón - TOUCH FRIENDLY */
 .shadow__btn {
-    padding: 10px 20px;
+    padding: 1rem 1.5rem;
+    min-height: 50px; /* Touch target mínimo */
+    min-width: 120px;
     border: 2px solid white; 
-    font-size: 17px;
+    font-size: 1rem;
     color: #fff;
-    border-radius: 7px;
-    letter-spacing: 4px;
+    border-radius: 12px;
+    letter-spacing: 2px;
     font-weight: 700;
     text-transform: uppercase;
-    transition: 0.5s;
-    transition-property: box-shadow;
+    transition: all 0.3s ease;
     text-decoration: none;
     background-color: transparent;
     box-shadow: 0 0 10px transparent;
-    font-family: sans-serif; 
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.shadow__btn:hover {
-    box-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff;
+.shadow__btn:hover,
+.shadow__btn:focus {
+    box-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff, 0 0 40px #00d4ff;
+    transform: translateY(-2px);
+    border-color: #00d4ff;
+}
+
+.shadow__btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Mejoras específicas para móvil */
+@media (max-width: 768px) {
+    .shadow__btn {
+        padding: 1.2rem 2rem;
+        min-height: 56px; /* Estándar móvil para touch targets */
+        min-width: 200px;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        width: 100%; /* Full width en móvil */
+    }
+    
+    .shadow__btn svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .shadow__btn {
+        padding: 1rem 1.5rem;
+        min-height: 52px;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
 }
