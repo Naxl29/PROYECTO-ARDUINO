@@ -20,7 +20,7 @@ class ArduinoService:
                     url = f"{self.base_url}/ON{i}" if estado == "1" else f"{self.base_url}/OFF{i}"
                     logging.info(f"Enviando a Arduino: {url}")
                     try:
-                        response = requests.get(url, timeout=5)
+                        response = requests.get(url, timeout=10)
                         response.raise_for_status()
                         ok = True 
                     except Exception as e:
@@ -31,7 +31,7 @@ class ArduinoService:
             # LED (1 a 8)
             url = f"{self.base_url}/ON{led_id}" if estado == "1" else f"{self.base_url}/OFF{led_id}"
             logging.info(f"Enviando a Arduino: {url}")
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=10)
             response.raise_for_status()
             return True
 
