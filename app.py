@@ -8,21 +8,30 @@ from Controller.ml_controller import MLController
 from Controller.dashboard_controller import DashboardController
 from Controller.bloque_controller import BloqueController
 from Controller.reporte_controller import ReporteController
+from Controller.led_device_controller import LedDeviceController
 
 # Configuración y utilidades
 from config.roles_config import ROLES, LED_NAMES
 from utils.auth_utils import can_control_led, get_role_info, check_session, get_user_info
+from utils.leds_store import get_led_names, save_led_name
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
 
 led_controller = None
+led_device_controller = None
 
 def get_led_controller():
     global led_controller
     if led_controller is None:
         led_controller = LedController()
     return led_controller
+
+def get_led_device_controller():
+    global led_device_controller
+    if led_device_controller is None:
+        led_device_controller = LedDeviceController()
+    return led_device_controller
 
 
 @app.route('/')
@@ -100,14 +109,23 @@ def estado_led():
     user_info = get_user_info()
     user_role = user_info['rol']
 
-    if not led_id or led_id not in ['1', '2', '3', '4', '5', '6', '7', '8', 'ALL']:
+    static_allowed = ['1', '2', '3', '4', '5', '6', '7', '8', 'ALL']
+    if not led_id:
+        return jsonify({"success": False, "error": "LED ID inválido"}), 400
+    is_dynamic_numeric = led_id.isdigit() and led_id not in static_allowed
+    if (led_id not in static_allowed) and (not is_dynamic_numeric):
         return jsonify({"success": False, "error": "LED ID inválido"}), 400
 
     # Verificar permisos según el rol del usuario
-    if not can_control_led(led_id, user_role):
+    if (led_id in static_allowed) and (not can_control_led(led_id, user_role)):
         return jsonify({"success": False, "error": "No tienes permisos para controlar este dispositivo"}), 403
+    # Para dinámicos, permitir control a cualquier rol autenticado (ADMIN/USER/CHILD)
 
-    result = get_led_controller().manejar_estado(estado, led_id)
+    if led_id in static_allowed:
+        result = get_led_controller().manejar_estado(estado, led_id)
+    else:
+        # dinámico
+        result = get_led_device_controller().send_state(led_id, estado)
 
     if result:
         return jsonify({"success": True}), 200
@@ -123,10 +141,15 @@ def button():
     user_info = get_user_info()
     user_role = user_info['rol']
     
+    # Merge custom LED names with defaults
+    dynamic_led_names = get_led_names(LED_NAMES)
+    # Dispositivos dinámicos desde DB
+    devices = get_led_device_controller().list_devices()
     return render_template('usuario/button.html', 
                          id_usuario=user_info['id_usuario'], 
                          user_role=user_role,
-                         led_names=LED_NAMES,
+                         led_names=dynamic_led_names,
+                         devices=devices,
                          role_config=ROLES.get(user_role, ROLES['USER']))
 
 #Ruta para guardar el estado del botón después de que se interactúa con él
@@ -146,6 +169,43 @@ def save_estado():
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False, "error": "Error al guardar"}), 500
+
+# Admin: formulario para crear nuevo LED (DB)
+@app.route('/admin/devices/new', methods=['GET', 'POST'])
+def admin_new_device():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        nombre = (request.form.get('nombre') or '').strip()
+        potencia = float(request.form.get('potencia') or 0)
+        consumo = float(request.form.get('consumo') or 0)
+        color = (request.form.get('color') or '#ffffff').strip()
+
+        if not nombre:
+            flash('El nombre es obligatorio', 'error')
+            return redirect(url_for('admin_new_device'))
+
+        try:
+            assigned_channel = get_led_device_controller().create_device(nombre, potencia, consumo, color)
+            flash(f'Dispositivo creado correctamente (canal {assigned_channel})', 'success')
+            # Permanecer en la misma página (GET) para poder seguir agregando más
+            return redirect(url_for('admin_new_device'))
+        except Exception as e:
+            flash(f'Error al crear dispositivo: {e}', 'error')
+            return redirect(url_for('admin_new_device'))
+
+    ldc = get_led_device_controller()
+    existing_dynamic = ldc.list_devices()
+    base_leds = ldc.list_base_leds()
+    # Merge for list view: show base first, then dynamic
+    all_for_list = base_leds + existing_dynamic
+    return render_template('admin/new_device.html', devices=all_for_list)
 
 # Ruta para obtener todos los estados de los LEDs
 @app.route('/led/get_estados', methods=['GET'])
@@ -211,7 +271,40 @@ def dashboard():
         return redirect(url_for('index'))
     
     stats['role_info'] = role_info
+    # Provide dynamic names for any widgets that may need them
+    stats['led_names'] = get_led_names(LED_NAMES)
     return render_template('usuario/dashboard.html', **stats)
+
+# Admin: agregar/renombrar LED (nombre amigable)
+@app.route('/admin/leds/new', methods=['GET', 'POST'])
+def admin_add_led():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        led_id = request.form.get('led_id', '').strip()
+        name = request.form.get('name', '').strip()
+
+        if not led_id or not name:
+            flash('Todos los campos son obligatorios', 'error')
+            return redirect(url_for('admin_add_led'))
+
+        ok = save_led_name(led_id, name)
+        if not ok:
+            flash('LED inválido (usa 1..8) o nombre vacío', 'error')
+            return redirect(url_for('admin_add_led'))
+
+        flash(f'LED {led_id} actualizado a "{name}"', 'success')
+        return redirect(url_for('button'))
+
+    # GET
+    current_names = get_led_names(LED_NAMES)
+    return render_template('admin/add_led.html', led_names=current_names, roles=ROLES)
 
 @app.context_processor
 def inject_now():

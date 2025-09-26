@@ -68,6 +68,17 @@
                     Historial
                 </a>
             </li>
+            {% if user_role == 'ADMIN' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin_new_device') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-square-dotted me-2" viewBox="0 0 16 16">
+                        <path d="M2.5 0a.5.5 0 0 1 .5.5V2a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5m3 0a.5.5 0 0 1 .5.5V2a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5M8 0a.5.5 0 0 1 .5.5V2a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 8 0m3 .5v1.563a.5.5 0 1 0 1 0V.5a.5.5 0 0 0-1 0M2 3.5a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V4a.5.5 0 0 1 .5-.5M14 4a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V4.5A.5.5 0 0 1 14 4M2 7.5a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V8a.5.5 0 0 1 .5-.5M14 8a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V8.5a.5.5 0 0 1 .5-.5M2 11.5a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V12a.5.5 0 0 1 .5-.5m11 0a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V12a.5.5 0 0 1 .5-.5M2.5 16a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5m3 0a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5M8 16a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5m3 0a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5"/>
+                        <path d="M8 4.5a.5.5 0 0 1 .5.5v2.5H11a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V8.5H5a.5.5 0 0 1 0-1h2.5V5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                    Agregar dispositivo
+                </a>
+            </li>
+            {% endif %}
         </ul>
         <a class="nav-link text-danger mt-auto" href="{{ url_for('logout') }}">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-right me-2" viewBox="0 0 16 16">
@@ -99,6 +110,20 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+
+                {% if devices and devices|length > 0 %}
+                    {% for d in devices %}
+                        {% set dcolor = d.color or '#00bfff' %}
+                        <div class="led-switch" data-led="{{ d.channel }}" data-dcolor style="--dyn-color: {{ dcolor }};">
+                            <span class="led-text">
+                                <span class="badge me-1 device-color-dot" data-color="{{ dcolor }}">&nbsp;</span>
+                                {{ d.nombre }}
+                            </span>
+                            <input type="checkbox" class="estado_led" data-led="{{ d.channel }}" id="led{{ d.channel }}">
+                            <label for="led{{ d.channel }}" class="led-label"></label>
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 
                 {% if 'ALL' in role_config.permissions.accessible_leds %}
                     <!-- Botón especial APAGAR TODOS (solo ADMIN) -->
@@ -118,6 +143,15 @@
 <script>
     const urlEstadoLed = "{{ url_for('estado_led') }}";
     const urlGuardarEstado = "{{ url_for('save_estado') }}";
+</script>
+<script>
+// Pintar los puntos de color de dispositivos dinámicos sin usar style con Jinja
+document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.device-color-dot').forEach(function(el){
+        const c = el.getAttribute('data-color') || '#ffffff';
+        el.style.backgroundColor = c;
+    });
+});
 </script>
 <script src="{{ url_for('static', filename='js/button.js') }}"></script>
 <script src="{{ url_for('static', filename='js/logout.js') }}"></script>

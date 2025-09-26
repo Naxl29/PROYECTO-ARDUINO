@@ -1,0 +1,9 @@
+/* Estilos específicos para la página de Agregar dispositivo (admin_new_device) */
+
+/* Punto de color para cada dispositivo */
+.device-color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; vertical-align: middle; }
+/* Ajustes de lista dentro de cards oscuras */
+.list-group-item.bg-darkish {
+	background: transparent; color: #e9ecef; border-color: rgba(255,255,255,.08);
+}
+.muted { color: rgba(255,255,255,.6); font-size: .9rem; }

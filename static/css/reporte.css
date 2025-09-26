@@ -307,3 +307,10 @@ body {
         padding: 10px;
     }
 }
+
+#rep-page-info {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.918) !important; /* Override a .text-muted de Bootstrap */
+    text-align: center;
+}
