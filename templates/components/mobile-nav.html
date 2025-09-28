@@ -67,22 +67,19 @@
                     <span>Historial</span>
                 </a>
 
-                {% if user_role == 'ADMIN' %}
-                <a href="{{ url_for('see_blockchain') }}" class="mobile-nav-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
-                    </svg>
-                    <span>Reportes</span>
-                </a>
-                {% endif %}
-
-                {% if user_role == 'ADMIN' %}
+                {% if (user_role == 'ADMIN') or (session.rol == 'ADMIN') %}
                 <a href="{{ url_for('admin_new_device') }}" class="mobile-nav-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M2.5 0a.5.5 0 0 1 .5.5V2a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5m3 0a.5.5 0 0 1 .5.5V2a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5M8 0a.5.5 0 0 1 .5.5V2a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 8 0m3 .5v1.563a.5.5 0 1 0 1 0V.5a.5.5 0 0 0-1 0M2 3.5a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V4a.5.5 0 0 1 .5-.5M14 4a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V4.5A.5.5 0 0 1 14 4M2 7.5a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V8a.5.5 0 0 1 .5-.5M14 8a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V8.5a.5.5 0 0 1 .5-.5M2 11.5a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V12a.5.5 0 0 1 .5-.5m11 0a.5.5 0 0 1 .5.5v1.563a.5.5 0 1 1-1 0V12a.5.5 0 0 1 .5-.5M2.5 16a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5m3 0a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5M8 16a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5m3 0a.5.5 0 0 1-.5-.5V14a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5"/>
                         <path d="M8 4.5a.5.5 0 0 1 .5.5v2.5H11a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V8.5H5a.5.5 0 0 1 0-1h2.5V5a.5.5 0 0 1 .5-.5"/>
                     </svg>
                     <span>Agregar dispositivo</span>
+                </a>
+                <a href="{{ url_for('admin_sections') }}" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5A1.5 1.5 0 0 1 12 1.5V4h1.5A1.5 1.5 0 0 1 15 5.5v1A1.5 1.5 0 0 1 13.5 8H12v1.5a1.5 1.5 0 0 1-1 1.415V12h1.5A1.5 1.5 0 0 1 14 13.5v1A1.5 1.5 0 0 1 12.5 16h-5A1.5 1.5 0 0 1 6 14.5v-1A1.5 1.5 0 0 1 7.5 12H9v-1.085A1.5 1.5 0 0 1 8 9.5V8H6.5A1.5 1.5 0 0 1 5 6.5v-1A1.5 1.5 0 0 1 6.5 4H8V1.5A1.5 1.5 0 0 1 9.5 0h-4z"/>
+                    </svg>
+                    <span>Agregar sección</span>
                 </a>
                 {% endif %}
 

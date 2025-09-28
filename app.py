@@ -9,6 +9,7 @@ from Controller.dashboard_controller import DashboardController
 from Controller.bloque_controller import BloqueController
 from Controller.reporte_controller import ReporteController
 from Controller.led_device_controller import LedDeviceController
+from Controller.section_controller import SectionController
 
 # Configuración y utilidades
 from config.roles_config import ROLES, LED_NAMES
@@ -20,6 +21,7 @@ app.secret_key = os.urandom(24)
 
 led_controller = None
 led_device_controller = None
+section_controller = None
 
 def get_led_controller():
     global led_controller
@@ -32,6 +34,12 @@ def get_led_device_controller():
     if led_device_controller is None:
         led_device_controller = LedDeviceController()
     return led_device_controller
+
+def get_section_controller():
+    global section_controller
+    if section_controller is None:
+        section_controller = SectionController()
+    return section_controller
 
 
 @app.route('/')
@@ -119,7 +127,17 @@ def estado_led():
     # Verificar permisos según el rol del usuario
     if (led_id in static_allowed) and (not can_control_led(led_id, user_role)):
         return jsonify({"success": False, "error": "No tienes permisos para controlar este dispositivo"}), 403
-    # Para dinámicos, permitir control a cualquier rol autenticado (ADMIN/USER/CHILD)
+    # Verificación adicional: permisos por sección (si aplica)
+    if led_id != 'ALL':
+        try:
+            sec_map = get_section_controller().sections_map()
+            sec = sec_map.get(str(led_id))
+            if sec and sec.get('roles'):
+                if user_role not in sec['roles']:
+                    return jsonify({"success": False, "error": "No tienes permiso para esta sección"}), 403
+        except Exception:
+            pass
+    # Para dinámicos, permitir control a cualquier rol autenticado (ADMIN/USER/CHILD) si no hay restricción de sección
 
     if led_id in static_allowed:
         result = get_led_controller().manejar_estado(estado, led_id)
@@ -145,11 +163,16 @@ def button():
     dynamic_led_names = get_led_names(LED_NAMES)
     # Dispositivos dinámicos desde DB
     devices = get_led_device_controller().list_devices()
+    # Secciones para filtro y mapeo canal->sección
+    sections = get_section_controller().list_sections()
+    sections_map = get_section_controller().sections_map()
     return render_template('usuario/button.html', 
                          id_usuario=user_info['id_usuario'], 
                          user_role=user_role,
                          led_names=dynamic_led_names,
                          devices=devices,
+                         sections=sections,
+                         sections_map=sections_map,
                          role_config=ROLES.get(user_role, ROLES['USER']))
 
 #Ruta para guardar el estado del botón después de que se interactúa con él
@@ -186,6 +209,7 @@ def admin_new_device():
         potencia = float(request.form.get('potencia') or 0)
         consumo = float(request.form.get('consumo') or 0)
         color = (request.form.get('color') or '#ffffff').strip()
+        section_id = request.form.get('section_id')
 
         if not nombre:
             flash('El nombre es obligatorio', 'error')
@@ -193,6 +217,12 @@ def admin_new_device():
 
         try:
             assigned_channel = get_led_device_controller().create_device(nombre, potencia, consumo, color)
+            # Asignación opcional de sección
+            try:
+                if section_id and str(section_id).isdigit():
+                    get_section_controller().assign_device(assigned_channel, int(section_id))
+            except Exception as _:
+                pass
             flash(f'Dispositivo creado correctamente (canal {assigned_channel})', 'success')
             # Permanecer en la misma página (GET) para poder seguir agregando más
             return redirect(url_for('admin_new_device'))
@@ -205,7 +235,94 @@ def admin_new_device():
     base_leds = ldc.list_base_leds()
     # Merge for list view: show base first, then dynamic
     all_for_list = base_leds + existing_dynamic
-    return render_template('admin/new_device.html', devices=all_for_list)
+    # Secciones disponibles
+    sections = get_section_controller().list_sections()
+    sections_map = get_section_controller().sections_map()
+    return render_template('admin/new_device.html', devices=all_for_list, sections=sections, sections_map=sections_map)
+
+# Admin: asignar/quitar sección a un canal
+@app.route('/admin/sections/assign', methods=['POST'])
+def admin_assign_section():
+    if not check_session():
+        return redirect(url_for('login'))
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    channel = (request.form.get('channel') or '').strip()
+    section_id = (request.form.get('section_id') or '').strip()
+    try:
+        if section_id and section_id.isdigit():
+            get_section_controller().assign_device(channel, int(section_id))
+            flash('Sección asignada correctamente', 'success')
+        else:
+            get_section_controller().unassign_device(channel)
+            flash('Sección eliminada del dispositivo', 'success')
+    except Exception as e:
+        flash(f'Error al actualizar sección: {e}', 'error')
+    return redirect(url_for('admin_new_device'))
+
+# Admin: crear y listar secciones
+@app.route('/admin/sections', methods=['GET', 'POST'])
+def admin_sections():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        nombre = (request.form.get('nombre') or '').strip()
+        roles = request.form.getlist('roles')  # ['ADMIN','USER',...]
+        if not nombre:
+            flash('El nombre de la sección es obligatorio', 'error')
+            return redirect(url_for('admin_sections'))
+        try:
+            new_id = get_section_controller().create_section(nombre)
+            # set roles si se enviaron
+            try:
+                if roles:
+                    get_section_controller().set_section_roles(new_id, roles)
+            except Exception:
+                pass
+            flash('Sección creada correctamente', 'success')
+        except Exception as e:
+            flash(f'Error al crear sección: {e}', 'error')
+        return redirect(url_for('admin_sections'))
+
+    sections = get_section_controller().list_sections_with_roles()
+    available_roles = list(ROLES.keys())
+    return render_template('admin/sections.html', sections=sections, available_roles=available_roles)
+
+# Admin: actualizar sección (nombre y roles)
+@app.route('/admin/sections/update', methods=['POST'])
+def admin_sections_update():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    section_id = request.form.get('section_id', '').strip()
+    nombre = (request.form.get('nombre') or '').strip()
+    roles = request.form.getlist('roles')
+    if not section_id.isdigit():
+        flash('ID de sección inválido', 'error')
+        return redirect(url_for('admin_sections'))
+    try:
+        if nombre:
+            get_section_controller().update_section(int(section_id), nombre)
+        # actualizar roles (pueden ser vacíos para dejar sin restricciones)
+        get_section_controller().set_section_roles(int(section_id), roles)
+        flash('Sección actualizada', 'success')
+    except Exception as e:
+        flash(f'Error al actualizar sección: {e}', 'error')
+    return redirect(url_for('admin_sections'))
 
 # Ruta para obtener todos los estados de los LEDs
 @app.route('/led/get_estados', methods=['GET'])

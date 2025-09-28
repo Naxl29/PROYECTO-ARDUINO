@@ -7,6 +7,24 @@ document.addEventListener('DOMContentLoaded', function(){
 		el.style.backgroundColor = c;
 	});
 
+	// Modal para asignar/quitar sección
+	(function inicializarModalAsignacion(){
+		const modalEl = document.getElementById('assignSectionModal');
+		const modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+		const inputChannel = document.getElementById('assign-channel');
+		const selectSection = document.getElementById('assign-section');
+		document.querySelectorAll('.device-item .assign-btn').forEach(function(btn){
+			btn.addEventListener('click', function(){
+				const li = this.closest('.device-item');
+				const channel = li ? (li.getAttribute('data-channel') || '') : '';
+				const current = li ? (li.getAttribute('data-current-section') || '') : '';
+				if (inputChannel) inputChannel.value = channel;
+				if (selectSection) selectSection.value = current;
+				if (modal) modal.show();
+			});
+		});
+	})();
+
 	// Paginación simple del listado de dispositivos (cliente)
 	const list = document.getElementById('device-list');
 	if (list) {

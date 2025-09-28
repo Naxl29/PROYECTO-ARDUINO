@@ -17,6 +17,7 @@
     
     <!-- CSS Solo para móvil (no afecta escritorio) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections.css') }}">
     
     <!-- Mobile helpers -->
     <script src="{{ url_for('static', filename='js/mobile-helpers.js') }}"></script>
@@ -78,6 +79,14 @@
                     Agregar dispositivo
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin_sections') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-diagram-3 me-2" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5A1.5 1.5 0 0 1 12 1.5V4h1.5A1.5 1.5 0 0 1 15 5.5v1A1.5 1.5 0 0 1 13.5 8H12v1.5a1.5 1.5 0 0 1-1 1.415V12h1.5A1.5 1.5 0 0 1 14 13.5v1A1.5 1.5 0 0 1 12.5 16h-5A1.5 1.5 0 0 1 6 14.5v-1A1.5 1.5 0 0 1 7.5 12H9v-1.085A1.5 1.5 0 0 1 8 9.5V8H6.5A1.5 1.5 0 0 1 5 6.5v-1A1.5 1.5 0 0 1 6.5 4H8V1.5A1.5 1.5 0 0 1 9.5 0h-4z"/>
+                    </svg>
+                    Agregar sección
+                </a>
+            </li>
             {% endif %}
         </ul>
         <a class="nav-link text-danger mt-auto" href="{{ url_for('logout') }}">
@@ -88,8 +97,8 @@
             Cerrar Sesión
         </a>
     </div>
-    <div class="content flex-grow-1 p-4 d-flex justify-content-center align-items-center">
-        <div class="card data-card led-control-card">
+    <div class="content flex-grow-1 p-4 d-flex justify-content-center align-items-start">
+        <div class="card data-card led-control-card w-100" style="max-width: 980px;">
             <div class="card-header">
                 <h5 class="mb-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lightbulb-fill me-2" viewBox="0 0 16 16">
@@ -99,32 +108,59 @@
                     Control de LEDs
                 </h5>
             </div>
-            <div class="card-body led-grid">
-                {% for led_id in role_config.permissions.accessible_leds %}
-                    {% if led_id != 'ALL' %}
-                        <!-- {{ led_names[led_id] }} -->
-                        <div class="led-switch" data-led="{{ led_id }}">
-                            <span class="led-text">{{ led_names[led_id] }}</span>
-                            <input type="checkbox" class="estado_led" data-led="{{ led_id }}" id="led{{ led_id }}">
-                            <label for="led{{ led_id }}" class="led-label"></label>
+            <div class="card-body">
+                {% if sections and sections|length > 0 %}
+                    <div class="row mb-3 filter-row">
+                        <div class="col-sm-6">
+                            <label for="filter-section" class="form-label">Filtrar por sección</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text select-addon">Sección</span>
+                                <select id="filter-section" class="form-select form-select-sm select-elevated">
+                                    <option value="">Todas las secciones</option>
+                                    {% for s in sections %}
+                                    <option value="{{ s.id }}">{{ s.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
-                    {% endif %}
-                {% endfor %}
-
-                {% if devices and devices|length > 0 %}
-                    {% for d in devices %}
-                        {% set dcolor = d.color or '#00bfff' %}
-                        <div class="led-switch" data-led="{{ d.channel }}" data-dcolor style="--dyn-color: {{ dcolor }};">
-                            <span class="led-text">
-                                <span class="badge me-1 device-color-dot" data-color="{{ dcolor }}">&nbsp;</span>
-                                {{ d.nombre }}
-                            </span>
-                            <input type="checkbox" class="estado_led" data-led="{{ d.channel }}" id="led{{ d.channel }}">
-                            <label for="led{{ d.channel }}" class="led-label"></label>
-                        </div>
-                    {% endfor %}
+                    </div>
                 {% endif %}
-                
+
+                <div class="led-grid">
+                    {% for led_id in role_config.permissions.accessible_leds %}
+                        {% if led_id != 'ALL' %}
+                            {% set sec = sections_map.get(led_id|string) if sections_map else None %}
+                            <div class="led-switch" data-led="{{ led_id }}" data-section="{{ sec.id if sec else '' }}">
+                                <span class="led-text">
+                                    {{ led_names[led_id] }}
+                                    {% if sec %}
+                                    <span class="badge bg-primary ms-1">{{ sec.nombre }}</span>
+                                    {% endif %}
+                                </span>
+                                <input type="checkbox" class="estado_led" data-led="{{ led_id }}" id="led{{ led_id }}">
+                                <label for="led{{ led_id }}" class="led-label"></label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if devices and devices|length > 0 %}
+                        {% for d in devices %}
+                            {% set dcolor = d.color or '#00bfff' %}
+                            {% set sec = sections_map.get(d.channel|string) if sections_map else None %}
+                            <div class="led-switch" data-led="{{ d.channel }}" data-section="{{ sec.id if sec else '' }}" data-dcolor style="--dyn-color: {{ dcolor }};">
+                                <span class="led-text">
+                                    <span class="badge me-1 device-color-dot" data-color="{{ dcolor }}">&nbsp;</span>
+                                    {{ d.nombre }}
+                                    {% if sec %}
+                                    <span class="badge bg-primary ms-1">{{ sec.nombre }}</span>
+                                    {% endif %}
+                                </span>
+                                <input type="checkbox" class="estado_led" data-led="{{ d.channel }}" id="led{{ d.channel }}">
+                                <label for="led{{ d.channel }}" class="led-label"></label>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
                 {% if 'ALL' in role_config.permissions.accessible_leds %}
                     <!-- Botón especial APAGAR TODOS (solo ADMIN) -->
                     <div class="led-switch all-switch" data-led="ALL">
@@ -140,19 +176,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    const urlEstadoLed = "{{ url_for('estado_led') }}";
-    const urlGuardarEstado = "{{ url_for('save_estado') }}";
-</script>
-<script>
-// Pintar los puntos de color de dispositivos dinámicos sin usar style con Jinja
-document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('.device-color-dot').forEach(function(el){
-        const c = el.getAttribute('data-color') || '#ffffff';
-        el.style.backgroundColor = c;
-    });
-});
-</script>
+<!-- Configuración para JS estático -->
+<div id="led-control-config"
+     data-estado-url="{{ url_for('estado_led') }}"
+     data-save-url="{{ url_for('save_estado') }}"
+     hidden></div>
 <script src="{{ url_for('static', filename='js/button.js') }}"></script>
 <script src="{{ url_for('static', filename='js/logout.js') }}"></script>
 

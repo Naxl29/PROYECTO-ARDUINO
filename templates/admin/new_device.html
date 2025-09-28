@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/dasboard.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_new_device.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/sections.css') }}">
 	<script src="{{ url_for('static', filename='js/mobile-helpers.js') }}"></script>
 </head>
 <body>
@@ -57,8 +58,21 @@
 				</li>
 			</ul>
 
-			<!-- Botón grande destacado como en la captura -->
-			<a class="btn btn-primary w-100 py-3" href="{{ url_for('admin_new_device') }}">Agregar dispositivo</a>
+			<!-- Enlaces de administración -->
+			<ul class="nav flex-column mb-3">
+				<li class="nav-item">
+					<a class="nav-link {% if request.endpoint == 'admin_new_device' %}active{% endif %}" href="{{ url_for('admin_new_device') }}">
+						<i class="bi bi-plus-circle-fill me-2"></i>
+						Agregar dispositivo
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {% if request.endpoint == 'admin_sections' %}active{% endif %}" href="{{ url_for('admin_sections') }}">
+						<i class="bi bi-diagram-3-fill me-2"></i>
+						Agregar sección
+					</a>
+				</li>
+			</ul>
 
 			<a class="nav-link text-danger mt-auto" href="{{ url_for('logout') }}">
 				<i class="bi bi-box-arrow-right me-2"></i>
@@ -106,6 +120,18 @@
 									<input id="color" name="color" type="color" value="#00d1ff" class="form-control form-control-color">
 								</div>
 
+								{% if sections %}
+								<div class="mb-3">
+									<label for="section_id" class="form-label">Sección (opcional)</label>
+									<select id="section_id" name="section_id" class="form-select">
+										<option value="">Sin sección</option>
+										{% for s in sections %}
+										<option value="{{ s.id }}">{{ s.nombre }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								{% endif %}
+
 								<button type="submit" class="btn btn-primary">Guardar</button>
 							</form>
 						</div>
@@ -122,16 +148,24 @@
 							{% if devices %}
 								<ul id="device-list" class="list-group">
 									{% for d in devices %}
-									<li class="list-group-item bg-darkish d-flex justify-content-between align-items-center rounded-2 mb-2">
-										<div>
+									{% set sec = sections_map.get(d.channel|string) if sections_map else None %}
+									<li class="list-group-item bg-darkish d-flex justify-content-between align-items-center rounded-2 mb-2 device-item"
+										data-channel="{{ d.channel }}" data-current-section="{{ sec.id if sec else '' }}">
+										<div class="me-2">
 											<span class="device-color-dot" data-color="{{ d.color or '#ffffff' }}"></span>
 											<strong class="ms-2">{{ d.nombre }}</strong>
+											{% if sec %}
+											<span class="badge bg-primary ms-2">{{ sec.nombre }}</span>
+											{% endif %}
 											<small class="muted ms-2">Canal: {{ d.channel }}</small>
 										</div>
-										<small class="muted">
-											Pot: {{ '%.2f'|format(d.potencia|default(0)) }}W -
-											Cons: {{ '%.2f'|format(d.consumo|default(0)) }}kWh
-										</small>
+										<div class="d-flex align-items-center gap-2">
+											<small class="muted text-nowrap">
+												Pot: {{ '%.2f'|format(d.potencia|default(0)) }}W -
+												Cons: {{ '%.2f'|format(d.consumo|default(0)) }}kWh
+											</small>
+											<button type="button" class="btn btn-sm btn-outline-light assign-btn">...</button>
+										</div>
 									</li>
 									{% endfor %}
 								</ul>
@@ -156,7 +190,41 @@
 		</main>
 	</div>
 
+	<!-- Modal asignar sección -->
+	<div class="modal fade" id="assignSectionModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content modal-dark">
+				<form method="post" action="{{ url_for('admin_assign_section') }}">
+					<div class="modal-header">
+						<h5 class="modal-title">
+							<i class="bi bi-diagram-3"></i>
+							Asignar sección
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" name="channel" id="assign-channel">
+						<div class="mb-3">
+							<label for="assign-section" class="form-label">Sección</label>
+							<select id="assign-section" name="section_id" class="form-select select-elevated">
+								<option value="">Sin sección</option>
+								{% for s in sections %}
+								<option value="{{ s.id }}">{{ s.nombre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary">Guardar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="{{ url_for('static', filename='js/admin_new_device.js') }}"></script>
+
 </body>
 </html>
