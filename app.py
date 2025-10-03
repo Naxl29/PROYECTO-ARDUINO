@@ -15,6 +15,7 @@ from Controller.section_controller import SectionController
 from config.roles_config import ROLES, LED_NAMES
 from utils.auth_utils import can_control_led, get_role_info, check_session, get_user_info
 from utils.leds_store import get_led_names, save_led_name
+from Model.device_flags import DeviceFlagsModel
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) 
@@ -139,6 +140,13 @@ def estado_led():
             pass
     # Para dinámicos, permitir control a cualquier rol autenticado (ADMIN/USER/CHILD) si no hay restricción de sección
 
+    # Bloqueo por suspensión de canal (estático o dinámico)
+    try:
+        if led_id != 'ALL' and DeviceFlagsModel.is_suspended(led_id):
+            return jsonify({"success": False, "error": "Este dispositivo está suspendido"}), 423
+    except Exception:
+        pass
+
     if led_id in static_allowed:
         result = get_led_controller().manejar_estado(estado, led_id)
     else:
@@ -166,6 +174,7 @@ def button():
     # Secciones para filtro y mapeo canal->sección
     sections = get_section_controller().list_sections()
     sections_map = get_section_controller().sections_map()
+    flags_map = DeviceFlagsModel.get_flags_map()
     return render_template('usuario/button.html', 
                          id_usuario=user_info['id_usuario'], 
                          user_role=user_role,
@@ -173,6 +182,7 @@ def button():
                          devices=devices,
                          sections=sections,
                          sections_map=sections_map,
+                         flags_map=flags_map,
                          role_config=ROLES.get(user_role, ROLES['USER']))
 
 #Ruta para guardar el estado del botón después de que se interactúa con él
@@ -238,7 +248,8 @@ def admin_new_device():
     # Secciones disponibles
     sections = get_section_controller().list_sections()
     sections_map = get_section_controller().sections_map()
-    return render_template('admin/new_device.html', devices=all_for_list, sections=sections, sections_map=sections_map)
+    flags_map = DeviceFlagsModel.get_flags_map()
+    return render_template('admin/new_device.html', devices=all_for_list, sections=sections, sections_map=sections_map, flags_map=flags_map)
 
 # Admin: asignar/quitar sección a un canal
 @app.route('/admin/sections/assign', methods=['POST'])
@@ -323,6 +334,133 @@ def admin_sections_update():
     except Exception as e:
         flash(f'Error al actualizar sección: {e}', 'error')
     return redirect(url_for('admin_sections'))
+
+# Admin: suspender/activar sección
+@app.route('/admin/sections/suspend', methods=['POST'])
+def admin_sections_suspend():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    section_id = (request.form.get('section_id') or '').strip()
+    suspend = (request.form.get('suspend') or '0') == '1'
+    if not section_id.isdigit():
+        flash('ID de sección inválido', 'error')
+        return redirect(url_for('admin_sections'))
+    try:
+        get_section_controller().suspender_seccion(int(section_id), suspend)
+        flash('Sección actualizada', 'success')
+    except Exception as e:
+        flash(f'Error al actualizar sección: {e}', 'error')
+    return redirect(url_for('admin_sections'))
+
+# Admin: eliminar sección
+@app.route('/admin/sections/delete', methods=['POST'])
+def admin_sections_delete():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    section_id = (request.form.get('section_id') or '').strip()
+    if not section_id.isdigit():
+        flash('ID de sección inválido', 'error')
+        return redirect(url_for('admin_sections'))
+    try:
+        get_section_controller().eliminar_seccion(int(section_id))
+        flash('Sección eliminada', 'success')
+    except Exception as e:
+        flash(f'Error al eliminar sección: {e}', 'error')
+    return redirect(url_for('admin_sections'))
+
+# Admin: suspender/activar LED (canal)
+@app.route('/admin/devices/suspend', methods=['POST'])
+def admin_devices_suspend():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    channel = (request.form.get('channel') or '').strip()
+    suspend = (request.form.get('suspend') or '0') == '1'
+    if not channel:
+        flash('Canal inválido', 'error')
+        return redirect(url_for('admin_new_device'))
+    try:
+        DeviceFlagsModel.set_suspended(channel, suspend)
+        flash('Dispositivo actualizado', 'success')
+    except Exception as e:
+        flash(f'Error al actualizar dispositivo: {e}', 'error')
+    return redirect(url_for('admin_new_device'))
+
+# Admin: editar LED/dispositivo
+@app.route('/admin/devices/edit', methods=['POST'])
+def admin_devices_edit():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    channel = (request.form.get('channel') or '').strip()
+    nombre = (request.form.get('nombre') or '').strip()
+    potencia = float(request.form.get('potencia') or 0)
+    consumo = float(request.form.get('consumo') or 0)
+    color = (request.form.get('color') or '#ffffff').strip()
+
+    if not channel or not nombre:
+        flash('Canal y nombre son obligatorios', 'error')
+        return redirect(url_for('admin_new_device'))
+
+    try:
+        get_led_device_controller().update_device(channel, nombre, potencia, consumo, color)
+        flash('Dispositivo actualizado correctamente', 'success')
+    except Exception as e:
+        flash(f'Error al actualizar dispositivo: {e}', 'error')
+    return redirect(url_for('admin_new_device'))
+
+# Admin: eliminar LED dinámico (de DB) y limpiar flags/assignments
+@app.route('/admin/devices/delete', methods=['POST'])
+def admin_devices_delete():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    channel = (request.form.get('channel') or '').strip()
+    if not channel or not channel.isdigit() or int(channel) <= 8:
+        flash('Solo se pueden eliminar dispositivos dinámicos (canal >= 9)', 'error')
+        return redirect(url_for('admin_new_device'))
+    # Ejecutar borrado en DB leds + device_sections + device_flags
+    try:
+        from Model.led_device import LedDeviceModel
+        from Model.section import SectionModel
+        conn = Database().conexion()
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM leds WHERE channel=%s", (channel,))
+            cur.execute("DELETE FROM device_sections WHERE channel=%s", (channel,))
+            cur.execute("DELETE FROM device_flags WHERE channel=%s", (channel,))
+        conn.commit()
+        conn.close()
+        flash('Dispositivo eliminado', 'success')
+    except Exception as e:
+        flash(f'Error al eliminar dispositivo: {e}', 'error')
+    return redirect(url_for('admin_new_device'))
 
 # Ruta para obtener todos los estados de los LEDs
 @app.route('/led/get_estados', methods=['GET'])

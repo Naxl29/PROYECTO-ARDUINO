@@ -29,3 +29,9 @@ class SectionController:
 
     def set_section_roles(self, section_id: int, roles: List[str]) -> None:
         SectionModel.set_section_roles(section_id, roles)
+
+    def suspender_seccion(self, section_id: int, suspendida: bool) -> None:
+        SectionModel.set_suspended(section_id, suspendida)
+
+    def eliminar_seccion(self, section_id: int) -> None:
+        SectionModel.delete_section(section_id)

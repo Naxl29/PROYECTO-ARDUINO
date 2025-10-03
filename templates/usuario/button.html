@@ -130,7 +130,8 @@
                     {% for led_id in role_config.permissions.accessible_leds %}
                         {% if led_id != 'ALL' %}
                             {% set sec = sections_map.get(led_id|string) if sections_map else None %}
-                            <div class="led-switch" data-led="{{ led_id }}" data-section="{{ sec.id if sec else '' }}">
+                            {% set suspended = flags_map.get(led_id|string) if flags_map else False %}
+                            <div class="led-switch {% if suspended %}suspendido{% endif %}" data-led="{{ led_id }}" data-section="{{ sec.id if sec else '' }}" data-suspended="{{ 1 if suspended else 0 }}">
                                 <span class="led-text">
                                     {{ led_names[led_id] }}
                                     {% if sec %}
@@ -147,7 +148,8 @@
                         {% for d in devices %}
                             {% set dcolor = d.color or '#00bfff' %}
                             {% set sec = sections_map.get(d.channel|string) if sections_map else None %}
-                            <div class="led-switch" data-led="{{ d.channel }}" data-section="{{ sec.id if sec else '' }}" data-dcolor style="--dyn-color: {{ dcolor }};">
+                            {% set suspended = flags_map.get(d.channel|string) if flags_map else False %}
+                            <div class="led-switch {% if suspended %}suspendido{% endif %}" data-led="{{ d.channel }}" data-section="{{ sec.id if sec else '' }}" data-dcolor data-suspended="{{ 1 if suspended else 0 }}" style="--dyn-color: {{ dcolor }};">
                                 <span class="led-text">
                                     <span class="badge me-1 device-color-dot" data-color="{{ dcolor }}">&nbsp;</span>
                                     {{ d.nombre }}

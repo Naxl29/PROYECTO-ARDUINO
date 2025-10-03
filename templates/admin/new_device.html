@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<title>LEDControl · Agregar dispositivo</title>
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ url_for('static', filename='js/admin_new_device.js') }}"></script>
 
 	<!-- Bootstrap + Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -149,7 +151,8 @@
 								<ul id="device-list" class="list-group">
 									{% for d in devices %}
 									{% set sec = sections_map.get(d.channel|string) if sections_map else None %}
-									<li class="list-group-item bg-darkish d-flex justify-content-between align-items-center rounded-2 mb-2 device-item"
+									{% set suspended = flags_map.get(d.channel|string) if flags_map else False %}
+									<li class="list-group-item bg-darkish d-flex justify-content-between align-items-center rounded-2 mb-2 device-item {% if suspended %}suspendido{% endif %}"
 										data-channel="{{ d.channel }}" data-current-section="{{ sec.id if sec else '' }}">
 										<div class="me-2">
 											<span class="device-color-dot" data-color="{{ d.color or '#ffffff' }}"></span>
@@ -164,7 +167,24 @@
 												Pot: {{ '%.2f'|format(d.potencia|default(0)) }}W -
 												Cons: {{ '%.2f'|format(d.consumo|default(0)) }}kWh
 											</small>
-											<button type="button" class="btn btn-sm btn-outline-light assign-btn">...</button>
+											<form method="post" action="{{ url_for('admin_devices_suspend') }}" class="d-inline">
+												<input type="hidden" name="channel" value="{{ d.channel }}">
+												<input type="hidden" name="suspend" value="{{ 0 if not suspended else 0 }}">
+												{% if suspended %}
+													<button type="submit" class="btn btn-sm btn-outline-warning" title="Reactivar"><i class="bi bi-play"></i></button>
+												{% else %}
+													<input type="hidden" name="suspend" value="1">
+													<button type="submit" class="btn btn-sm btn-outline-warning" title="Suspender"><i class="bi bi-pause"></i></button>
+												{% endif %}
+											</form>
+											{% if d.channel|int > 8 %}
+											<form method="post" action="{{ url_for('admin_devices_delete') }}" class="d-inline delete-device-form" data-device-name="{{ d.nombre }}" data-device-channel="{{ d.channel }}">
+												<input type="hidden" name="channel" value="{{ d.channel }}">
+												<button type="button" class="btn btn-sm btn-outline-danger delete-device-btn" title="Eliminar"><i class="bi bi-trash"></i></button>
+											</form>
+											{% endif %}
+											<button type="button" class="btn btn-sm btn-outline-info edit-device-btn" data-bs-toggle="modal" data-bs-target="#editDeviceModal" data-device='{"channel": "{{ d.channel }}", "nombre": "{{ d.nombre }}", "potencia": {{ d.potencia|default(0) }}, "consumo": {{ d.consumo|default(0) }}, "color": "{{ d.color|default('#ffffff') }}"}' title="Editar"><i class="bi bi-pencil"></i></button>
+											<button type="button" class="btn btn-sm btn-outline-light assign-btn" data-bs-toggle="modal" data-bs-target="#assignSectionModal" title="Cambiar sección"><i class="bi bi-arrow-left-right"></i></button>
 										</div>
 									</li>
 									{% endfor %}
@@ -223,8 +243,53 @@
 		</div>
 	</div>
 
+	<!-- Modal editar dispositivo -->
+	<div class="modal fade" id="editDeviceModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content modal-dark">
+				<form method="post" action="{{ url_for('admin_devices_edit') }}">
+					<div class="modal-header">
+						<h5 class="modal-title">
+							<i class="bi bi-pencil"></i>
+							Editar dispositivo
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" name="channel" id="edit-device-channel">
+						<div class="mb-3">
+							<label for="edit-device-nombre" class="form-label">Nombre</label>
+							<input id="edit-device-nombre" name="nombre" type="text" maxlength="100" class="form-control" required>
+						</div>
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label for="edit-device-potencia" class="form-label">Potencia (W)</label>
+								<input id="edit-device-potencia" name="potencia" type="number" step="0.01" min="0" class="form-control">
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="edit-device-consumo" class="form-label">Consumo (kWh)</label>
+								<input id="edit-device-consumo" name="consumo" type="number" step="0.01" min="0" class="form-control">
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="edit-device-color" class="form-label">Color</label>
+							<input id="edit-device-color" name="color" type="color" class="form-control form-control-color">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary">Guardar cambios</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="{{ url_for('static', filename='js/admin_new_device.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/flash-messages.js') }}"></script>
 
 </body>
 </html>

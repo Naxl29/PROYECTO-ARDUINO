@@ -74,6 +74,40 @@ class LedDeviceModel:
         return row
 
     @staticmethod
+    def update(channel: str, nombre: str, potencia: float, consumo: float, color: str) -> None:
+        conn = Database().conexion()
+        LedDeviceModel._ensure_table(conn)
+        with conn.cursor() as cur:
+            # Normalizar nombre en MAYÚSCULAS para persistencia consistente
+            try:
+                nombre = (nombre or '').strip().upper()
+            except Exception:
+                nombre = str(nombre).upper() if nombre is not None else ''
+            
+            # Actualizar en tabla leds
+            cur.execute(
+                """
+                UPDATE leds SET nombre=%s, potencia=%s, consumo=%s, color=%s
+                WHERE channel=%s
+                """,
+                (nombre, potencia, consumo, color, channel)
+            )
+            
+            # Actualizar en tabla objetos si existe
+            try:
+                cur.execute(
+                    """
+                    UPDATE objetos SET objeto=%s, potencia_w=%s, consumo_wh=%s
+                    WHERE id=%s
+                    """,
+                    (nombre, potencia, consumo, int(channel))
+                )
+            except Exception as e:
+                print(f"Aviso: no se pudo actualizar en objetos: {e}")
+        conn.commit()
+        conn.close()
+
+    @staticmethod
     def create(channel: str, nombre: str, potencia: float, consumo: float, color: str) -> int:
         conn = Database().conexion()
         LedDeviceModel._ensure_table(conn)

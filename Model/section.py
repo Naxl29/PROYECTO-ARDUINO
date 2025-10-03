@@ -13,24 +13,24 @@ class SectionModel:
         """
     )
 
-    DEVICE_SECTIONS_SQL = (
+    DISPOSITIVO_SECCIONES_SQL = (
         """
-        CREATE TABLE IF NOT EXISTS device_sections (
+        CREATE TABLE IF NOT EXISTS dispositivo_secciones (
             channel VARCHAR(10) NOT NULL PRIMARY KEY,
             section_id INT NOT NULL,
             assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            CONSTRAINT fk_section FOREIGN KEY (section_id) REFERENCES secciones(id) ON DELETE CASCADE
+            CONSTRAINT fk_dispositivo_secciones FOREIGN KEY (section_id) REFERENCES secciones(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """
     )
 
-    SECTION_ROLES_SQL = (
+    SECCION_ROLES_SQL = (
         """
-        CREATE TABLE IF NOT EXISTS section_roles (
+        CREATE TABLE IF NOT EXISTS secciones_roles (
             section_id INT NOT NULL,
             role VARCHAR(20) NOT NULL,
             PRIMARY KEY (section_id, role),
-            CONSTRAINT fk_section_roles FOREIGN KEY (section_id) REFERENCES secciones(id) ON DELETE CASCADE
+            CONSTRAINT fk_secciones_roles FOREIGN KEY (section_id) REFERENCES secciones(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """
     )
@@ -39,15 +39,21 @@ class SectionModel:
     def _ensure_tables(conn):
         with conn.cursor() as cur:
             cur.execute(SectionModel.SECTIONS_SQL)
-            cur.execute(SectionModel.DEVICE_SECTIONS_SQL)
-            cur.execute(SectionModel.SECTION_ROLES_SQL)
+            cur.execute(SectionModel.DISPOSITIVO_SECCIONES_SQL)
+            cur.execute(SectionModel.SECCION_ROLES_SQL)
+            # Migración: agregar columna suspendida si no existe
+            try:
+                cur.execute("ALTER TABLE secciones ADD COLUMN suspendida TINYINT(1) NOT NULL DEFAULT 0")
+            except Exception:
+                # Columna ya existe o error de permisos, continuar
+                pass
 
     @staticmethod
     def list_sections() -> List[Dict]:
         conn = Database().conexion()
         SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
-            cur.execute("SELECT id, nombre FROM secciones ORDER BY nombre ASC")
+            cur.execute("SELECT id, nombre, suspendida FROM secciones ORDER BY nombre ASC")
             rows = cur.fetchall() or []
         conn.close()
         return rows
@@ -57,10 +63,10 @@ class SectionModel:
         conn = Database().conexion()
         SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
-            cur.execute("SELECT id, nombre FROM secciones ORDER BY nombre ASC")
+            cur.execute("SELECT id, nombre, suspendida FROM secciones ORDER BY nombre ASC")
             sections = cur.fetchall() or []
             # Obtener roles agrupados por sección
-            cur.execute("SELECT section_id, role FROM section_roles")
+            cur.execute("SELECT section_id, role FROM secciones_roles")
             role_rows = cur.fetchall() or []
         conn.close()
         roles_map: Dict[int, List[str]] = {}
@@ -95,18 +101,75 @@ class SectionModel:
         conn.close()
 
     @staticmethod
+    def set_suspended(section_id: int, suspended: bool) -> None:
+        conn = Database().conexion()
+        SectionModel._ensure_tables(conn)
+        with conn.cursor() as cur:
+            # Actualizar estado de la sección
+            cur.execute("UPDATE secciones SET suspendida=%s WHERE id=%s", (1 if suspended else 0, int(section_id)))
+            
+            # Suspender/activar todos los dispositivos asignados a esta sección
+            cur.execute("SELECT channel FROM dispositivo_secciones WHERE section_id=%s", (int(section_id),))
+            channels = [row['channel'] for row in cur.fetchall() or []]
+            
+            # Actualizar flags de dispositivos en cascada
+            for channel in channels:
+                cur.execute(
+                    """
+                    INSERT INTO device_flags (channel, suspendido)
+                    VALUES (%s, %s)
+                    ON DUPLICATE KEY UPDATE suspendido=VALUES(suspendido)
+                    """,
+                    (str(channel), 1 if suspended else 0)
+                )
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def delete_section(section_id: int) -> None:
+        conn = Database().conexion()
+        SectionModel._ensure_tables(conn)
+        with conn.cursor() as cur:
+            # Obtener dispositivos asignados antes de eliminar
+            cur.execute("SELECT channel FROM dispositivo_secciones WHERE section_id=%s", (int(section_id),))
+            channels = [row['channel'] for row in cur.fetchall() or []]
+
+            # Eliminar sección (esto eliminará dispositivo_secciones por FK CASCADE)
+            cur.execute("DELETE FROM secciones WHERE id=%s", (int(section_id),))
+            
+            # Limpiar flags de suspensión de dispositivos que estaban en esta sección
+            for channel in channels:
+                cur.execute("DELETE FROM device_flags WHERE channel=%s", (str(channel),))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
     def assign_device(channel: str, section_id: int) -> None:
         conn = Database().conexion()
         SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
+            # Asignar dispositivo a sección
             cur.execute(
                 """
-                INSERT INTO device_sections (channel, section_id)
+                INSERT INTO dispositivo_secciones (channel, section_id)
                 VALUES (%s, %s)
                 ON DUPLICATE KEY UPDATE section_id=VALUES(section_id)
                 """,
                 (str(channel), int(section_id))
             )
+            
+            # Si la sección está suspendida, suspender automáticamente el dispositivo
+            cur.execute("SELECT suspendida FROM secciones WHERE id=%s", (int(section_id),))
+            section_row = cur.fetchone()
+            if section_row and section_row.get('suspendida'):
+                cur.execute(
+                    """
+                    INSERT INTO device_flags (channel, suspendido)
+                    VALUES (%s, 1)
+                    ON DUPLICATE KEY UPDATE suspendido=1
+                    """,
+                    (str(channel),)
+                )
         conn.commit()
         conn.close()
 
@@ -115,7 +178,11 @@ class SectionModel:
         conn = Database().conexion()
         SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
-            cur.execute("DELETE FROM device_sections WHERE channel=%s", (str(channel),))
+            # Eliminar asignación
+            cur.execute("DELETE FROM dispositivo_secciones WHERE channel=%s", (str(channel),))
+            
+            # Limpiar flag de suspensión del dispositivo al quitarlo de la sección
+            cur.execute("DELETE FROM device_flags WHERE channel=%s", (str(channel),))
         conn.commit()
         conn.close()
 
@@ -128,13 +195,13 @@ class SectionModel:
             cur.execute(
                 """
                 SELECT ds.channel as channel, s.id as id, s.nombre as nombre
-                FROM device_sections ds
+                FROM dispositivo_secciones ds
                 JOIN secciones s ON s.id = ds.section_id
                 """
             )
             rows = cur.fetchall() or []
             # roles por sección
-            cur.execute("SELECT section_id, role FROM section_roles")
+            cur.execute("SELECT section_id, role FROM secciones_roles")
             role_rows = cur.fetchall() or []
         conn.close()
         roles_map: Dict[int, List[str]] = {}
@@ -158,19 +225,19 @@ class SectionModel:
             # Eliminar roles no incluidos
             if roles:
                 cur.execute(
-                    "DELETE FROM section_roles WHERE section_id=%s AND role NOT IN (%s)" % (
+                    "DELETE FROM secciones_roles WHERE section_id=%s AND role NOT IN (%s)" % (
                         "%s",
                         ",".join(["%s"] * len(roles))
                     ),
                     tuple([int(section_id)] + roles)
                 )
             else:
-                cur.execute("DELETE FROM section_roles WHERE section_id=%s", (int(section_id),))
+                cur.execute("DELETE FROM secciones_roles WHERE section_id=%s", (int(section_id),))
             # Insertar roles faltantes
             for role in roles:
                 cur.execute(
                     """
-                    INSERT IGNORE INTO section_roles (section_id, role)
+                    INSERT IGNORE INTO secciones_roles (section_id, role)
                     VALUES (%s, %s)
                     """,
                     (int(section_id), role)

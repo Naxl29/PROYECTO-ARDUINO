@@ -62,3 +62,34 @@
   border: 1px solid rgba(0,191,255,0.4);
 }
 .modal-dark .btn-secondary { border: 1px solid rgba(255,255,255,0.15); }
+
+/* Estado suspendido (aplica a items de listas y switches) */
+.suspendido {
+  opacity: 0.55;
+  filter: grayscale(25%);
+}
+.suspendido .led-label::after,
+.suspendido .led-label::before {
+  opacity: 0.6;
+}
+
+/* Estilos personalizados para SweetAlert2 tema oscuro */
+.swal-dark-popup {
+  background-color: #1e1e1f !important;
+  color: #e6f2f8 !important;
+  border: 1px solid rgba(0,191,255,0.15) !important;
+  border-radius: 12px !important;
+}
+.swal2-popup.swal-dark-popup .swal2-title {
+  color: #e6f2f8 !important;
+}
+.swal2-popup.swal-dark-popup .swal2-html-container {
+  color: #e6f2f8 !important;
+}
+.swal2-popup.swal-dark-popup .swal2-icon.swal2-warning {
+  border-color: #ffc107 !important;
+  color: #ffc107 !important;
+}
+.swal2-popup.swal-dark-popup .swal2-icon.swal2-warning .swal2-icon-content {
+  color: #ffc107 !important;
+}

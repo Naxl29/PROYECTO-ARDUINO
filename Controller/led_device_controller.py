@@ -13,6 +13,11 @@ class LedDeviceController:
     def list_devices(self) -> List[Dict]:
         return LedDeviceModel.list_leds()
 
+    def update_device(self, channel: str, nombre: str, potencia: float, consumo: float, color: str) -> None:
+        # Normalizar a MAYÚSCULAS por consistencia visual y de búsqueda
+        nombre_up = (nombre or '').strip().upper()
+        LedDeviceModel.update(channel, nombre_up, potencia, consumo, color)
+
     def create_device(self, nombre: str, potencia: float, consumo: float, color: str) -> int:
         # Choose next available channel automatically
         channel = LedDeviceModel.next_channel()
