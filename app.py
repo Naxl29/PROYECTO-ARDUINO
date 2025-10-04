@@ -10,6 +10,7 @@ from Controller.bloque_controller import BloqueController
 from Controller.reporte_controller import ReporteController
 from Controller.led_device_controller import LedDeviceController
 from Controller.section_controller import SectionController
+from Model.database import Database  # Import necesario para operaciones directas en DB (eliminación de dispositivos)
 
 # Configuración y utilidades
 from config.roles_config import ROLES, LED_NAMES
@@ -446,17 +447,9 @@ def admin_devices_delete():
     if not channel or not channel.isdigit() or int(channel) <= 8:
         flash('Solo se pueden eliminar dispositivos dinámicos (canal >= 9)', 'error')
         return redirect(url_for('admin_new_device'))
-    # Ejecutar borrado en DB leds + device_sections + device_flags
+    # Usar el modelo unificado para borrar y limpiar dependencias
     try:
-        from Model.led_device import LedDeviceModel
-        from Model.section import SectionModel
-        conn = Database().conexion()
-        with conn.cursor() as cur:
-            cur.execute("DELETE FROM leds WHERE channel=%s", (channel,))
-            cur.execute("DELETE FROM device_sections WHERE channel=%s", (channel,))
-            cur.execute("DELETE FROM device_flags WHERE channel=%s", (channel,))
-        conn.commit()
-        conn.close()
+        get_led_device_controller().delete_device(channel)
         flash('Dispositivo eliminado', 'success')
     except Exception as e:
         flash(f'Error al eliminar dispositivo: {e}', 'error')

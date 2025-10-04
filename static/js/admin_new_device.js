@@ -1,6 +1,13 @@
 // JS específico para la página de Agregar dispositivo (admin_new_device)
 
 document.addEventListener('DOMContentLoaded', function(){
+	// Inicializar dropdowns manualmente por si la auto inicialización falla en móviles
+	if (window.bootstrap) {
+		const ddEls = [].slice.call(document.querySelectorAll('.actions-mobile .dropdown-toggle'));
+		ddEls.forEach(function(el){
+			try { new bootstrap.Dropdown(el, { autoClose: true }); } catch(e) { console.warn('No se pudo inicializar dropdown', e); }
+		});
+	}
 	// Pintar los puntos de color desde el atributo data-color (evitar inline style en Jinja)
 	document.querySelectorAll('.device-color-dot').forEach(function(el){
 		const c = el.getAttribute('data-color') || '#ffffff';
@@ -116,6 +123,20 @@ document.addEventListener('DOMContentLoaded', function(){
 					form.submit();
 				}
 			});
+		});
+	});
+
+	// Permitir que los botones dentro de dropdown (mobile) reutilicen la lógica de editar/asignar
+	// (Bootstrap ya lanza show.bs.modal, solo aseguramos dataset correcto si se requiere)
+	document.querySelectorAll('.actions-mobile .edit-device-btn').forEach(function(btn){
+		btn.addEventListener('click', function(){
+			// Nada extra: el listener del modal ya procesa dataset.device
+		});
+	});
+
+	document.querySelectorAll('.actions-mobile .assign-btn').forEach(function(btn){
+		btn.addEventListener('click', function(){
+			// Se reutiliza listener del modal de asignar
 		});
 	});
 });

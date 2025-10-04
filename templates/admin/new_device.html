@@ -5,8 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<title>LEDControl · Agregar dispositivo</title>
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="{{ url_for('static', filename='js/admin_new_device.js') }}"></script>
+	<!-- JS de Bootstrap y script propio se cargan al final del body para evitar bloqueo / duplicación -->
 
 	<!-- Bootstrap + Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -154,15 +153,16 @@
 									{% set suspended = flags_map.get(d.channel|string) if flags_map else False %}
 									<li class="list-group-item bg-darkish d-flex justify-content-between align-items-center rounded-2 mb-2 device-item {% if suspended %}suspendido{% endif %}"
 										data-channel="{{ d.channel }}" data-current-section="{{ sec.id if sec else '' }}">
-										<div class="me-2">
+										<div class="me-2 flex-grow-1 overflow-hidden">
 											<span class="device-color-dot" data-color="{{ d.color or '#ffffff' }}"></span>
-											<strong class="ms-2">{{ d.nombre }}</strong>
+											<strong class="ms-2 text-truncate d-inline-block" style="max-width:140px">{{ d.nombre }}</strong>
 											{% if sec %}
-											<span class="badge bg-primary ms-2">{{ sec.nombre }}</span>
+											<span class="badge bg-primary ms-2 d-none d-sm-inline">{{ sec.nombre }}</span>
 											{% endif %}
-											<small class="muted ms-2">Canal: {{ d.channel }}</small>
+											<small class="muted ms-2 d-none d-sm-inline">Canal: {{ d.channel }}</small>
 										</div>
-										<div class="d-flex align-items-center gap-2">
+										<!-- Acciones desktop -->
+										<div class="d-flex align-items-center gap-2 actions-desktop d-none d-md-flex flex-wrap">
 											<small class="muted text-nowrap">
 												Pot: {{ '%.2f'|format(d.potencia|default(0)) }}W -
 												Cons: {{ '%.2f'|format(d.consumo|default(0)) }}kWh
@@ -185,6 +185,37 @@
 											{% endif %}
 											<button type="button" class="btn btn-sm btn-outline-info edit-device-btn" data-bs-toggle="modal" data-bs-target="#editDeviceModal" data-device='{"channel": "{{ d.channel }}", "nombre": "{{ d.nombre }}", "potencia": {{ d.potencia|default(0) }}, "consumo": {{ d.consumo|default(0) }}, "color": "{{ d.color|default('#ffffff') }}"}' title="Editar"><i class="bi bi-pencil"></i></button>
 											<button type="button" class="btn btn-sm btn-outline-light assign-btn" data-bs-toggle="modal" data-bs-target="#assignSectionModal" title="Cambiar sección"><i class="bi bi-arrow-left-right"></i></button>
+										</div>
+										<!-- Acciones móvil (dropdown) -->
+										<div class="dropdown actions-mobile d-md-none ms-2">
+											<button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-reference="parent" aria-expanded="false" title="Acciones">
+												<i class="bi bi-three-dots-vertical"></i>
+											</button>
+											<ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end small-actions">
+												<li class="px-2 py-1 text-muted small">Opciones</li>
+												<li><button class="dropdown-item edit-device-btn" data-bs-toggle="modal" data-bs-target="#editDeviceModal" data-device='{"channel": "{{ d.channel }}", "nombre": "{{ d.nombre }}", "potencia": {{ d.potencia|default(0) }}, "consumo": {{ d.consumo|default(0) }}, "color": "{{ d.color|default('#ffffff') }}"}'><i class="bi bi-pencil me-2"></i>Editar</button></li>
+												<li><button class="dropdown-item assign-btn" data-bs-toggle="modal" data-bs-target="#assignSectionModal"><i class="bi bi-arrow-left-right me-2"></i>Cambiar sección</button></li>
+												<li>
+													<form method="post" action="{{ url_for('admin_devices_suspend') }}">
+														<input type="hidden" name="channel" value="{{ d.channel }}">
+														{% if suspended %}
+															<input type="hidden" name="suspend" value="0">
+															<button type="submit" class="dropdown-item"><i class="bi bi-play me-2"></i>Reactivar</button>
+														{% else %}
+															<input type="hidden" name="suspend" value="1">
+															<button type="submit" class="dropdown-item"><i class="bi bi-pause me-2"></i>Suspender</button>
+														{% endif %}
+													</form>
+												</li>
+												{% if d.channel|int > 8 %}
+												<li>
+													<form method="post" action="{{ url_for('admin_devices_delete') }}" class="delete-device-form" data-device-name="{{ d.nombre }}" data-device-channel="{{ d.channel }}">
+														<input type="hidden" name="channel" value="{{ d.channel }}">
+														<button type="button" class="dropdown-item text-danger delete-device-btn"><i class="bi bi-trash me-2"></i>Eliminar</button>
+													</form>
+												</li>
+												{% endif %}
+											</ul>
 										</div>
 									</li>
 									{% endfor %}
@@ -290,6 +321,18 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="{{ url_for('static', filename='js/admin_new_device.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/flash-messages.js') }}"></script>
+	<script>
+		// Fallback: re-activar dropdowns si el DOM cambia dinámicamente
+		document.addEventListener('shown.bs.modal', function(){
+			if (window.bootstrap) {
+				document.querySelectorAll('.actions-mobile .dropdown-toggle').forEach(function(el){
+					if (!el._dropdown) {
+						try { el._dropdown = new bootstrap.Dropdown(el); } catch(e){}
+					}
+			});
+			}
+		});
+	</script>
 
 </body>
 </html>

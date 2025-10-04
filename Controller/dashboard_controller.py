@@ -5,9 +5,6 @@ class DashboardController:
         self.db = Database()
     
     def get_dashboard_stats(self, user_role):
-        """
-        Obtiene todas las estadísticas necesarias para el dashboard
-        """
         conn = self.db.conexion()
         cursor = conn.cursor()
         

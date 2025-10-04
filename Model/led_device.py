@@ -3,34 +3,34 @@ from Model.database import Database
 
 
 class LedDeviceModel:
-    TABLE_SQL = (
-        """
-        CREATE TABLE IF NOT EXISTS leds (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            channel VARCHAR(10) NOT NULL UNIQUE,
-            nombre VARCHAR(100) NOT NULL,
-            potencia DECIMAL(10,2) DEFAULT 0,
-            consumo DECIMAL(10,2) DEFAULT 0,
-            color VARCHAR(7) DEFAULT '#ffffff',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """
-    )
-
     @staticmethod
-    def _ensure_table(conn) -> None:
+    def _prepare(conn) -> None:
+        # Asegurar columna color
         with conn.cursor() as cur:
-            cur.execute(LedDeviceModel.TABLE_SQL)
+            try:
+                cur.execute("ALTER TABLE objetos ADD COLUMN color VARCHAR(7) DEFAULT '#ffffff'")
+            except Exception:
+                pass
 
     @staticmethod
     def list_leds() -> List[Dict]:
         conn = Database().conexion()
-        LedDeviceModel._ensure_table(conn)
+        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
-            cur.execute("SELECT id, channel, nombre, potencia, consumo, color FROM leds ORDER BY id ASC")
-            rows = cur.fetchall()
+            try:
+                cur.execute(
+                    "SELECT id AS channel, objeto AS nombre, potencia_w AS potencia, consumo_wh AS consumo, color FROM objetos WHERE id > 8 ORDER BY id ASC"
+                )
+                rows = cur.fetchall() or []
+            except Exception:
+                rows = []
         conn.close()
-        return rows or []
+        # Normalizar salida para mantener interfaz anterior (channel como str)
+        for r in rows:
+            r['channel'] = str(r['channel'])
+            if not r.get('color'):
+                r['color'] = '#ffffff'
+        return rows
 
     @staticmethod
     def list_channels() -> List[str]:
@@ -38,109 +38,113 @@ class LedDeviceModel:
 
     @staticmethod
     def next_channel() -> str:
-        """Return next available numeric channel as string, starting after 8.
-        It considers all existing numeric channels in table `leds` and returns max(8, existing)+1.
-        """
-        # Default baseline is 8 (the static ones), so next is 9 when no dynamic exists
-        try:
-            channels = LedDeviceModel.list_channels()
-            max_found = 8
-            for ch in channels:
-                if isinstance(ch, (int, float)):
-                    try:
-                        ch_int = int(ch)
-                    except Exception:
-                        continue
-                else:
-                    ch_str = str(ch)
-                    if ch_str.isdigit():
-                        ch_int = int(ch_str)
-                    else:
-                        continue
-                if ch_int > max_found:
-                    max_found = ch_int
-            return str(max_found + 1)
-        except Exception:
-            return "9"
+        conn = Database().conexion()
+        LedDeviceModel._prepare(conn)
+        with conn.cursor() as cur:
+            try:
+                cur.execute("SELECT MAX(id) AS max_id FROM objetos")
+                row = cur.fetchone()
+                max_id = row.get('max_id') or 8
+            except Exception:
+                max_id = 8
+        conn.close()
+        if max_id < 8:
+            max_id = 8
+        return str(int(max_id) + 1)
 
     @staticmethod
     def get_by_channel(channel: str) -> Optional[Dict]:
+        if not str(channel).isdigit():
+            return None
         conn = Database().conexion()
-        LedDeviceModel._ensure_table(conn)
+        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
-            cur.execute("SELECT id, channel, nombre, potencia, consumo, color FROM leds WHERE channel=%s", (channel,))
-            row = cur.fetchone()
+            try:
+                cur.execute(
+                    "SELECT id AS channel, objeto AS nombre, potencia_w AS potencia, consumo_wh AS consumo, color FROM objetos WHERE id=%s",
+                    (int(channel),)
+                )
+                row = cur.fetchone()
+            except Exception:
+                row = None
         conn.close()
+        if row:
+            row['channel'] = str(row['channel'])
+            if not row.get('color'):
+                row['color'] = '#ffffff'
         return row
 
     @staticmethod
     def update(channel: str, nombre: str, potencia: float, consumo: float, color: str) -> None:
+        if not str(channel).isdigit():
+            return
         conn = Database().conexion()
-        LedDeviceModel._ensure_table(conn)
+        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
-            # Normalizar nombre en MAYÚSCULAS para persistencia consistente
             try:
-                nombre = (nombre or '').strip().upper()
+                nombre_up = (nombre or '').strip().upper()
             except Exception:
-                nombre = str(nombre).upper() if nombre is not None else ''
-            
-            # Actualizar en tabla leds
+                nombre_up = str(nombre).upper() if nombre is not None else ''
+            # Asegurar fila existente (upsert)
             cur.execute(
                 """
-                UPDATE leds SET nombre=%s, potencia=%s, consumo=%s, color=%s
-                WHERE channel=%s
+                INSERT INTO objetos (id, objeto, potencia_w, consumo_wh, color)
+                VALUES (%s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE objeto=VALUES(objeto), potencia_w=VALUES(potencia_w),
+                    consumo_wh=VALUES(consumo_wh), color=VALUES(color)
                 """,
-                (nombre, potencia, consumo, color, channel)
+                (int(channel), nombre_up, potencia, consumo, color or '#ffffff')
             )
-            
-            # Actualizar en tabla objetos si existe
-            try:
-                cur.execute(
-                    """
-                    UPDATE objetos SET objeto=%s, potencia_w=%s, consumo_wh=%s
-                    WHERE id=%s
-                    """,
-                    (nombre, potencia, consumo, int(channel))
-                )
-            except Exception as e:
-                print(f"Aviso: no se pudo actualizar en objetos: {e}")
         conn.commit()
         conn.close()
 
     @staticmethod
     def create(channel: str, nombre: str, potencia: float, consumo: float, color: str) -> int:
+        if not str(channel).isdigit():
+            return -1
         conn = Database().conexion()
-        LedDeviceModel._ensure_table(conn)
+        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
-            # Normalizar nombre en MAYÚSCULAS para persistencia consistente
             try:
-                nombre = (nombre or '').strip().upper()
+                nombre_up = (nombre or '').strip().upper()
             except Exception:
-                nombre = str(nombre).upper() if nombre is not None else ''
-            # 1) Upsert en tabla objetos (asegurar id = channel)
-            try:
-                cur.execute(
-                    """
-                    INSERT INTO objetos (id, objeto, potencia_w, consumo_wh)
-                    VALUES (%s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE objeto=VALUES(objeto), potencia_w=VALUES(potencia_w), consumo_wh=VALUES(consumo_wh)
-                    """,
-                    (int(channel), nombre, potencia, consumo)
-                )
-            except Exception as e:
-                # Si no existe la tabla o columnas, ignorar silenciosamente para no romper creación en entornos sin esquema completo
-                print(f"Aviso: no se pudo upsert en objetos: {e}")
-
-            # 2) Insert/Update en tabla leds (para color y metadatos)
+                nombre_up = str(nombre).upper() if nombre is not None else ''
             cur.execute(
                 """
-                INSERT INTO leds (channel, nombre, potencia, consumo, color)
+                INSERT INTO objetos (id, objeto, potencia_w, consumo_wh, color)
                 VALUES (%s, %s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE nombre=VALUES(nombre), potencia=VALUES(potencia), consumo=VALUES(consumo), color=VALUES(color)
+                ON DUPLICATE KEY UPDATE objeto=VALUES(objeto), potencia_w=VALUES(potencia_w),
+                    consumo_wh=VALUES(consumo_wh), color=VALUES(color)
                 """,
-                (channel, nombre, potencia, consumo, color)
+                (int(channel), nombre_up, potencia, consumo, color or '#ffffff')
             )
-            new_id = cur.lastrowid
         conn.commit()
         conn.close()
-        return new_id
+        return int(channel)
+
+    @staticmethod
+    def delete(channel: str) -> None:
+        if not str(channel).isdigit():
+            return
+        conn = Database().conexion()
+        LedDeviceModel._prepare(conn)
+        with conn.cursor() as cur:
+            # Eliminar de objetos
+            try:
+                cur.execute("DELETE FROM objetos WHERE id=%s", (int(channel),))
+            except Exception:
+                pass
+            # Limpieza auxiliar (asignaciones y flags)
+            try:
+                cur.execute("DELETE FROM dispositivo_secciones WHERE channel=%s", (str(channel),))
+            except Exception:
+                try:
+                    cur.execute("DELETE FROM device_sections WHERE channel=%s", (str(channel),))
+                except Exception:
+                    pass
+            try:
+                cur.execute("DELETE FROM device_flags WHERE channel=%s", (str(channel),))
+            except Exception:
+                pass
+        conn.commit()
+        conn.close()

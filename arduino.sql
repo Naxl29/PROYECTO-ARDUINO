@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `objetos` (
   `objeto` varchar(50) NOT NULL,
   `potencia_w` int NOT NULL,
   `consumo_wh` float NOT NULL,
+  `color` varchar(7) DEFAULT '#ffffff',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -62,15 +63,15 @@ TRUNCATE TABLE roles_usuarios;
 TRUNCATE TABLE usuarios;
 
 -- 🔹 Insertar datos
-INSERT INTO `objetos` (`id`, `objeto`, `potencia_w`, `consumo_wh`) VALUES
-	(1, 'LUZ SALA', 60, 0.06),
-	(2, 'LUZ COCINA', 60, 0.06),
-	(3, 'LUZ HABITACIÓN', 60, 0.06),
-	(4, 'LUZ BAÑO', 60, 0.06),
-	(5, 'AIRE ACONDICIONADO', 800, 0.8),
-	(6, 'LAVADORA', 500, 0.5),
-	(7, 'NEVERA', 200, 0.2),
-	(8, 'TELEVISOR', 150, 0.15);
+INSERT INTO `objetos` (`id`, `objeto`, `potencia_w`, `consumo_wh`, `color`) VALUES
+  (1, 'LUZ SALA', 60, 0.06, '#ff4444'),
+  (2, 'LUZ COCINA', 60, 0.06, '#44ff44'),
+  (3, 'LUZ HABITACIÓN', 60, 0.06, '#4444ff'),
+  (4, 'LUZ BAÑO', 60, 0.06, '#ffff44'),
+  (5, 'AIRE ACONDICIONADO', 800, 0.8, '#ff44ff'),
+  (6, 'LAVADORA', 500, 0.5, '#44ffff'),
+  (7, 'NEVERA', 200, 0.2, '#ff8c00'),
+  (8, 'TELEVISOR', 150, 0.15, '#8a2be2');
 
 INSERT INTO `usuarios` (`id`, `usuario`, `contrasena`) VALUES
 	(1, 'ADMIN', '123456'),

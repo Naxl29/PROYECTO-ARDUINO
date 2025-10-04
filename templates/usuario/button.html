@@ -149,6 +149,12 @@
                             {% set dcolor = d.color or '#00bfff' %}
                             {% set sec = sections_map.get(d.channel|string) if sections_map else None %}
                             {% set suspended = flags_map.get(d.channel|string) if flags_map else False %}
+                            {# Determinar si el usuario puede ver este dispositivo según roles de la sección #}
+                            {% set mostrar = True %}
+                            {% if sec and sec.roles and sec.roles|length > 0 and (user_role not in sec.roles) %}
+                                {% set mostrar = False %}
+                            {% endif %}
+                            {% if mostrar %}
                             <div class="led-switch {% if suspended %}suspendido{% endif %}" data-led="{{ d.channel }}" data-section="{{ sec.id if sec else '' }}" data-dcolor data-suspended="{{ 1 if suspended else 0 }}" style="--dyn-color: {{ dcolor }};">
                                 <span class="led-text">
                                     <span class="badge me-1 device-color-dot" data-color="{{ dcolor }}">&nbsp;</span>
@@ -160,6 +166,7 @@
                                 <input type="checkbox" class="estado_led" data-led="{{ d.channel }}" id="led{{ d.channel }}">
                                 <label for="led{{ d.channel }}" class="led-label"></label>
                             </div>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </div>

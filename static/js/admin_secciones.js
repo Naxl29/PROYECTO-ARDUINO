@@ -95,4 +95,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
     renderPage(current);
   }
+
+  // Soporte a menú móvil: botones dentro de dropdown que abren modal de edición
+  document.querySelectorAll('.actions-mobile [data-bs-target="#editSectionModal"]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      // El listener principal de show.bs.modal ya se encargará
+    });
+  });
 });

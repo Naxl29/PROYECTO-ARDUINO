@@ -27,9 +27,7 @@ class LedDeviceController:
         LedDeviceModel.create(channel, nombre_up, potencia, consumo, color)
         return channel
 
-    def list_base_leds(self) -> List[Dict]:
-        """Return the 8 static LEDs with enriched metadata: name overrides and objeto pot/cons if available."""
-        # Colors for 1..8 consistent with button.css comments
+    def list_base_leds(self) -> List[Dict]:    
         default_colors = {
             '1': '#ff4444', '2': '#44ff44', '3': '#4444ff', '4': '#ffff44',
             '5': '#ff44ff', '6': '#44ffff', '7': '#ff8c00', '8': '#8a2be2'
@@ -41,12 +39,13 @@ class LedDeviceController:
         try:
             conn = Database().conexion()
             with conn.cursor() as cur:
-                cur.execute("SELECT id, potencia_w, consumo_wh, objeto FROM objetos WHERE id BETWEEN 1 AND 8")
+                cur.execute("SELECT id, potencia_w, consumo_wh, objeto, color FROM objetos WHERE id BETWEEN 1 AND 8")
                 for row in cur.fetchall() or []:
                     pot_map[str(row['id'])] = {
                         'potencia': row.get('potencia_w', 0) or 0,
                         'consumo': row.get('consumo_wh', 0) or 0,
-                        'objeto': row.get('objeto')
+                        'objeto': row.get('objeto'),
+                        'color': row.get('color') or default_colors.get(str(row['id']), '#ffffff')
                     }
             conn.close()
         except Exception:
@@ -66,7 +65,7 @@ class LedDeviceController:
                 'nombre': nombre,
                 'potencia': meta.get('potencia', 0),
                 'consumo': meta.get('consumo', 0),
-                'color': default_colors.get(key, '#ffffff')
+                'color': meta.get('color', default_colors.get(key, '#ffffff'))
             })
         return result
 
@@ -76,3 +75,6 @@ class LedDeviceController:
             return self.arduino.send_command(estado, channel)
         except Exception:
             return False
+
+    def delete_device(self, channel: str) -> None:
+        LedDeviceModel.delete(channel)

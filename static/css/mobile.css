@@ -436,6 +436,75 @@
         height: 20px !important;
         border-radius: 50% !important;
     }
+
+    /* ===== Acciones condensadas (dispositivos y secciones) ===== */
+    .actions-desktop { display: none !important; }
+    .actions-mobile .dropdown-menu { min-width: 180px !important; font-size: .75rem !important; }
+    .actions-mobile .dropdown-item { padding: .45rem .8rem !important; }
+    .actions-mobile .dropdown-item i { font-size: .9rem !important; }
+    .actions-mobile .dropdown-item.text-danger { color: #ff6b6b !important; }
+    #device-list .list-group-item, #sections-list .list-group-item { align-items: center !important; }
+    #device-list .list-group-item strong, #sections-list .list-group-item strong { max-width: 140px !important; }
+    #device-list .badge, #sections-list .badge { max-width: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Fix: evitar que el dropdown quede recortado dentro de card-body con overflow */
+    .card .card-body { overflow: visible !important; }
+    #device-list, #sections-list { position: relative; }
+    #device-list .actions-mobile, #sections-list .actions-mobile { position: relative; }
+    #device-list .dropdown-menu, #sections-list .dropdown-menu { z-index: 3000 !important; }
+    /* Mejor área táctil del botón de opciones */
+    .actions-mobile > button { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; }
+    /* Suavizar apertura */
+    .actions-mobile .dropdown-menu { animation: fadeScale .16s ease; transform-origin: top right; }
+    @keyframes fadeScale { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+    
+    /* ===== Listados compactos (dispositivos y secciones) ===== */
+    #device-list.list-group, #sections-list.list-group {
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    #device-list.list-group::-webkit-scrollbar, #sections-list.list-group::-webkit-scrollbar {
+        width: 6px;
+    }
+    #device-list.list-group::-webkit-scrollbar-track, #sections-list.list-group::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+    #device-list.list-group::-webkit-scrollbar-thumb, #sections-list.list-group::-webkit-scrollbar-thumb { background: rgba(0,191,255,0.35); border-radius: 4px; }
+
+    #device-list .list-group-item, #sections-list .list-group-item {
+        padding: .45rem .55rem !important;
+        font-size: .78rem !important;
+        line-height: 1.05 !important;
+        border-radius: 10px !important;
+        margin-bottom: .45rem !important;
+    }
+    #device-list .list-group-item strong, #sections-list .list-group-item strong { font-size: .8rem !important; }
+    #device-list .badge, #sections-list .badge { font-size: .55rem !important; padding: .2rem .4rem !important; }
+    #device-list .btn-sm, #sections-list .btn-sm { padding: .25rem .4rem !important; font-size: .6rem !important; }
+    #device-list .muted, #sections-list .muted { font-size: .55rem !important; }
+    #device-list .device-color-dot { width: 10px !important; height: 10px !important; }
+
+    /* Agrupar acciones en una sola línea comprimida */
+    #device-list .d-flex.align-items-center.gap-2, #sections-list .d-flex.align-items-center.gap-2 {
+        gap: .35rem !important;
+        flex-wrap: wrap;
+    }
+
+    /* Paginación ultra-compacta */
+    #prev-page, #next-page, #sections-prev-page, #sections-next-page {
+        padding: .3rem .45rem !important;
+        font-size: .65rem !important;
+    }
+    #page-info, #sections-page-info { font-size: .65rem !important; }
+
+    /* Limitar ancho de badges para que no rompan layout */
+    #device-list .badge, #sections-list .badge { max-width: 60px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+
+    /* Modal formularios: compactar */
+    .modal-dark .modal-body .form-label { font-size: .75rem !important; }
+    .modal-dark .modal-body input, .modal-dark .modal-body select { font-size: .75rem !important; padding: .4rem .55rem !important; }
+    .modal-dark .modal-title { font-size: .85rem !important; }
+    .modal-dark .btn { font-size: .65rem !important; padding: .35rem .6rem !important; }
 }
 
 /* SOLO PARA MÓVILES PEQUEÑOS - max-width: 480px */
