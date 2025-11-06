@@ -18,8 +18,16 @@ from utils.auth_utils import can_control_led, get_role_info, check_session, get_
 from utils.leds_store import get_led_names, save_led_name
 from Model.device_flags import DeviceFlagsModel
 
+# Inicialización de base de datos
+from Model.init_db import DatabaseInitializer
+
 app = Flask(__name__)
-app.secret_key = os.urandom(24) 
+app.secret_key = os.urandom(24)
+
+# Inicializar base de datos al arrancar la aplicación
+print("🚀 Iniciando aplicación...")
+DatabaseInitializer.initialize_all_tables()
+DatabaseInitializer.insert_default_data() 
 
 led_controller = None
 led_device_controller = None
