@@ -1,0 +1,59 @@
+
+services:
+  # Servicio de MySQL
+  db:
+    image: mysql:8.0
+    container_name: proyecto-arduino-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: arduino
+      MYSQL_USER: arduino_user
+      MYSQL_PASSWORD: arduino_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Servicio de la aplicación Flask
+  web:
+    build: .
+    container_name: proyecto-arduino-web
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # Base de datos
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: arduino
+      DB_USER: arduino_user
+      DB_PASSWORD: arduino_pass
+      # Flask
+      FLASK_DEBUG: "False"
+      FLASK_SECRET_KEY: "change-this-secret-key-in-production"
+      # Arduino (opcional, puede dejarse vacío)
+      ARDUINO_IP: "192.168.101.77"
+      ARDUINO_PORT: "/dev/null"
+      ARDUINO_BAUDRATE: "9600"
+      # ML Model
+      MODEL_PATH: "Model/modelo_recibo.pkl"
+      # Logging
+      LOG_LEVEL: "INFO"
+      LOG_FILE: "app.log"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./static:/app/static
+      - ./templates:/app/templates
+      - ./Model:/app/Model
+
+volumes:
+  mysql_data:
+
