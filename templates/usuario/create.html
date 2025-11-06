@@ -1,28 +1,13 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Registrarse - Control LED</title>
-    <meta name="description" content="Registra tu cuenta en el sistema de control LED">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    
-    <!-- CSS Original (mantener estilos de escritorio) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
-    
-    <!-- CSS Solo para móvil (no afecta escritorio) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Mobile helpers -->
-    <script src="{{ url_for('static', filename='js/mobile-helpers.js') }}"></script>
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block title %}Registrarse - Control LED{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
     <div class="login-container">
         <h1 class="login-title">REGISTRAR</h1>
         <p class="login-subtitle">TU CUENTA</p>
@@ -57,5 +42,9 @@
         showSuccessMessage('{{ success_message }}');
     </script>
     {% endif %}
-</body>
-</html>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='js/create.js') }}"></script>
+{% endblock %}
