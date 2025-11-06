@@ -1,11 +1,11 @@
 <!-- Sidebar de navegación -->
-<div class="sidebar d-flex flex-column p-4 text-center">
-    <a href="{{ url_for('dashboard') }}" class="d-block mb-4 app-logo">
+<div class="sidebar d-flex flex-column p-3 text-center">
+    <a href="{{ url_for('dashboard') }}" class="d-block mb-3 app-logo">
         <h1 class="text-white">LED<span class="text-primary">Control</span></h1>
     </a>
     
     <!-- Información del usuario -->
-    <div class="d-flex align-items-center justify-content-center mb-4 user-info">
+    <div class="d-flex align-items-center justify-content-center mb-3 user-info">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-circle me-2" viewBox="0 0 16 16">
             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
             <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
@@ -13,10 +13,10 @@
         <span class="text-white fw-bold">{{ session.usuario }} ({{ user_role }})</span>
     </div>
     
-    <hr class="divider">
+    <hr class="divider my-2">
     
     <!-- Menú de navegación principal -->
-    <ul class="nav flex-column mb-auto">
+    <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-grid-fill me-2" viewBox="0 0 16 16">
@@ -47,11 +47,10 @@
 
     <!-- Menú de administración (solo visible para admin) -->
     {% if user_role == 'ADMIN' %}
-    <hr class="divider">
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-2 text-muted">
-        <span>Administración</span>
+    <hr class="divider my-2">
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-2 text-muted" style="font-size: 0.75rem;">
     </h6>
-    <ul class="nav flex-column mb-auto">
+    <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'admin_new_device' %}active{% endif %}" href="{{ url_for('admin_new_device') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle-fill me-2" viewBox="0 0 16 16">
@@ -72,7 +71,7 @@
     {% endif %}
 
     <!-- Enlaces de sesión -->
-    <hr class="divider">
+    <hr class="divider my-2 mt-auto">
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link text-danger" href="{{ url_for('logout') }}">

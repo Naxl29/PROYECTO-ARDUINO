@@ -7,8 +7,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sections.css') }}">
 {% endblock %}
 
-   
-    <div class="content flex-grow-1 p-4 d-flex justify-content-center align-items-start">
+{% block content %}
+<div class="d-flex justify-content-center align-items-start">
         <div class="card data-card led-control-card w-100" style="max-width: 980px;">
             <div class="card-header">
                 <h5 class="mb-0">
@@ -93,6 +93,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
 {% block page_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

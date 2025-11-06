@@ -500,15 +500,15 @@ def see_blockchain():
     return render_template('usuario/reporte.html', bloques=bloques, total_gasto=total_gasto, user_role=user_info['rol'])
 
 #Esta ruta no se utilizará en la nueva actualización
-#Ruta para ver los hashes por aparte del historial
-@app.route('/blockchain/block/hash/<hash>')
-def see_hash_details(hash):
-    reporte_controller = ReporteController()
-    bloque = reporte_controller.get_block_by_hash(hash)
-    if bloque:
-        return render_template('usuario/hash.html', bloque=bloque)
-    else:
-        return "Bloque no encontrado"
+#Ruta para ver los hashes por aparte del historial (deshabilitada)
+# @app.route('/blockchain/block/hash/<hash>')
+# def see_hash_details(hash):
+#     reporte_controller = ReporteController()
+#     bloque = reporte_controller.get_block_by_hash(hash)
+#     if bloque:
+#         return render_template('usuario/hash.html', bloque=bloque)
+#     else:
+#         return "Bloque no encontrado"
 
 @app.route('/usuario/dashboard')
 def dashboard():
@@ -564,7 +564,14 @@ def admin_add_led():
 
 @app.context_processor
 def inject_now():
-    return {'now': datetime.now()}
+    """Inyecta variables globales en todas las plantillas"""
+    context = {'now': datetime.now()}
+    # Agregar información del usuario si hay sesión activa
+    if 'rol' in session:
+        context['user_role'] = session['rol']
+    else:
+        context['user_role'] = None
+    return context
 
 @app.route('/ml/prediccion_mensual')
 def prediccion_mensual():
