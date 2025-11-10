@@ -30,7 +30,8 @@ class LedDeviceController:
     def list_base_leds(self) -> List[Dict]:    
         default_colors = {
             '1': '#ff4444', '2': '#44ff44', '3': '#4444ff', '4': '#ffff44',
-            '5': '#ff44ff', '6': '#44ffff', '7': '#ff8c00', '8': '#8a2be2'
+            '5': '#ff44ff', '6': '#44ffff', '7': '#ff8c00', '8': '#8a2be2', 
+            '9': '#ffffff'
         }
         # Get friendly names (overrides JSON over defaults from roles_config)
         friendly_names = get_led_names(LED_NAMES)
@@ -53,7 +54,7 @@ class LedDeviceController:
             pot_map = {}
 
         result = []
-        for i in range(1, 9):
+        for i in range(1, 10):
             key = str(i)
             meta = pot_map.get(key, {})
             nombre = friendly_names.get(key, f'LED {i}')

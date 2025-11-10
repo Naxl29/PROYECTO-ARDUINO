@@ -123,11 +123,11 @@ def estado_led():
         return jsonify({"success": False, "error": "No hay sesión activa"}), 401
 
     estado = request.form.get('estado')  # '1' o '0'
-    led_id = request.form.get('led_id')  # '1', '2', '3', '4','5', '6', '7', '8'o 'ALL'
+    led_id = request.form.get('led_id')  # '1', '2', '3', '4','5', '6', '7', '8', '9' o 'ALL'
     user_info = get_user_info()
     user_role = user_info['rol']
 
-    static_allowed = ['1', '2', '3', '4', '5', '6', '7', '8', 'ALL']
+    static_allowed = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'ALL']
     if not led_id:
         return jsonify({"success": False, "error": "LED ID inválido"}), 400
     is_dynamic_numeric = led_id.isdigit() and led_id not in static_allowed

@@ -13,7 +13,7 @@ class LedController:
         led_id: '1'...'8' o 'ALL'
         """
         try:
-            if led_id not in ['1','2','3','4','5','6','7','8','ALL']:
+            if led_id not in ['1','2','3','4','5','6','7','8', '9','ALL']:
                 return False
 
             ok = self.arduino.send_command(estado, led_id)

@@ -11,12 +11,12 @@ class ArduinoService:
         """
         Envía un comando ON/OFF al Arduino por WiFi
         estado: '1' (encender) o '0' (apagar)
-        led_id: '1'...'8' o 'ALL'
+        led_id: '1'...'9' o 'ALL'
         """
         try:
             if led_id == "ALL":
                 ok = False
-                for i in range(1, 9):
+                for i in range(1, 10):
                     url = f"{self.base_url}/ON{i}" if estado == "1" else f"{self.base_url}/OFF{i}"
                     logging.info(f"Enviando a Arduino: {url}")
                     try:

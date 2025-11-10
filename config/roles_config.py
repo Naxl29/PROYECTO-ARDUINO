@@ -6,7 +6,7 @@ ROLES = {
             'can_view_all_reports': True,
             'can_control_all_leds': True,
             'can_use_all_button': True,
-            'accessible_leds': ['1', '2', '3', '4', '5', '6', '7', '8', 'ALL']
+            'accessible_leds': ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'ALL']
         }
     },
     'USER': {
@@ -38,5 +38,6 @@ LED_NAMES = {
     '6': 'LAVADORA',
     '7': 'NEVERA',
     '8': 'TELEVISOR',
+    '9': 'BOMBILLO',
     'ALL': 'APAGAR TODOS'
 }

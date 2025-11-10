@@ -19,7 +19,7 @@ class LedDeviceModel:
         with conn.cursor() as cur:
             try:
                 cur.execute(
-                    "SELECT id AS channel, objeto AS nombre, potencia_w AS potencia, consumo_wh AS consumo, color FROM objetos WHERE id > 8 ORDER BY id ASC"
+                    "SELECT id AS channel, objeto AS nombre, potencia_w AS potencia, consumo_wh AS consumo, color FROM objetos WHERE id > 9 ORDER BY id ASC"
                 )
                 rows = cur.fetchall() or []
             except Exception:
@@ -44,12 +44,12 @@ class LedDeviceModel:
             try:
                 cur.execute("SELECT MAX(id) AS max_id FROM objetos")
                 row = cur.fetchone()
-                max_id = row.get('max_id') or 8
+                max_id = row.get('max_id') or 9
             except Exception:
-                max_id = 8
+                max_id = 9
         conn.close()
-        if max_id < 8:
-            max_id = 8
+        if max_id < 9:
+            max_id = 9
         return str(int(max_id) + 1)
 
     @staticmethod

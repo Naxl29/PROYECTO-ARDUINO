@@ -175,7 +175,8 @@ class DatabaseInitializer:
                         (5, 'AIRE ACONDICIONADO', 800, 0.8, '#ff44ff'),
                         (6, 'LAVADORA', 500, 0.5, '#44ffff'),
                         (7, 'NEVERA', 200, 0.2, '#ff8c00'),
-                        (8, 'TELEVISOR', 150, 0.15, '#8a2be2')
+                        (8, 'TELEVISOR', 150, 0.15, '#8a2be2'),
+                        (9, 'BOMBILLO', 60, 0.06, '#ffffff')
                     """)
                 
                 if roles_count == 0:
