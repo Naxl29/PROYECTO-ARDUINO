@@ -3,55 +3,9 @@ from Model.database import Database
 
 
 class SectionModel:
-    SECTIONS_SQL = (
-        """
-        CREATE TABLE IF NOT EXISTS secciones (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(60) NOT NULL UNIQUE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """
-    )
-
-    DISPOSITIVO_SECCIONES_SQL = (
-        """
-        CREATE TABLE IF NOT EXISTS dispositivo_secciones (
-            channel VARCHAR(10) NOT NULL PRIMARY KEY,
-            section_id INT NOT NULL,
-            assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            CONSTRAINT fk_dispositivo_secciones FOREIGN KEY (section_id) REFERENCES secciones(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """
-    )
-
-    SECCION_ROLES_SQL = (
-        """
-        CREATE TABLE IF NOT EXISTS secciones_roles (
-            section_id INT NOT NULL,
-            role VARCHAR(20) NOT NULL,
-            PRIMARY KEY (section_id, role),
-            CONSTRAINT fk_secciones_roles FOREIGN KEY (section_id) REFERENCES secciones(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """
-    )
-
-    @staticmethod
-    def _ensure_tables(conn):
-        with conn.cursor() as cur:
-            cur.execute(SectionModel.SECTIONS_SQL)
-            cur.execute(SectionModel.DISPOSITIVO_SECCIONES_SQL)
-            cur.execute(SectionModel.SECCION_ROLES_SQL)
-            # Migración: agregar columna suspendida si no existe
-            try:
-                cur.execute("ALTER TABLE secciones ADD COLUMN suspendida TINYINT(1) NOT NULL DEFAULT 0")
-            except Exception:
-                # Columna ya existe o error de permisos, continuar
-                pass
-
     @staticmethod
     def list_sections() -> List[Dict]:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             cur.execute("SELECT id, nombre, suspendida FROM secciones ORDER BY nombre ASC")
             rows = cur.fetchall() or []
@@ -61,7 +15,6 @@ class SectionModel:
     @staticmethod
     def list_sections_with_roles() -> List[Dict]:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             cur.execute("SELECT id, nombre, suspendida FROM secciones ORDER BY nombre ASC")
             sections = cur.fetchall() or []
@@ -79,7 +32,6 @@ class SectionModel:
     @staticmethod
     def create_section(nombre: str) -> int:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             nombre_up = (nombre or '').strip().upper()
             cur.execute("INSERT INTO secciones (nombre) VALUES (%s)", (nombre_up,))
@@ -93,7 +45,6 @@ class SectionModel:
         if nombre is None:
             return
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             nombre_up = (nombre or '').strip().upper()
             cur.execute("UPDATE secciones SET nombre=%s WHERE id=%s", (nombre_up, int(section_id)))
@@ -103,7 +54,6 @@ class SectionModel:
     @staticmethod
     def set_suspended(section_id: int, suspended: bool) -> None:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             # Actualizar estado de la sección
             cur.execute("UPDATE secciones SET suspendida=%s WHERE id=%s", (1 if suspended else 0, int(section_id)))
@@ -128,7 +78,6 @@ class SectionModel:
     @staticmethod
     def delete_section(section_id: int) -> None:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             # Obtener dispositivos asignados antes de eliminar
             cur.execute("SELECT channel FROM dispositivo_secciones WHERE section_id=%s", (int(section_id),))
@@ -146,7 +95,6 @@ class SectionModel:
     @staticmethod
     def assign_device(channel: str, section_id: int) -> None:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             # Asignar dispositivo a sección
             cur.execute(
@@ -176,7 +124,6 @@ class SectionModel:
     @staticmethod
     def remove_assignment(channel: str) -> None:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             # Eliminar asignación
             cur.execute("DELETE FROM dispositivo_secciones WHERE channel=%s", (str(channel),))
@@ -190,7 +137,6 @@ class SectionModel:
     def get_device_sections_map() -> Dict[str, Dict]:
         """Return mapping channel -> {id, nombre, roles: [..]} for quick lookups."""
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -219,7 +165,6 @@ class SectionModel:
     @staticmethod
     def set_section_roles(section_id: int, roles: List[str]) -> None:
         conn = Database().conexion()
-        SectionModel._ensure_tables(conn)
         roles = [str(x).upper() for x in (roles or [])]
         with conn.cursor() as cur:
             # Eliminar roles no incluidos
