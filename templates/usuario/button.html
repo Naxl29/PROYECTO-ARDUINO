@@ -1,0 +1,107 @@
+{% extends "layouts/layout.html" %}
+
+{% block title %}Control LED - {{ session.usuario }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/button.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sections.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-start">
+        <div class="card data-card led-control-card w-100" style="max-width: 980px;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lightbulb-fill me-2" viewBox="0 0 16 16">
+                        <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.459-.31L4.279 10.92c-.094-.218-.25-.423-.453-.618A5.984 5.984 0 0 1 2 6"/>
+                        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.495v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    Control de LEDs
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if sections and sections|length > 0 %}
+                    <div class="row mb-3 filter-row">
+                        <div class="col-sm-6">
+                            <label for="filter-section" class="form-label">Filtrar por sección</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text select-addon">Sección</span>
+                                <select id="filter-section" class="form-select form-select-sm select-elevated">
+                                    <option value="">Todas las secciones</option>
+                                    {% for s in sections %}
+                                    <option value="{{ s.id }}">{{ s.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="led-grid">
+                    {% for led_id in role_config.permissions.accessible_leds %}
+                        {% if led_id != 'ALL' %}
+                            {% set sec = sections_map.get(led_id|string) if sections_map else None %}
+                            {% set suspended = flags_map.get(led_id|string) if flags_map else False %}
+                            <div class="led-switch {% if suspended %}suspendido{% endif %}" data-led="{{ led_id }}" data-section="{{ sec.id if sec else '' }}" data-suspended="{{ 1 if suspended else 0 }}">
+                                <span class="led-text">
+                                    {{ led_names[led_id] }}
+                                    {% if sec %}
+                                    <span class="badge bg-primary ms-1">{{ sec.nombre }}</span>
+                                    {% endif %}
+                                </span>
+                                <input type="checkbox" class="estado_led" data-led="{{ led_id }}" id="led{{ led_id }}">
+                                <label for="led{{ led_id }}" class="led-label"></label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if devices and devices|length > 0 %}
+                        {% for d in devices %}
+                            {% set dcolor = d.color or '#00bfff' %}
+                            {% set sec = sections_map.get(d.channel|string) if sections_map else None %}
+                            {% set suspended = flags_map.get(d.channel|string) if flags_map else False %}
+                            {# Determinar si el usuario puede ver este dispositivo según roles de la sección #}
+                            {% set mostrar = True %}
+                            {% if sec and sec.roles and sec.roles|length > 0 and (user_role not in sec.roles) %}
+                                {% set mostrar = False %}
+                            {% endif %}
+                            {% if mostrar %}
+                            <div class="led-switch {% if suspended %}suspendido{% endif %}" data-led="{{ d.channel }}" data-section="{{ sec.id if sec else '' }}" data-dcolor data-suspended="{{ 1 if suspended else 0 }}" style="--dyn-color: {{ dcolor }};">
+                                <span class="led-text">
+                                    <span class="badge me-1 device-color-dot" data-color="{{ dcolor }}">&nbsp;</span>
+                                    {{ d.nombre }}
+                                    {% if sec %}
+                                    <span class="badge bg-primary ms-1">{{ sec.nombre }}</span>
+                                    {% endif %}
+                                </span>
+                                <input type="checkbox" class="estado_led" data-led="{{ d.channel }}" id="led{{ d.channel }}">
+                                <label for="led{{ d.channel }}" class="led-label"></label>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% if 'ALL' in role_config.permissions.accessible_leds %}
+                    <!-- Botón especial APAGAR TODOS (solo ADMIN) -->
+                    <div class="led-switch all-switch" data-led="ALL">
+                        <span class="led-text">{{ led_names['ALL'] }}</span>
+                        <input type="checkbox" class="estado_led" data-led="ALL" id="ledAll">
+                        <label for="ledAll" class="led-label"></label>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Configuración para JS estático -->
+<div id="led-control-config"
+     data-estado-url="{{ url_for('estado_led') }}"
+     data-save-url="{{ url_for('save_estado') }}"
+     hidden></div>
+<script src="{{ url_for('static', filename='js/button.js') }}"></script>
+<script src="{{ url_for('static', filename='js/logout.js') }}"></script>
+{% endblock %}

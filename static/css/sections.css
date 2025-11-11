@@ -1,0 +1,95 @@
+/* Estilos mejorados para selects y UI de secciones */
+.select-elevated {
+  background: linear-gradient(180deg, rgba(26,37,47,0.9), rgba(26,37,47,0.8));
+  border: 1px solid rgba(0,191,255,0.25);
+  color: #00bfff !important;
+  box-shadow: 0 6px 16px rgba(0,191,255,0.08);
+}
+.select-elevated:focus {
+  border-color: var(--accent-color, #00bfff);
+  box-shadow: 0 0 0 .25rem rgba(0,191,255,.25);
+}
+.input-group .input-group-text.select-addon {
+  background: linear-gradient(135deg, var(--accent-color, #00bfff) 0%, #0099cc 100%);
+  color:  #00bfff !important;
+  border: 1px solid rgba(0,191,255,0.4);
+}
+.filter-row .form-label {
+  color: rgba(255,255,255,.85);
+}
+/* Badges para secciones */
+.badge.bg-primary {
+  background: linear-gradient(135deg, var(--accent-color, #00bfff) 0%, #0099cc 100%) !important;
+  border: 1px solid rgba(0,191,255,0.3);
+}
+
+/* Modal oscuro con acentos azules para asignar sección */
+.modal-dark .modal-content,
+.modal-content.modal-dark {
+  background-color: #1e1e1f;
+  border: 1px solid rgba(0,191,255,0.15);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 191, 255, 0.12);
+  color: #e6f2f8;
+}
+.modal-dark .modal-header,
+.modal-content.modal-dark .modal-header {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, var(--accent-color, #00bfff) 0%, #0099cc 100%);
+  color: #1e1e1f !important;
+  border-radius: 12px 12px 0 0;
+}
+.modal-dark .modal-title,
+.modal-content.modal-dark .modal-title {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.modal-dark .modal-body,
+.modal-content.modal-dark .modal-body {
+  background-color: #1e1e1f;
+}
+.modal-dark .modal-footer,
+.modal-content.modal-dark .modal-footer {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background-color: #1e1e1f;
+  border-radius: 0 0 12px 12px;
+}
+.modal-dark .form-label { color: rgba(255,255,255,.85); }
+.modal-dark .form-select { color: #e6f2f8; }
+.modal-dark .btn-primary {
+  background: linear-gradient(135deg, var(--accent-color, #00bfff) 0%, #0099cc 100%);
+  border: 1px solid rgba(0,191,255,0.4);
+}
+.modal-dark .btn-secondary { border: 1px solid rgba(255,255,255,0.15); }
+
+/* Estado suspendido (aplica a items de listas y switches) */
+.suspendido {
+  opacity: 0.55;
+  filter: grayscale(25%);
+}
+.suspendido .led-label::after,
+.suspendido .led-label::before {
+  opacity: 0.6;
+}
+
+/* Estilos personalizados para SweetAlert2 tema oscuro */
+.swal-dark-popup {
+  background-color: #1e1e1f !important;
+  color: #e6f2f8 !important;
+  border: 1px solid rgba(0,191,255,0.15) !important;
+  border-radius: 12px !important;
+}
+.swal2-popup.swal-dark-popup .swal2-title {
+  color: #e6f2f8 !important;
+}
+.swal2-popup.swal-dark-popup .swal2-html-container {
+  color: #e6f2f8 !important;
+}
+.swal2-popup.swal-dark-popup .swal2-icon.swal2-warning {
+  border-color: #ffc107 !important;
+  color: #ffc107 !important;
+}
+.swal2-popup.swal-dark-popup .swal2-icon.swal2-warning .swal2-icon-content {
+  color: #ffc107 !important;
+}

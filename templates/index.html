@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Proyecto Arduino - Control LED</title>
+    <meta name="description" content="Sistema de control LED con Arduino y tecnología blockchain">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- CSS Original (mantener estilos de escritorio) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    
+    <!-- CSS Solo para móvil (no afecta escritorio) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    
+    <!-- Preload de imagen de fondo para mejor performance -->
+    <link rel="preload" as="image" href="{{ url_for('static', filename='images/fondo.jpg') }}">
+    
+    <!-- Mobile helpers -->
+    <script src="{{ url_for('static', filename='js/mobile-helpers.js') }}"></script>
+</head>
+<body>
+    <div class="content-box">
+        <div class="main-content">
+            <div class="neon-container">
+                <h1 class="neon-text">CONTROL LED</h1>
+            </div>
+
+            <div class="button-container">
+                <!-- Botones optimizados para móvil -->
+                <a href="{{ url_for('login') }}" class="shadow__btn" 
+                    title="Iniciar sesión" aria-label="Iniciar sesión en el sistema">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" 
+                        class="bi bi-person-circle" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                    <span class="desktop-only">Iniciar Sesión</span>
+                </a>
+                <a href="{{ url_for('create') }}" class="shadow__btn" 
+                    title="Crear cuenta nueva" aria-label="Registrarse en el sistema">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" 
+                        class="bi bi-person-add" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                        <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+                    </svg>
+                    <span class="desktop-only">Registrarse</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>

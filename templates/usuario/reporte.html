@@ -1,0 +1,139 @@
+{% extends "layouts/layout.html" %}
+
+{% block title %}Historial - {{ session.usuario }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reporte.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center">
+        <div class="historial-container">
+            <h1 class="titulo-historial">Reporte</h1>
+            
+            <!-- Total del gasto y botón de predicción en la misma línea -->
+            <div class="total-prediccion-container">
+                <div class="total-gasto-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-journal-text me-2" viewBox="0 0 16 16">
+                        <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
+                        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
+                    </svg>
+                    <span class="total-gasto-label">Total Acumulado:</span>
+                    <span class="total-gasto-amount">${{ "%.2f"|format(total_gasto) }} COP</span>
+                </div>
+                
+                <button type="button" class="btn-prediccion-ml" data-bs-toggle="modal" data-bs-target="#prediccionModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-graph-up-arrow me-2" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    Predecir Próximo Mes
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="historial-table" id="tabla-reporte">
+                    <thead>
+                        <tr>
+                            <th>Objeto</th>
+                            {% if user_role == 'ADMIN' %}
+                            <th>Usuario</th>
+                            {% endif %}
+                            <th>Fecha</th>
+                            <th>Duración</th>
+                            <th>Potencia (W)</th>
+                            <th>Consumo (kWh/h)</th>
+                            <th>Gasto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if bloques %}
+                            {% for bloque in bloques %}
+                                <tr>
+                                    <td>{{ bloque.objeto }}</td>
+                                    {% if user_role == 'ADMIN' %}
+                                    <td>{{ bloque.usuario if bloque.usuario else 'Desconocido' }}</td>
+                                    {% endif %}
+                                    <td>{{ bloque.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>{{ bloque.duracion_minutos }} Min</td>
+                                    <td>{{ bloque.potencia_w }}</td>
+                                    <td>{{ bloque.consumo_wh }}</td>
+                                    <td class="precio-formateado" data-precio="{{ bloque.gasto }}">{{ bloque.gasto }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="{% if user_role == 'ADMIN' %}9{% else %}8{% endif %}" class="text-center">No hay registros disponibles</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Controles de paginación -->
+            {% if bloques and bloques|length > 0 %}
+            <div class="d-flex justify-content-between align-items-center mt-3 w-100">
+                <button id="rep-prev" class="btn btn-outline-light btn-sm" disabled>
+                    <i class="bi bi-chevron-left"></i> Anterior
+                </button>
+                <span class="text-muted" id="rep-page-info">Página 1/1</span>
+                <button id="rep-next" class="btn btn-outline-light btn-sm" disabled>
+                    Siguiente <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+
+<!-- Modal de Predicción ML -->
+<div class="modal fade" id="prediccionModal" tabindex="-1" aria-labelledby="prediccionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="prediccionModalLabel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-graph-up-arrow me-2" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    Predicción del Próximo Mes
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="prediccion-loading text-center" id="loadingDiv">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Calculando...</span>
+                    </div>
+                    <p class="mt-2">Analizando datos y generando predicción...</p>
+                </div>
+                
+                <div class="prediccion-resultado" id="resultadoDiv" style="display: none;">
+                    <div class="prediccion-card">
+                        <div class="prediccion-header">
+                            <h6>Predicción para el próximo mes:</h6>
+                        </div>
+                        <div class="prediccion-value">
+                            <span class="value-amount" id="prediccionAmount">$0.00</span>
+                            <span class="value-currency">COP</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prediccion-error" id="errorDiv" style="display: none;">
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Error:</strong> No se pudo generar la predicción. Intenta de nuevo.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='js/modal-prediccion.js') }}"></script>
+<script src="{{ url_for('static', filename='js/reporte.js') }}"></script>
+<script src="{{ url_for('static', filename='js/logout.js') }}"></script>
+{% endblock %}

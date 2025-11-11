@@ -1,0 +1,41 @@
+{% extends "layouts/layout.html" %}
+
+{% block title %}Perfil de Usuario - {{ session.usuario }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/show.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="card data-card profile-card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill me-2" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                </svg>
+                Detalles del Usuario
+            </h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered table-hover profile-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Contraseña</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ usuario.usuario }}</td>
+                        <td>{{ usuario.contrasena }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary shadow__btn">Volver al Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

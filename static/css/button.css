@@ -1,0 +1,231 @@
+/* Variables CSS para un control de temas más fácil */
+:root {
+    --background-dark: #121212; /* Fondo casi negro */
+    --surface-dark: #1e1e1e; /* Superficie ligeramente más clara */
+    --text-light: #e0e0e0; /* Texto gris claro */
+    --primary-color: #00bfff; /* Azul brillante */
+    --secondary-color: #ff1493; /* Rosa neón */
+    --glow-color: #00bfff; /* Color del resplandor por defecto */
+    --card-bg: #222;
+    --card-border: #333;
+}
+
+body {
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden; /* Evita barras de desplazamiento horizontales */
+}
+
+/* Estilos para el contenedor principal de los LEDs */
+.led-control-card {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--card-border);
+    max-width: 1200px; /* Ancho suficiente para una sola fila */
+    padding: 30px;
+    animation: fadeIn 1s ease-in-out; /* Animación de entrada */
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: none;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.card-header h5 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); /* Efecto de resplandor */
+    animation: pulse 2s infinite; /* Efecto de pulso */
+}
+
+/* Animación de pulso */
+@keyframes pulse {
+    0% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+    50% { text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+    100% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+}
+
+/* Contenedor de Flexbox para un diseño horizontal */
+.led-grid {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente fila si no hay espacio */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center;
+    gap: 30px; /* Aumenta el espacio entre los botones */
+    padding: 30px;
+}
+
+/* Estilo individual de cada LED con hover y transformaciones */
+.led-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: var(--surface-dark);
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 20px 15px;
+    width: 150px; /* Ancho fijo para consistencia */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.led-switch:hover {
+    transform: translateY(-5px) scale(1.03); /* Efecto de levantamiento y agrandado */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.led-text {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.led-switch:hover .led-text {
+    color: var(--primary-color); /* El texto se ilumina al pasar el cursor */
+}
+
+/* Oculta el checkbox original */
+.estado_led {
+    display: none;
+}
+
+/* Estilo del "toggle switch" visible */
+.led-label {
+    display: block;
+    cursor: pointer;
+    width: 70px; /* Un poco más grande */
+    height: 38px;
+    background-color: #555;
+    border-radius: 38px;
+    position: relative;
+    transition: background-color 0.4s ease-in-out;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+}
+
+.led-label:after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--text-light);
+    top: 4px;
+    left: 4px;
+    transition: transform 0.4s ease-in-out, background-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Estado ENCENDIDO (CHECKED) para todos los LEDs */
+.estado_led:checked + .led-label {
+    background-color: var(--glow-color); /* Color por defecto al encender */
+    box-shadow: 0 0 15px var(--glow-color); /* Resplandor al encender */
+}
+
+.estado_led:checked + .led-label:after {
+    transform: translateX(32px); /* Deslizamiento del círculo */
+    animation: ledGlow 1.5s infinite alternate; /* Animación de resplandor */
+}
+
+/* Animación de resplandor para el círculo interior */
+@keyframes ledGlow {
+    from { box-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color); }
+    to { box-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--glow-color); }
+}
+
+/* Colores de encendido individuales con resplandor, sobrescriben el default */
+.estado_led[data-led="1"]:checked + .led-label { background-color: #ff4444; box-shadow: 0 0 15px #ff4444; } /* Rojo */
+.estado_led[data-led="1"]:checked + .led-label:after { --glow-color: #ff4444; } /* Actualiza la variable para la animación */
+
+.estado_led[data-led="2"]:checked + .led-label { background-color: #44ff44; box-shadow: 0 0 15px #44ff44; } /* Verde */
+.estado_led[data-led="2"]:checked + .led-label:after { --glow-color: #44ff44; }
+
+.estado_led[data-led="3"]:checked + .led-label { background-color: #4444ff; box-shadow: 0 0 15px #4444ff; } /* Azul */
+.estado_led[data-led="3"]:checked + .led-label:after { --glow-color: #4444ff; }
+
+.estado_led[data-led="4"]:checked + .led-label { background-color: #ffff44; box-shadow: 0 0 15px #ffff44; } /* Amarillo */
+.estado_led[data-led="4"]:checked + .led-label:after { --glow-color: #ffff44; }
+
+.estado_led[data-led="5"]:checked + .led-label { background-color: #ff44ff; box-shadow: 0 0 15px #ff44ff; } /* Magenta */
+.estado_led[data-led="5"]:checked + .led-label:after { --glow-color: #ff44ff; }
+
+.estado_led[data-led="6"]:checked + .led-label { background-color: #44ffff; box-shadow: 0 0 15px #44ffff; } /* Cian */
+.estado_led[data-led="6"]:checked + .led-label:after { --glow-color: #44ffff; }
+
+.estado_led[data-led="7"]:checked + .led-label { background-color: #ff8c00; box-shadow: 0 0 15px #ff8c00; } /* Naranja */
+.estado_led[data-led="7"]:checked + .led-label:after { --glow-color: #ff8c00; }
+
+.estado_led[data-led="8"]:checked + .led-label { background-color: #8a2be2; box-shadow: 0 0 15px #8a2be2; } /* Morado */
+.estado_led[data-led="8"]:checked + .led-label:after { --glow-color: #8a2be2; }
+
+.estado_led[data-led="9"]:checked + .led-label { background-color: #ffffff; box-shadow: 0 0 15px #fafafa; } /* Morado */
+.estado_led[data-led="9"]:checked + .led-label:after { --glow-color: #ffffff; }
+
+/* Dispositivos dinámicos: usa un CSS variable por switch para su color */
+.led-switch[data-dcolor] .estado_led:checked + .led-label {
+    background-color: var(--dyn-color, var(--glow-color));
+    box-shadow: 0 0 15px var(--dyn-color, var(--glow-color));
+}
+.led-switch[data-dcolor] .estado_led:checked + .led-label:after {
+    --glow-color: var(--dyn-color, var(--glow-color));
+}
+
+
+/* Estilo para el switch "APAGAR TODOS" - más sobrio y apropiado para apagado */
+.led-switch.all-switch {
+    grid-column: 1 / -1; /* Ocupa todo el ancho en la cuadrícula */
+    background: linear-gradient(45deg, #444, #666); /* Degradado gris oscuro */
+    border: 1px solid #555;
+    animation: subtlePulse 3s infinite ease-in-out;
+    margin: auto;
+}
+
+@keyframes subtlePulse {
+    0% { box-shadow: 0 0 5px rgba(255, 100, 100, 0.3), 0 0 10px rgba(255, 100, 100, 0.2); }
+    50% { box-shadow: 0 0 10px rgba(255, 100, 100, 0.5), 0 0 20px rgba(255, 100, 100, 0.3); }
+    100% { box-shadow: 0 0 5px rgba(255, 100, 100, 0.3), 0 0 10px rgba(255, 100, 100, 0.2); }
+}
+
+.led-switch.all-switch .led-text {
+    color: #ff6666; /* Rojo suave para indicar función de apagado */
+    text-shadow: 0 0 3px rgba(255, 100, 100, 0.5);
+    font-weight: 700;
+}
+
+.led-switch.all-switch:hover {
+    background: linear-gradient(45deg, #555, #777);
+    border-color: #ff6666;
+}
+
+.led-switch.all-switch:hover .led-text {
+    color: #ff4444;
+    text-shadow: 0 0 5px rgba(255, 68, 68, 0.8);
+}
+
+.estado_led[data-led="ALL"]:checked + .led-label {
+    background: linear-gradient(135deg, #ff4444, #cc3333); /* Rojo para indicar función de apagado */
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6), 0 0 30px rgba(255, 68, 68, 0.4);
+    animation: none; /* Desactivar pulsateAll para el fondo cuando está activo */
+}
+
+.estado_led[data-led="ALL"]:checked + .led-label:after {
+    background-color: white; /* Círculo blanco para el "ALL" */
+    box-shadow: 0 0 8px rgba(255, 68, 68, 0.8), 0 0 16px rgba(255, 68, 68, 0.6);
+    --glow-color: #ff4444; /* Asegura que la animación de resplandor use rojo */
+}

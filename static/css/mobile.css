@@ -1,0 +1,844 @@
+/* ===========================================
+   ESTILOS MÓVILES - SOLO PARA DISPOSITIVOS MÓVILES
+   Estos estilos NO afectan la versión de escritorio
+=========================================== */
+
+/* SOLO PARA MÓVILES - max-width: 768px */
+@media (max-width: 768px) {
+    
+    /* Contenedor principal más fluido */
+    body {
+        font-size: 16px;
+        padding: 0;
+        margin: 0;
+        -webkit-text-size-adjust: 100%;
+    }
+    
+    /* Contenedores generales */
+    .container, .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    
+    /* Formularios de login más grandes para móvil */
+    .login-container {
+        width: 100% !important;
+        max-width: 400px !important;
+        margin: 20px auto !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+        min-height: auto !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Títulos del formulario */
+    .login-title {
+        font-size: 1.8rem !important;
+        margin-bottom: 10px !important;
+        text-align: center !important;
+    }
+    
+    .login-subtitle {
+        font-size: 1rem !important;
+        margin-bottom: 25px !important;
+        text-align: center !important;
+        opacity: 0.9 !important;
+    }
+    
+    /* Grupos de inputs */
+    .input-group {
+        margin-bottom: 20px !important;
+        width: 100% !important;
+    }
+    
+    .input-container {
+        position: relative !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .input-container .icon {
+        position: absolute !important;
+        left: 15px !important;
+        z-index: 2 !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 16px !important;
+    }
+    
+    /* Inputs más grandes para touch */
+    input[type="text"], 
+    input[type="password"], 
+    input[type="email"] {
+        min-height: 48px !important;
+        font-size: 16px !important;
+        padding: 12px 15px 12px 45px !important;
+        border-radius: 8px !important;
+        margin-bottom: 15px !important;
+        width: 100% !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        box-sizing: border-box !important;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        outline: none !important;
+        border-color: #6C63FF !important;
+        box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.3) !important;
+    }
+    
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder,
+    input[type="email"]::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    /* Botón de formulario */
+    .login-btn {
+        width: 100% !important;
+        min-height: 48px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        padding: 12px 24px !important;
+        border-radius: 8px !important;
+        margin: 20px 0 !important;
+        border: none !important;
+        background: linear-gradient(135deg, #6C63FF 0%, #8B5CF6 100%) !important;
+        color: white !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .login-btn:hover,
+    .login-btn:focus {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4) !important;
+    }
+    
+    .login-btn:active {
+        transform: translateY(0) !important;
+    }
+    
+    /* Enlaces de autenticación */
+    .auth-link {
+        text-align: center !important;
+        margin-top: 20px !important;
+        font-size: 14px !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    .auth-link a {
+        color: #6C63FF !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+    }
+    
+    .auth-link a:hover {
+        text-decoration: underline !important;
+        color: #8B5CF6 !important;
+    }
+    
+    /* Asegurar que los pseudo-elementos no interfieran en móvil */
+    .login-container::before,
+    .login-container::after {
+        display: none !important;
+    }
+    
+    /* Formulario general */
+    form {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    /* Body específico para páginas de auth */
+    body:has(.login-container) {
+        background: url(../images/fondo.jpg) center/cover !important;
+        min-height: 100vh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Reset específico para asegurar consistencia */
+    .login-container * {
+        box-sizing: border-box !important;
+    }
+    
+    /* Asegurar que ambas páginas tengan el mismo comportamiento */
+    #campos,
+    #registroForm {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+    
+    /* Eliminar diferencias entre required y no required */
+    input[required],
+    input:not([required]) {
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+    }
+    
+    /* Botones más grandes y touch-friendly */
+    .btn, button, input[type="submit"] {
+        min-height: 48px !important;
+        font-size: 16px !important;
+        padding: 12px 24px !important;
+        border-radius: 8px !important;
+        margin: 10px 5px !important;
+        min-width: 120px !important;
+    }
+    
+    /* Títulos más pequeños en móvil */
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.3rem !important; }
+    h4 { font-size: 1.1rem !important; }
+    
+    /* Navegación responsiva */
+    .navbar {
+        padding: 10px 15px !important;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem !important;
+    }
+    
+    /* Dashboard cards en móvil */
+    .card {
+        margin-bottom: 15px !important;
+        border-radius: 10px !important;
+    }
+    
+    .card-body {
+        padding: 15px !important;
+    }
+    
+    /* Control de LEDs más grande */
+    .led-control {
+        padding: 15px !important;
+        margin: 10px 0 !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Grid de LEDs centrado en móvil */
+    .led-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 20px !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Contenedor de cada LED */
+    .led-switch {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 15px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+        min-height: 80px !important;
+    }
+    
+    /* Texto del LED */
+    .led-text {
+        font-size: 12px !important;
+        margin-bottom: 8px !important;
+        color: white !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Labels de LEDs más grandes */
+    .led-label {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        margin: 0 auto !important;
+        display: block !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Input oculto */
+    .estado_led {
+        display: none !important;
+    }
+    
+    /* Estados del LED */
+    .estado_led:checked + .led-label {
+        background: #00ff00 !important;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.6) !important;
+    }
+    
+    .estado_led:not(:checked) + .led-label {
+        background: #666 !important;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Card del control LED centrada */
+    .led-control-card {
+        width: 100% !important;
+        max-width: 350px !important;
+        margin: 0 auto !important;
+        background: rgba(30, 30, 30, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 15px !important;
+    }
+    
+    /* Header de la card */
+    .led-control-card .card-header {
+        background: rgba(108, 99, 255, 0.2) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        text-align: center !important;
+        padding: 15px !important;
+    }
+    
+    .led-control-card .card-header h5 {
+        color: white !important;
+        margin: 0 !important;
+        font-size: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Contenido principal centrado */
+    .content {
+        padding: 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        min-height: calc(100vh - 120px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: smooth !important;
+    }
+    
+    /* Dashboard específico - permitir scroll */
+    .content[data-page="dashboard"] {
+        overflow-y: auto !important;
+        height: 100vh !important;
+        padding-top: 80px !important;
+        scroll-padding-top: 80px !important;
+    }
+    
+    /* Cards del dashboard scrolleables */
+    .dashboard-cards {
+        width: 100% !important;
+        max-width: 400px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding-bottom: 40px !important;
+    }
+    
+    /* Asegurar que las cards no interfieran con el scroll */
+    .card {
+        touch-action: auto !important;
+        overflow: visible !important;
+    }
+    
+    .card-body {
+        touch-action: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Dashboard page específica */
+    .dashboard-page .content {
+        height: 100vh !important;
+        overflow-y: scroll !important;
+        scroll-behavior: smooth !important;
+    }
+    
+    /* Mejorar scroll en todos los elementos */
+    * {
+        scroll-behavior: smooth !important;
+    }
+    
+    /* Asegurar que el body no interfiera con el scroll */
+    body.is-mobile {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Prevenir interferencia del navbar con el scroll */
+    body:not(.mobile-nav-open) {
+        overflow-y: auto !important;
+    }
+    
+    body.mobile-nav-open {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+    }
+    
+    /* Tablas responsivas */
+    .table {
+        font-size: 14px !important;
+    }
+    
+    .table th, .table td {
+        padding: 8px 5px !important;
+        word-wrap: break-word !important;
+    }
+    
+    /* Márgenes y espaciado móvil */
+    .mt-4 { margin-top: 20px !important; }
+    .mb-4 { margin-bottom: 20px !important; }
+    .p-4 { padding: 15px !important; }
+    
+    /* Enlaces más grandes */
+    a {
+        min-height: 44px !important;
+        display: inline-block !important;
+        padding: 8px 12px !important;
+    }
+    
+    /* Hash y blockchain info */
+    .hash-display {
+        font-size: 12px !important;
+        word-break: break-all !important;
+        padding: 10px !important;
+    }
+    
+    /* Centrar contenido en móvil */
+    .text-center-mobile {
+        text-align: center !important;
+    }
+    
+    /* Status indicators más grandes */
+    .status-indicator {
+        width: 20px !important;
+        height: 20px !important;
+        border-radius: 50% !important;
+    }
+
+    /* ===== Acciones condensadas (dispositivos y secciones) ===== */
+    .actions-desktop { display: none !important; }
+    .actions-mobile .dropdown-menu { min-width: 180px !important; font-size: .75rem !important; }
+    .actions-mobile .dropdown-item { padding: .45rem .8rem !important; }
+    .actions-mobile .dropdown-item i { font-size: .9rem !important; }
+    .actions-mobile .dropdown-item.text-danger { color: #ff6b6b !important; }
+    #device-list .list-group-item, #sections-list .list-group-item { align-items: center !important; }
+    #device-list .list-group-item strong, #sections-list .list-group-item strong { max-width: 140px !important; }
+    #device-list .badge, #sections-list .badge { max-width: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Fix: evitar que el dropdown quede recortado dentro de card-body con overflow */
+    .card .card-body { overflow: visible !important; }
+    #device-list, #sections-list { position: relative; }
+    #device-list .actions-mobile, #sections-list .actions-mobile { position: relative; }
+    #device-list .dropdown-menu, #sections-list .dropdown-menu { z-index: 3000 !important; }
+    /* Mejor área táctil del botón de opciones */
+    .actions-mobile > button { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; }
+    /* Suavizar apertura */
+    .actions-mobile .dropdown-menu { animation: fadeScale .16s ease; transform-origin: top right; }
+    @keyframes fadeScale { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+    
+    /* ===== Listados compactos (dispositivos y secciones) ===== */
+    #device-list.list-group, #sections-list.list-group {
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    #device-list.list-group::-webkit-scrollbar, #sections-list.list-group::-webkit-scrollbar {
+        width: 6px;
+    }
+    #device-list.list-group::-webkit-scrollbar-track, #sections-list.list-group::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+    #device-list.list-group::-webkit-scrollbar-thumb, #sections-list.list-group::-webkit-scrollbar-thumb { background: rgba(0,191,255,0.35); border-radius: 4px; }
+
+    #device-list .list-group-item, #sections-list .list-group-item {
+        padding: .45rem .55rem !important;
+        font-size: .78rem !important;
+        line-height: 1.05 !important;
+        border-radius: 10px !important;
+        margin-bottom: .45rem !important;
+    }
+    #device-list .list-group-item strong, #sections-list .list-group-item strong { font-size: .8rem !important; }
+    #device-list .badge, #sections-list .badge { font-size: .55rem !important; padding: .2rem .4rem !important; }
+    #device-list .btn-sm, #sections-list .btn-sm { padding: .25rem .4rem !important; font-size: .6rem !important; }
+    #device-list .muted, #sections-list .muted { font-size: .55rem !important; }
+    #device-list .device-color-dot { width: 10px !important; height: 10px !important; }
+
+    /* Agrupar acciones en una sola línea comprimida */
+    #device-list .d-flex.align-items-center.gap-2, #sections-list .d-flex.align-items-center.gap-2 {
+        gap: .35rem !important;
+        flex-wrap: wrap;
+    }
+
+    /* Paginación ultra-compacta */
+    #prev-page, #next-page, #sections-prev-page, #sections-next-page {
+        padding: .3rem .45rem !important;
+        font-size: .65rem !important;
+    }
+    #page-info, #sections-page-info { font-size: .65rem !important; }
+
+    /* Limitar ancho de badges para que no rompan layout */
+    #device-list .badge, #sections-list .badge { max-width: 60px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+
+    /* Modal formularios: compactar */
+    .modal-dark .modal-body .form-label { font-size: .75rem !important; }
+    .modal-dark .modal-body input, .modal-dark .modal-body select { font-size: .75rem !important; padding: .4rem .55rem !important; }
+    .modal-dark .modal-title { font-size: .85rem !important; }
+    .modal-dark .btn { font-size: .65rem !important; padding: .35rem .6rem !important; }
+}
+
+/* SOLO PARA MÓVILES PEQUEÑOS - max-width: 480px */
+@media (max-width: 480px) {
+    
+    /* Ajustes para pantallas muy pequeñas */
+    .login-container {
+        margin: 10px !important;
+        padding: 15px !important;
+    }
+    
+    /* Botones en columna en pantallas muy pequeñas */
+    .btn-group-mobile {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .btn {
+        width: 100% !important;
+    }
+    
+    /* Texto más pequeño en pantallas muy pequeñas */
+    body {
+        font-size: 14px !important;
+    }
+    
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    
+    /* Padding reducido en contenedores */
+    .container {
+        padding: 0 10px !important;
+    }
+    
+    /* Cards con menos padding */
+    .card-body {
+        padding: 10px !important;
+    }
+    
+    /* LEDs en grid más compacto */
+    .led-controls {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    
+    /* Grid de LEDs para pantallas pequeñas */
+    .led-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        max-width: 280px !important;
+    }
+    
+    /* Switches más compactos */
+    .led-switch {
+        min-height: 70px !important;
+        padding: 10px !important;
+    }
+    
+    /* Labels más pequeños */
+    .led-label {
+        width: 35px !important;
+        height: 35px !important;
+    }
+    
+    /* Texto más pequeño */
+    .led-text {
+        font-size: 11px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    /* Card más compacta */
+    .led-control-card {
+        max-width: 320px !important;
+    }
+    
+    /* Header más compacto */
+    .led-control-card .card-header {
+        padding: 12px !important;
+    }
+    
+    .led-control-card .card-header h5 {
+        font-size: 14px !important;
+    }
+    
+    /* Switch especial para "APAGAR TODOS" */
+    .led-switch.all-switch {
+        grid-column: 1 / -1 !important;
+        background: rgba(255, 99, 132, 0.2) !important;
+        border: 1px solid rgba(255, 99, 132, 0.3) !important;
+    }
+    
+    .all-switch .led-text {
+        color: #ff6384 !important;
+        font-weight: 700 !important;
+    }
+    
+    .all-switch .estado_led:checked + .led-label {
+        background: #ff6384 !important;
+        box-shadow: 0 0 20px rgba(255, 99, 132, 0.6) !important;
+    }
+    
+    /* Layout principal para páginas con sidebar */
+    .main-layout {
+        flex-direction: column !important;
+        min-height: 100vh !important;
+    }
+    
+    /* Contenedor principal centrado */
+    .d-flex.main-layout .content {
+        width: 100% !important;
+        padding: 20px 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: calc(100vh - 80px) !important;
+    }
+    
+    /* Asegurar que las cards estén centradas */
+    .data-card {
+        width: 100% !important;
+        max-width: 350px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Tablas en scroll horizontal */
+    .table-responsive {
+        overflow-x: auto !important;
+    }
+    
+    .table {
+        font-size: 12px !important;
+        min-width: 500px !important;
+    }
+}
+
+/* Navegación hamburguesa para móvil */
+@media (max-width: 768px) {
+    .mobile-nav-toggle {
+        display: block !important;
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 24px !important;
+        color: white !important;
+        cursor: pointer !important;
+        padding: 12px !important;
+        z-index: 1001 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .mobile-nav-overlay {
+        display: none !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        z-index: 999 !important;
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    .mobile-nav-overlay.show {
+        display: block !important;
+    }
+    
+    .mobile-nav {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 280px !important;
+        height: 100vh !important;
+        background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%) !important;
+        z-index: 1000 !important;
+        transition: left 0.3s ease !important;
+        padding: 20px !important;
+        overflow-y: auto !important;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .mobile-nav.active {
+        left: 0 !important;
+    }
+    
+    .mobile-nav-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 30px !important;
+        padding-bottom: 20px !important;
+        border-bottom: 1px solid #333 !important;
+    }
+    
+    .mobile-nav-close {
+        background: none !important;
+        border: none !important;
+        color: white !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+        padding: 8px !important;
+    }
+    
+    .mobile-nav-user {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 30px !important;
+        padding: 15px !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 10px !important;
+    }
+    
+    .mobile-nav-user .user-avatar {
+        margin-right: 15px !important;
+        color: #00bfff !important;
+    }
+    
+    .mobile-nav-user .user-name {
+        color: white !important;
+        font-weight: bold !important;
+        margin: 0 !important;
+    }
+    
+    .mobile-nav-user .user-role {
+        color: #999 !important;
+        font-size: 12px !important;
+        margin: 0 !important;
+    }
+    
+    .mobile-nav-links {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 5px !important;
+    }
+    
+    .mobile-nav-link {
+        display: flex !important;
+        align-items: center !important;
+        color: white !important;
+        text-decoration: none !important;
+        padding: 15px 20px !important;
+        border-radius: 8px !important;
+        transition: background-color 0.2s ease !important;
+        gap: 15px !important;
+    }
+    
+    .mobile-nav-link:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+    }
+    
+    .mobile-nav-link svg {
+        color: #00bfff !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .mobile-nav-logout {
+        color: #ff6b6b !important;
+        margin-top: 20px !important;
+    }
+    
+    .mobile-nav-logout svg {
+        color: #ff6b6b !important;
+    }
+    
+    .mobile-nav-divider {
+        height: 1px !important;
+        background: #333 !important;
+        margin: 20px 0 !important;
+    }
+    
+    /* Ocultar sidebar original en móvil */
+    .sidebar {
+        display: none !important;
+    }
+    
+    /* Ajustar contenido principal */
+    .main-layout {
+        flex-direction: column !important;
+    }
+    
+    .content {
+        margin-left: 0 !important;
+        padding: 20px 15px !important;
+        width: 100% !important;
+    }
+}
+
+/* Touch feedback */
+@media (max-width: 768px) {
+    .touch-active {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: scale(0.95) !important;
+    }
+    
+    .mobile-btn {
+        -webkit-tap-highlight-color: transparent !important;
+        user-select: none !important;
+    }
+    
+    .mobile-input {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Clases helper para móvil */
+    .is-mobile .desktop-only {
+        display: none !important;
+    }
+    
+    .is-mobile .mobile-only {
+        display: block !important;
+    }
+    
+    /* Viewport height fix */
+    .mobile-vh-fix {
+        height: calc(var(--vh, 1vh) * 100) !important;
+    }
+}
+
+/* Ocultar navegación móvil en desktop */
+@media (min-width: 769px) {
+    .mobile-nav-toggle {
+        display: none !important;
+    }
+    
+    .mobile-nav {
+        display: none !important;
+    }
+}

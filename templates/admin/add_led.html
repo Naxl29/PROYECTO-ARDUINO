@@ -1,0 +1,76 @@
+{% extends "layouts/layout.html" %}
+
+{% block title %}Renombrar LEDs - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_new_device.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card data-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                        Renombrar LEDs Estáticos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <p class="text-muted mb-4">Asigna nombres personalizados a los LEDs estáticos (1-8). Estos nombres se mostrarán en la interfaz de control.</p>
+
+                    <form method="post" action="{{ url_for('admin_add_led') }}">
+                        <div class="row g-3">
+                            {% for led_id in ['1', '2', '3', '4', '5', '6', '7', '8'] %}
+                            <div class="col-md-6 col-lg-3">
+                                <label for="led_{{ led_id }}" class="form-label">LED {{ led_id }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">#{{ led_id }}</span>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="led_{{ led_id }}" 
+                                           name="name" 
+                                           value="{{ led_names[led_id] }}" 
+                                           placeholder="Nombre del LED">
+                                    <input type="hidden" name="led_id" value="{{ led_id }}">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </form>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('button') }}" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                            </svg>
+                            Volver al Control LED
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+

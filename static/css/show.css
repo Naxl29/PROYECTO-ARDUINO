@@ -1,0 +1,39 @@
+/* Estilos para la tarjeta de perfil y la tabla */
+.profile-card {
+    width: 100%;
+    max-width: 700px;
+    padding: 0;
+    text-align: center;
+}
+
+.profile-table {
+    background-color: transparent !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-light);
+    margin-bottom: 0;
+}
+
+.profile-table thead th {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    font-weight: 600;
+}
+
+.profile-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.profile-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.profile-table tbody td {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.card.data-card .card-footer {
+    background: var(--background-dark);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 15px 15px;
+    padding: 20px;
+}
