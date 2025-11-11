@@ -565,7 +565,9 @@ def admin_add_led():
 @app.context_processor
 def inject_now():
     """Inyecta variables globales en todas las plantillas"""
-    context = {'now': datetime.now()}
+    context = {
+        'now': datetime.now()
+    }
     # Agregar información del usuario si hay sesión activa
     if 'rol' in session:
         context['user_role'] = session['rol']
