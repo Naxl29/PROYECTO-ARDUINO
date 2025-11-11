@@ -19,15 +19,22 @@ from utils.leds_store import get_led_names, save_led_name
 from Model.device_flags import DeviceFlagsModel
 
 # Inicialización de base de datos
-from Model.init_db import DatabaseInitializer
+from Model.init_db import (
+    DatabaseInitializationError,
+    DatabaseSeedError,
+    initialize_schema,
+    seed_default_data,
+)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# Inicializar base de datos al arrancar la aplicación
 print("🚀 Iniciando aplicación...")
-DatabaseInitializer.initialize_all_tables()
-DatabaseInitializer.insert_default_data() 
+try:
+    initialize_schema()
+    seed_default_data()
+except (DatabaseInitializationError, DatabaseSeedError) as error:
+    raise SystemExit(error) from error
 
 led_controller = None
 led_device_controller = None

@@ -3,19 +3,10 @@ from Model.database import Database
 
 
 class LedDeviceModel:
-    @staticmethod
-    def _prepare(conn) -> None:
-        # Asegurar columna color
-        with conn.cursor() as cur:
-            try:
-                cur.execute("ALTER TABLE objetos ADD COLUMN color VARCHAR(7) DEFAULT '#ffffff'")
-            except Exception:
-                pass
 
     @staticmethod
     def list_leds() -> List[Dict]:
         conn = Database().conexion()
-        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
             try:
                 cur.execute(
@@ -39,7 +30,6 @@ class LedDeviceModel:
     @staticmethod
     def next_channel() -> str:
         conn = Database().conexion()
-        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
             try:
                 cur.execute("SELECT MAX(id) AS max_id FROM objetos")
@@ -57,7 +47,6 @@ class LedDeviceModel:
         if not str(channel).isdigit():
             return None
         conn = Database().conexion()
-        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
             try:
                 cur.execute(
@@ -79,7 +68,6 @@ class LedDeviceModel:
         if not str(channel).isdigit():
             return
         conn = Database().conexion()
-        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
             try:
                 nombre_up = (nombre or '').strip().upper()
@@ -103,7 +91,6 @@ class LedDeviceModel:
         if not str(channel).isdigit():
             return -1
         conn = Database().conexion()
-        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
             try:
                 nombre_up = (nombre or '').strip().upper()
@@ -127,7 +114,6 @@ class LedDeviceModel:
         if not str(channel).isdigit():
             return
         conn = Database().conexion()
-        LedDeviceModel._prepare(conn)
         with conn.cursor() as cur:
             # Eliminar de objetos
             try:
