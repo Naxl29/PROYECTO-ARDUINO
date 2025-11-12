@@ -60,12 +60,11 @@ body {
 
 /* Contenedor de Flexbox para un diseño horizontal */
 .led-grid {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente fila si no hay espacio */
-    justify-content: center; /* Centra los elementos horizontalmente */
-    align-items: stretch;
-    gap: 30px; /* Aumenta el espacio entre los botones */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 30px;
     padding: 30px;
+    justify-items: center;
 }
 
 /* Estilo individual de cada LED con hover y transformaciones */
@@ -78,7 +77,8 @@ body {
     border: 1px solid #333;
     border-radius: 15px;
     padding: 20px 15px;
-    width: 160px; /* Ancho base */
+    width: 100%;
+    max-width: 210px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
@@ -189,11 +189,14 @@ body {
 
 /* Estilo para el switch "APAGAR TODOS" - más sobrio y apropiado para apagado */
 .led-switch.all-switch {
-    grid-column: 1 / -1; /* Ocupa todo el ancho en la cuadrícula */
-    background: linear-gradient(45deg, #444, #666); /* Degradado gris oscuro */
-    border: 1px solid #555;
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: 340px;
+    margin: 10px auto 0 auto;
+    background: linear-gradient(160deg, #2d2d2d, #3a3a3a);
+    border: 1px solid #4c4c4c;
     animation: subtlePulse 3s infinite ease-in-out;
-    margin: auto;
 }
 
 @keyframes subtlePulse {
@@ -206,6 +209,7 @@ body {
     color: #ff6666; /* Rojo suave para indicar función de apagado */
     text-shadow: 0 0 3px rgba(255, 100, 100, 0.5);
     font-weight: 700;
+    letter-spacing: 0.05em;
 }
 
 .led-switch.all-switch:hover {
@@ -239,19 +243,12 @@ body {
         padding: 20px;
     }
     .led-switch {
-        width: 140px;
+        max-width: 140px;
         padding: 18px 14px;
     }
 }
 
 @media (max-width: 992px) {
-    .led-grid {
-        justify-content: space-between;
-    }
-    .led-switch {
-        width: calc(50% - 16px);
-        max-width: 220px;
-    }
     .led-text {
         font-size: 0.95rem;
     }
@@ -265,8 +262,11 @@ body {
         font-size: 0.875rem;
     }
     .led-switch {
-        width: calc(50% - 12px);
+        max-width: 200px;
         padding: 16px 12px;
+    }
+    .led-switch.all-switch {
+        max-width: 260px;
     }
     .led-label {
         width: 62px;
@@ -293,14 +293,14 @@ body {
     }
     .led-switch {
         width: 100%;
-        max-width: none;
+        max-width: 100%;
         align-items: stretch;
+    }
+    .led-switch.all-switch {
+        max-width: 100%;
     }
     .led-text {
         font-size: 0.9rem;
         margin-bottom: 12px;
-    }
-    .led-switch.all-switch {
-        width: 100%;
     }
 }
