@@ -65,6 +65,34 @@ body {
     gap: 30px;
     padding: 30px;
     justify-items: center;
+    max-height: 400px !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    /* Para Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--surface-dark);
+}
+
+/* Estilos personalizados para la barra de desplazamiento (Chrome, Edge, Safari) */
+.led-grid::-webkit-scrollbar {
+    width: 10px;
+}
+
+.led-grid::-webkit-scrollbar-track {
+    background: var(--surface-dark);
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+.led-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+    border-radius: 10px;
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.led-grid::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00d4ff, #ff1eb3);
+    box-shadow: 0 0 15px var(--primary-color), 0 0 20px var(--secondary-color);
 }
 
 /* Estilo individual de cada LED con hover y transformaciones */

@@ -80,15 +80,16 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
-                </div>
-                {% if 'ALL' in role_config.permissions.accessible_leds %}
+                    
+                    {% if 'ALL' in role_config.permissions.accessible_leds %}
                     <!-- Botón especial APAGAR TODOS (solo ADMIN) -->
                     <div class="led-switch all-switch" data-led="ALL">
                         <span class="led-text">{{ led_names['ALL'] }}</span>
                         <input type="checkbox" class="estado_led" data-led="ALL" id="ledAll">
                         <label for="ledAll" class="led-label"></label>
                     </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
