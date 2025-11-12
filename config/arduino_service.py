@@ -1,40 +1,23 @@
-# services/arduino_service.py
-import requests
-import logging
-from config.config import Config
+from __future__ import annotations
+
+import json
+from typing import Dict
+
+from config.arduino_connection import send_text
+
+
+def _build_payload(estado: str, led_id: str) -> Dict[str, str]:
+    if estado not in {"0", "1"}:
+        raise ValueError("El estado debe ser '0' o '1'.")
+    if led_id == "ALL":
+        return {"type": "commandAll", "state": estado}
+    if not led_id.isdigit():
+        raise ValueError("El identificador del LED debe ser numérico o 'ALL'.")
+    return {"type": "command", "state": estado, "led": led_id}
+
 
 class ArduinoService:
-    def __init__(self):
-        self.base_url = Config.BASE_URL.rstrip("/")
-
-    def send_command(self, estado, led_id):
-        """
-        Envía un comando ON/OFF al Arduino por WiFi
-        estado: '1' (encender) o '0' (apagar)
-        led_id: '1'...'9' o 'ALL'
-        """
-        try:
-            if led_id == "ALL":
-                ok = False
-                for i in range(1, 10):
-                    url = f"{self.base_url}/ON{i}" if estado == "1" else f"{self.base_url}/OFF{i}"
-                    logging.info(f"Enviando a Arduino: {url}")
-                    try:
-                        response = requests.get(url, timeout=10)
-                        response.raise_for_status()
-                        ok = True 
-                    except Exception as e:
-                        logging.warning(f"Error con LED {i}: {e}")
-                        continue
-                return ok
-
-            # LED (1 a 8)
-            url = f"{self.base_url}/ON{led_id}" if estado == "1" else f"{self.base_url}/OFF{led_id}"
-            logging.info(f"Enviando a Arduino: {url}")
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            return True
-
-        except Exception as e:
-            logging.warning(f"Error enviando a Arduino: {e}")
-            return False
+    def send_command(self, estado: str, led_id: str) -> None:
+        payload = _build_payload(estado, led_id)
+        message = json.dumps(payload, ensure_ascii=False)
+        send_text(message)

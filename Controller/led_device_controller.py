@@ -71,11 +71,8 @@ class LedDeviceController:
         return result
 
     def send_state(self, channel: str, estado: str) -> bool:
-        # Delegate to ArduinoService directly (channel maps to led_id)
-        try:
-            return self.arduino.send_command(estado, channel)
-        except Exception:
-            return False
+        self.arduino.send_command(estado, channel)
+        return True
 
     def delete_device(self, channel: str) -> None:
         LedDeviceModel.delete(channel)
