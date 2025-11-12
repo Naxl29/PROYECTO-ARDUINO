@@ -1,5 +1,6 @@
 from datetime import datetime
 import hashlib
+from typing import Dict
 from Model.database import Database
 from datetime import datetime
 
@@ -223,7 +224,7 @@ class Bloque:
         return round(gasto, 2)
     
     # Función para obtener el estado actual de todos los LEDs (estado global)
-    def get_current_led_states(self, id_usuario):
+    def get_current_led_states(self, id_usuario: int) -> Dict[str, int]:
         conn = self.db.conexion()
         cursor = conn.cursor()
         
@@ -247,9 +248,11 @@ class Bloque:
             resultados = cursor.fetchall()
             
             # Convertir los resultados a un diccionario {led_id: estado}
-            estados = {}
+            estados: Dict[str, int] = {}
             for resultado in resultados:
-                estados[str(resultado['id_objeto'])] = resultado['estado']
+                estado_bruto = resultado['estado']
+                estado_normalizado = 1 if int(estado_bruto) == 1 else 0
+                estados[str(resultado['id_objeto'])] = estado_normalizado
             
             return estados
             

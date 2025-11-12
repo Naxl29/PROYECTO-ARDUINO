@@ -1,6 +1,8 @@
 #Controller para el usuario, en el cual se maneja cuando se registra un nuevo usuario y cuando se enciende o se apaga el botón
+from typing import Dict
 from Model.bloque import Bloque
 from flask import session, redirect, url_for
+from utils.led_state_store import LedStates, merge_states, persist_states, read_states
 
 class BloqueController:
     def __init__(self):
@@ -55,5 +57,13 @@ class BloqueController:
         return self.model.usuario_existe(usuario)
     
     #Función para obtener el estado actual GLOBAL de todos los LEDs
-    def get_current_states(self, id_usuario):
-        return self.model.get_current_led_states(id_usuario)
+    def get_current_states(self, id_usuario) -> LedStates:
+        raw_states: Dict[str, int] = self.model.get_current_led_states(id_usuario) or {}
+        normalized_db: LedStates = {}
+        for led_id, estado in raw_states.items():
+            normalized_db[str(led_id)] = "1" if int(estado) == 1 else "0"
+        stored_states = read_states()
+        merged = merge_states(stored_states, normalized_db)
+        if merged != stored_states:
+            persist_states(merged)
+        return merged

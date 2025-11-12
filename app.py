@@ -17,6 +17,8 @@ from config.roles_config import ROLES, LED_NAMES
 from utils.auth_utils import can_control_led, get_role_info, check_session, get_user_info
 from utils.leds_store import get_led_names, save_led_name
 from Model.device_flags import DeviceFlagsModel
+from utils.led_state_store import write_state
+from config.config import Config
 
 # Inicialización de base de datos
 from Model.init_db import (
@@ -134,6 +136,9 @@ def estado_led():
     user_info = get_user_info()
     user_role = user_info['rol']
 
+    if estado not in {'0', '1'}:
+        return jsonify({"success": False, "error": "Estado inválido"}), 400
+
     static_allowed = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'ALL']
     if not led_id:
         return jsonify({"success": False, "error": "LED ID inválido"}), 400
@@ -170,6 +175,11 @@ def estado_led():
         result = get_led_device_controller().send_state(led_id, estado)
 
     if result:
+        if led_id != 'ALL':
+            try:
+                write_state(led_id, estado)
+            except Exception as error:
+                return jsonify({"success": False, "error": f"No se pudo persistir el estado: {error}"}), 500
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False, "error": "Error al controlar LED"}), 500
@@ -486,6 +496,48 @@ def get_estados():
         return jsonify({"success": True, "estados": estados}), 200
     else:
         return jsonify({"success": False, "error": "Error al obtener estados"}), 500
+
+
+@app.route('/api/hardware/led-state', methods=['POST'])
+def hardware_led_state():
+    token_config = (Config.HARDWARE_API_TOKEN or '').strip()
+    if not token_config:
+        return jsonify({"success": False, "error": "Token del hardware no configurado"}), 503
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"success": False, "error": "Formato JSON inválido"}), 400
+
+    token_recibido = str(payload.get('token', '')).strip()
+    if token_recibido != token_config:
+        return jsonify({"success": False, "error": "Token no autorizado"}), 401
+
+    led_id = str(payload.get('led_id', '')).strip()
+    if not led_id or not led_id.isdigit():
+        return jsonify({"success": False, "error": "LED ID inválido"}), 400
+
+    estado_bruto = payload.get('estado')
+    estado_normalizado = None
+    if isinstance(estado_bruto, str):
+        estado_bruto = estado_bruto.strip()
+    if str(estado_bruto) == '1':
+        estado_normalizado = '1'
+    elif str(estado_bruto) == '0':
+        estado_normalizado = '0'
+    else:
+        return jsonify({"success": False, "error": "Estado inválido"}), 400
+
+    try:
+        write_state(led_id, estado_normalizado)
+    except Exception as error:
+        return jsonify({"success": False, "error": f"No se pudo persistir el estado: {error}"}), 500
+
+    try:
+        BloqueController().save_estado(Config.HARDWARE_DEFAULT_USER_ID, estado_normalizado, led_id)
+    except Exception as error:
+        return jsonify({"success": False, "error": f"No se pudo registrar el historial: {error}"}), 500
+
+    return jsonify({"success": True}), 200
 
 #Ruta para cerrar sesión
 @app.route('/logout')

@@ -18,11 +18,14 @@ class Config:
     
     # Arduino
     ARDUINO_IP = os.getenv('ARDUINO_IP', '10.7.53.40')
+    # 10.38.81.1 CELULAR CARLOS
     # 10.7.53.40 SENA
     # 192.168.101.77 CASA LISSETH
     # 192.168.101.74 CASA CARLOS
 
     BASE_URL = f"http://{ARDUINO_IP}/"
+    HARDWARE_API_TOKEN = os.getenv('HARDWARE_API_TOKEN', '')
+    HARDWARE_DEFAULT_USER_ID = int(os.getenv('HARDWARE_DEFAULT_USER_ID', '1'))
     
     # Logging
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
