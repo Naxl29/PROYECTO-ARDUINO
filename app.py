@@ -1,11 +1,6 @@
-import json
-import logging
-import os
-from datetime import datetime
-
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
-from flask_sock import Sock
-from simple_websocket import ConnectionClosed
+from datetime import datetime
+import os
 
 # Controladores
 from Controller.led_controller import LedController
@@ -24,11 +19,6 @@ from utils.leds_store import get_led_names, save_led_name
 from Model.device_flags import DeviceFlagsModel
 from utils.led_state_store import write_state
 from config.config import Config
-from config.arduino_connection import (
-    ArduinoConnectionNotAvailable,
-    clear_connection,
-    set_connection,
-)
 
 # Inicialización de base de datos
 from Model.init_db import (
@@ -40,7 +30,6 @@ from Model.init_db import (
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-sock = Sock(app)
 
 print("🚀 Iniciando aplicación...")
 try:
@@ -52,35 +41,6 @@ except (DatabaseInitializationError, DatabaseSeedError) as error:
 led_controller = None
 led_device_controller = None
 section_controller = None
-
-
-@sock.route('/ws/arduino')
-def arduino_socket(ws):
-    token = request.args.get('token')
-    if not token:
-        ws.send(json.dumps({'type': 'error', 'message': 'Token requerido'}, ensure_ascii=False))
-        ws.close()
-        return
-    if token != Config.HARDWARE_API_TOKEN:
-        ws.send(json.dumps({'type': 'error', 'message': 'Token inválido'}, ensure_ascii=False))
-        ws.close()
-        return
-    set_connection(ws)
-    ws.send(json.dumps({'type': 'ready'}, ensure_ascii=False))
-    try:
-        while True:
-            try:
-                message = ws.receive()
-            except ConnectionClosed:
-                break
-            if message is None:
-                continue
-            if message == 'ping':
-                ws.send('pong')
-                continue
-            logging.info("Mensaje recibido desde Arduino: %s", message)
-    finally:
-        clear_connection(ws)
 
 def get_led_controller():
     global led_controller
@@ -208,22 +168,21 @@ def estado_led():
     except Exception:
         pass
 
-    try:
-        if led_id in static_allowed:
-            get_led_controller().manejar_estado(estado, led_id)
-        else:
-            get_led_device_controller().send_state(led_id, estado)
-    except ValueError as error:
-        return jsonify({"success": False, "error": str(error)}), 400
-    except ArduinoConnectionNotAvailable as error:
-        return jsonify({"success": False, "error": str(error)}), 503
+    if led_id in static_allowed:
+        result = get_led_controller().manejar_estado(estado, led_id)
+    else:
+        # dinámico
+        result = get_led_device_controller().send_state(led_id, estado)
 
-    if led_id != 'ALL':
-        try:
-            write_state(led_id, estado)
-        except Exception as error:
-            return jsonify({"success": False, "error": f"No se pudo persistir el estado: {error}"}), 500
-    return jsonify({"success": True}), 200
+    if result:
+        if led_id != 'ALL':
+            try:
+                write_state(led_id, estado)
+            except Exception as error:
+                return jsonify({"success": False, "error": f"No se pudo persistir el estado: {error}"}), 500
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False, "error": "Error al controlar LED"}), 500
 
 #Ruta para manejar el botón que enciende y apaga el led
 @app.route('/usuario/button')
@@ -541,7 +500,7 @@ def get_estados():
 
 @app.route('/api/hardware/led-state', methods=['POST'])
 def hardware_led_state():
-    token_config = (Config.HARDWARE_API_TOKEN or '97a2477504885f006252b4a291250e9bf8d7c44cf4c6e586ee05d072ac28632a').strip()
+    token_config = (Config.HARDWARE_API_TOKEN or '').strip()
     if not token_config:
         return jsonify({"success": False, "error": "Token del hardware no configurado"}), 503
 

@@ -1,186 +1,119 @@
 #include <ESP8266WiFi.h>
-#include <WebSocketsClient.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 
-const char* WIFI_SSID = "Prueba";
-const char* WIFI_PASSWORD = "12345678";
+// Configuración WiFi
+const char* ssid = "Prueba";
+const char* password = "12345678";
 
-const char* WS_HOST = "https://domotica-lz0k.onrender.com";
-const uint16_t WS_PORT = 443;
-const char* HARDWARE_TOKEN = "97a2477504885f006252b4a291250e9bf8d7c44cf4c6e586ee05d072ac28632a";
 
-WebSocketsClient webSocket;
-String wsPath;
+ESP8266WebServer server(80);
+MDNSResponder mdns;
 
-const unsigned long WIFI_RETRY_MS = 10000;
-unsigned long lastWifiAttempt = 0;
+// Pines de la Mega que queremos controlar (LED 1 -> pin 13, LED 2 -> pin 12, etc.)
+const int ledPins[] = {13, 12, 11, 10, 9, 8, 7, 6, 5};
+const int numLeds = sizeof(ledPins) / sizeof(ledPins[0]);
 
-void connectWiFi();
-void setupWebSocket();
-void webSocketEvent(WStype_t type, uint8_t* payload, size_t length);
-void ensureWiFi();
-void handleMessage(const String& message);
-void processCommand(const String& led, const String& state);
-void processCommandAll(const String& state);
-String extractJsonValue(const String& json, const String& key);
-bool isNumeric(const String& value);
-void sendSerialCommand(const String& command);
+// Página web dinámica
+String webPage = "";
 
 void setup() {
-  Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial.begin(115200);      // Debug al PC
+  Serial1.begin(115200);     // Comunicación con la Mega por Serial1 (TX / RX)
 
-  connectWiFi();
-  wsPath = String("/ws/arduino?token=") + HARDWARE_TOKEN;
-  setupWebSocket();
-}
+  WiFi.begin(ssid, password);
 
-void loop() {
-  ensureWiFi();
-  webSocket.loop();
-}
-
-void connectWiFi() {
-  Serial.println("Conectando a WiFi...");
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println();
-  Serial.print("Conectado. IP: ");
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+
+  mdns.begin("esp8266", WiFi.localIP());
+
+  // Generar la página web con estilo CSS y botones para cada pin
+  webPage = "<!DOCTYPE html><html><head><meta charset='UTF-8'>";
+  webPage += "<title>Control de LEDs Mega</title>";
+  webPage += "<style>";
+  webPage += "body { font-family: Arial; background: #f0f0f0; text-align:center; }";
+  webPage += "h1 { color: #333; }";
+  webPage += ".led-container { margin: 10px auto; padding: 10px; background: #fff; border-radius: 8px; width: 320px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }";
+  webPage += ".led-row { margin: 8px 0; }";
+  webPage += "button { padding: 10px 20px; margin: 5px 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }";
+  webPage += ".on { background-color: #4CAF50; color: white; }";
+  webPage += ".off { background-color: #f44336; color: white; }";
+  webPage += ".all { background-color: #2196F3; color: white; }";
+  webPage += "</style></head><body>";
+  webPage += "<h1>Control de LEDs Mega</h1>";
+
+  // Botones para todos
+  webPage += "<div class='led-container'>";
+  webPage += "<div class='led-row'>";
+  webPage += "<a href='/ONALL'><button class='all'>ON TODOS</button></a>";
+  webPage += "<a href='/OFFALL'><button class='all'>OFF TODOS</button></a>";
+  webPage += "</div>";
+  webPage += "</div>";
+
+  // Botones individuales
+  webPage += "<div class='led-container'>";
+  for (int i = 0; i < numLeds; i++) {
+    int ledNumber = i + 1;
+    int pin = ledPins[i];
+    webPage += "<div class='led-row'>";
+    webPage += "LED " + String(ledNumber) + " (pin " + String(pin) + ")";
+    webPage += " <a href='/ON" + String(ledNumber) + "'><button class='on'>ON</button></a>";
+    webPage += " <a href='/OFF" + String(ledNumber) + "'><button class='off'>OFF</button></a>";
+    webPage += "</div>";
+  }
+  webPage += "</div></body></html>";
+
+  // Manejo de la raíz
+  server.on("/", []() {
+    server.send(200, "text/html", webPage);
+  });
+
+  // Crear rutas dinámicas para cada pin
+  for (int i = 0; i < numLeds; i++) {
+    int ledNumber = i + 1;
+    String onPath = "/ON" + String(ledNumber);
+    server.on(onPath.c_str(), [ledNumber]() {
+      String cmd = "[ON" + String(ledNumber) + "]";
+      Serial.println(cmd);
+      Serial1.print(cmd);
+      server.send(200, "text/html", webPage);
+    });
+
+    String offPath = "/OFF" + String(ledNumber);
+    server.on(offPath.c_str(), [ledNumber]() {
+      String cmd = "[OFF" + String(ledNumber) + "]";
+      Serial.println(cmd);
+      Serial1.print(cmd);
+      server.send(200, "text/html", webPage);
+    });
+  }
+
+  // --- NUEVO: rutas para ONALL y OFFALL ---
+  server.on("/ONALL", []() {
+    Serial.println("[ONALL]");
+    Serial1.print("[ONALL]");
+    server.send(200, "text/html", webPage);
+  });
+
+  server.on("/OFFALL", []() {
+    Serial.println("[OFFALL]");
+    Serial1.print("[OFFALL]");
+    server.send(200, "text/html", webPage);
+  });
+
+  server.begin();
+  Serial.println("HTTP server started");
 }
 
-void ensureWiFi() {
-  if (WiFi.status() == WL_CONNECTED) {
-    return;
-  }
-  unsigned long now = millis();
-  if (now - lastWifiAttempt < WIFI_RETRY_MS) {
-    return;
-  }
-  lastWifiAttempt = now;
-  Serial.println("Reconectando a WiFi...");
-  WiFi.disconnect();
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-}
-
-void setupWebSocket() {
-  webSocket.beginSSL(WS_HOST, WS_PORT, wsPath.c_str());
-  webSocket.onEvent(webSocketEvent);
-  webSocket.setReconnectInterval(5000);
-  webSocket.enableHeartbeat(15000, 3000, 2);
-  Serial.println("Intentando conexión WebSocket...");
-}
-
-void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
-  switch (type) {
-    case WStype_DISCONNECTED:
-      Serial.println("WebSocket desconectado.");
-      break;
-    case WStype_CONNECTED:
-      Serial.println("WebSocket conectado.");
-      break;
-    case WStype_TEXT: {
-      String message;
-      for (size_t i = 0; i < length; i++) {
-        message += static_cast<char>(payload[i]);
-      }
-      handleMessage(message);
-      break;
-    }
-    case WStype_ERROR:
-      Serial.println("Error en WebSocket.");
-      break;
-    case WStype_PING:
-      Serial.println("Ping recibido.");
-      break;
-    case WStype_PONG:
-      Serial.println("Pong recibido.");
-      break;
-    default:
-      break;
-  }
-}
-
-void handleMessage(const String& message) {
-  Serial.print("Mensaje recibido: ");
-  Serial.println(message);
-  String type = extractJsonValue(message, "type");
-  if (type == "command") {
-    String led = extractJsonValue(message, "led");
-    String state = extractJsonValue(message, "state");
-    processCommand(led, state);
-  } else if (type == "commandAll") {
-    String state = extractJsonValue(message, "state");
-    processCommandAll(state);
-  } else if (type.length() > 0) {
-    Serial.println("Tipo de mensaje no soportado.");
-  }
-}
-
-void processCommand(const String& led, const String& state) {
-  if (!isNumeric(led)) {
-    Serial.println("LED inválido en comando.");
-    return;
-  }
-  if (state != "0" && state != "1") {
-    Serial.println("Estado inválido en comando.");
-    return;
-  }
-  String command = "[" + String(state == "1" ? "ON" : "OFF") + led + "]";
-  sendSerialCommand(command);
-}
-
-void processCommandAll(const String& state) {
-  if (state != "0" && state != "1") {
-    Serial.println("Estado inválido en comando global.");
-    return;
-  }
-  String command = state == "1" ? "[ONALL]" : "[OFFALL]";
-  sendSerialCommand(command);
-}
-
-String extractJsonValue(const String& json, const String& key) {
-  String pattern = "\"" + key + "\":";
-  int index = json.indexOf(pattern);
-  if (index < 0) {
-    return "";
-  }
-  index += pattern.length();
-  while (index < static_cast<int>(json.length()) && json[index] == ' ') {
-    index++;
-  }
-  if (index >= static_cast<int>(json.length())) {
-    return "";
-  }
-  char terminator = json[index];
-  if (terminator != '\"' && terminator != '\'') {
-    return "";
-  }
-  index++;
-  int endIndex = json.indexOf(terminator, index);
-  if (endIndex < 0) {
-    return "";
-  }
-  return json.substring(index, endIndex);
-}
-
-bool isNumeric(const String& value) {
-  if (value.length() == 0) {
-    return false;
-  }
-  for (size_t i = 0; i < value.length(); i++) {
-    if (!isDigit(value[i])) {
-      return false;
-    }
-  }
-  return true;
-}
-
-void sendSerialCommand(const String& command) {
-  Serial.print("Enviando a Mega: ");
-  Serial.println(command);
-  Serial1.print(command);
+void loop() {
+  server.handleClient();
 }
