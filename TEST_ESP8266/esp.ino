@@ -4,7 +4,9 @@
 const char* WIFI_SSID = "Prueba";
 const char* WIFI_PASSWORD = "12345678";
 
-const char* WS_HOST = "https://domotica-lz0k.onrender.com";
+// Nota: `WebSocketsClient::beginSSL` espera únicamente el host (sin esquema).
+// Para Render usamos WSS en el puerto 443.
+const char* WS_HOST = "domotica-lz0k.onrender.com";
 const uint16_t WS_PORT = 443;
 const char* HARDWARE_TOKEN = "97a2477504885f006252b4a291250e9bf8d7c44cf4c6e586ee05d072ac28632a";
 
