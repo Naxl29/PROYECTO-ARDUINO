@@ -23,7 +23,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 1px solid var(--card-border);
-    max-width: 1200px; /* Ancho suficiente para una sola fila */
+    max-width: 100%;
     padding: 30px;
     animation: fadeIn 1s ease-in-out; /* Animación de entrada */
 }
@@ -63,7 +63,7 @@ body {
     display: flex;
     flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente fila si no hay espacio */
     justify-content: center; /* Centra los elementos horizontalmente */
-    align-items: center;
+    align-items: stretch;
     gap: 30px; /* Aumenta el espacio entre los botones */
     padding: 30px;
 }
@@ -78,7 +78,7 @@ body {
     border: 1px solid #333;
     border-radius: 15px;
     padding: 20px 15px;
-    width: 150px; /* Ancho fijo para consistencia */
+    width: 160px; /* Ancho base */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
@@ -228,4 +228,79 @@ body {
     background-color: white; /* Círculo blanco para el "ALL" */
     box-shadow: 0 0 8px rgba(255, 68, 68, 0.8), 0 0 16px rgba(255, 68, 68, 0.6);
     --glow-color: #ff4444; /* Asegura que la animación de resplandor use rojo */
+}
+
+@media (max-width: 1200px) {
+    .led-control-card {
+        padding: 24px;
+    }
+    .led-grid {
+        gap: 24px;
+        padding: 20px;
+    }
+    .led-switch {
+        width: 140px;
+        padding: 18px 14px;
+    }
+}
+
+@media (max-width: 992px) {
+    .led-grid {
+        justify-content: space-between;
+    }
+    .led-switch {
+        width: calc(50% - 16px);
+        max-width: 220px;
+    }
+    .led-text {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .led-control-card {
+        padding: 20px 16px;
+    }
+    .filter-row .form-label {
+        font-size: 0.875rem;
+    }
+    .led-switch {
+        width: calc(50% - 12px);
+        padding: 16px 12px;
+    }
+    .led-label {
+        width: 62px;
+        height: 34px;
+    }
+    .led-label:after {
+        width: 26px;
+        height: 26px;
+        top: 4px;
+        left: 4px;
+    }
+    .estado_led:checked + .led-label:after {
+        transform: translateX(28px);
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        padding: 0 12px;
+    }
+    .led-grid {
+        gap: 16px;
+        padding: 16px 8px;
+    }
+    .led-switch {
+        width: 100%;
+        max-width: none;
+        align-items: stretch;
+    }
+    .led-text {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+    .led-switch.all-switch {
+        width: 100%;
+    }
 }
