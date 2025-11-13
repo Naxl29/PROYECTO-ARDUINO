@@ -152,13 +152,6 @@ void handleClapSensor() {
     if (clapCounter >= 2) {
       clapTargetState = !clapTargetState;
 
-      // Avisar al ESP/app para sincronizar el estado del botón
-      if (clapTargetState) {
-        ESP_SERIAL.print("[ON5]");
-      } else {
-        ESP_SERIAL.print("[OFF5]");
-      }
-
       digitalWrite(clapTargetPin, clapTargetState ? HIGH : LOW);
       Serial.print("Dos aplausos detectados: pin 5 ");
       Serial.println(clapTargetState ? "encendido" : "apagado");

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from datetime import datetime
 import os
+import socket
 
 # Controladores
 from Controller.led_controller import LedController
@@ -647,6 +648,22 @@ def prediccion_mensual():
     except Exception as e:
         return jsonify({'error': str(e), 'exitoso': False}), 500
 
+def _get_local_ip():
+    """Obtiene la IP LAN de la máquina, o None si no se puede determinar."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("8.8.8.8", 80))
+            return s.getsockname()[0]
+    except OSError:
+        return None
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    local_ip = _get_local_ip()
+    print(f" * Flask disponible en: http://127.0.0.1:{port}")
+    if local_ip:
+        print(f" * Flask disponible en la red: http://{local_ip}:{port}")
+    else:
+        print(" * No se pudo determinar la IP local automáticamente.")
     app.run(host='0.0.0.0', port=port, debug=False)
