@@ -90,6 +90,16 @@ void applyMegaCommand(const String& command) {
     setLedStateLocally(ledNumber - 1, false);
     return;
   }
+
+  if (command.startsWith("[SYNC") && command.endsWith("]")) {
+    const int separator = command.indexOf(':');
+    if (separator > 0) {
+      const int ledNumber = command.substring(5, separator).toInt();
+      const int value = command.substring(separator + 1, command.length() - 1).toInt();
+      setLedStateLocally(ledNumber - 1, value != 0);
+    }
+    return;
+  }
 }
 
 void handleMegaSerial() {

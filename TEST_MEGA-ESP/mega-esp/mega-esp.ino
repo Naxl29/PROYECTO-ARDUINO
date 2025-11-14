@@ -20,16 +20,16 @@ const byte numLeds = sizeof(ledPins) / sizeof(ledPins[0]);
 const byte lcdColumns = 16;
 const byte lcdRows = 2;
 const byte lcdRS = 6;
-const byte lcdEN = 23;
-const byte lcdD4 = 24;
-const byte lcdD5 = 25;
-const byte lcdD6 = 26;
-const byte lcdD7 = 27;
-const byte lcdPowerPin = 28;
+const byte lcdEN = 22;
+const byte lcdD4 = 23;
+const byte lcdD5 = 24;
+const byte lcdD6 = 27;
+const byte lcdD7 = 28;
+const byte lcdPowerPin = 29;
 
 LiquidCrystal lcd(lcdRS, lcdEN, lcdD4, lcdD5, lcdD6, lcdD7);
 
-const char lcdMessage[] = "adso-2923560";
+const char lcdMessage[] = "ADSO-2923560";
 const byte lcdMessageLength = sizeof(lcdMessage) - 1;
 bool pin6Active = false;
 bool lcdInitialized = false;
@@ -66,7 +66,6 @@ byte clapCounter = 0;
 
 void setLedState(byte ledIndex, bool state);
 void setLedStateByPin(byte pin, bool state);
-bool isLcdControlPin(byte pin);
 void updatePin6State(bool active);
 void handleLcdAnimation();
 void showMessageAtCurrentPosition();
@@ -82,16 +81,14 @@ void setup() {
 
   // Inicializamos todos los pines LED como salida
   for (byte i = 0; i < numLeds; i++) {
-    if (!isLcdControlPin(ledPins[i])) {
-      pinMode(ledPins[i], OUTPUT);
-    }
+    pinMode(ledPins[i], OUTPUT);
   }
 
   lcd.begin(lcdColumns, lcdRows);
   lcd.clear();
   lcdInitialized = true;
   pinMode(lcdPowerPin, OUTPUT);
-  digitalWrite(lcdPowerPin, LOW);
+  digitalWrite(lcdPowerPin, HIGH);
   lcd.noDisplay();
 
   for (byte i = 0; i < numLeds; i++) {
@@ -194,7 +191,7 @@ void setLedState(byte ledIndex, bool state) {
   bool stateChanged = (ledStates[ledIndex] != state);
   ledStates[ledIndex] = state;
   byte pin = ledPins[ledIndex];
-  if (!isLcdControlPin(pin)) {
+  if (pin != lcdRS) {
     digitalWrite(pin, state ? HIGH : LOW);
   }
 
@@ -212,21 +209,12 @@ void setLedStateByPin(byte pin, bool state) {
   }
 }
 
-bool isLcdControlPin(byte pin) {
-  return (pin == lcdRS ||
-          pin == lcdEN ||
-          pin == lcdD4 ||
-          pin == lcdD5 ||
-          pin == lcdD6 ||
-          pin == lcdD7);
-}
-
 void updatePin6State(bool active) {
   if (active) {
     pin6Active = true;
     currentAnimationIndex = 0;
     lastLcdMoveMs = millis();
-    digitalWrite(lcdPowerPin, HIGH);
+    digitalWrite(lcdPowerPin, LOW);
     delay(5);
     if (!lcdInitialized) {
       lcd.begin(lcdColumns, lcdRows);
@@ -239,7 +227,7 @@ void updatePin6State(bool active) {
     pin6Active = false;
     lcd.clear();
     lcd.noDisplay();
-    digitalWrite(lcdPowerPin, LOW);
+    digitalWrite(lcdPowerPin, HIGH);
     lcdInitialized = false;
   }
 }
