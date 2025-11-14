@@ -1,0 +1,143 @@
+{% extends "layouts/layout.html" %}
+
+{% block title %}LEDControl · Gestión de usuarios{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-4">
+        <div class="col-12 col-lg-4">
+            <div class="card data-card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Crear usuario</h5>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form method="post" action="{{ url_for('admin_users') }}">
+                        <div class="mb-3">
+                            <label for="nuevo-usuario" class="form-label">Usuario</label>
+                            <input id="nuevo-usuario" name="usuario" type="text" maxlength="50" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nueva-contrasena" class="form-label">Contraseña</label>
+                            <input id="nueva-contrasena" name="contrasena" type="password" maxlength="50" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nuevo-rol" class="form-label">Rol</label>
+                            <select id="nuevo-rol" name="rol" class="form-select" required>
+                                <option value="" selected disabled>Selecciona un rol</option>
+                                {% for rol in roles %}
+                                <option value="{{ rol }}">{{ rol }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-8">
+            <div class="card data-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Usuarios registrados</h5>
+                </div>
+                <div class="card-body">
+                    {% if users %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Usuario</th>
+                                    <th scope="col">Rol</th>
+                                    <th scope="col" class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in users %}
+                                <tr>
+                                    <td>{{ usuario.id }}</td>
+                                    <td>{{ usuario.usuario }}</td>
+                                    <td>{{ usuario.rol or 'USER' }}</td>
+                                    <td class="text-end">
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-info me-2 edit-user-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal"
+                                                data-user='{{ usuario | tojson | safe }}'
+                                                data-update-url="{{ url_for('admin_users_update', user_id=usuario.id) }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <form method="post"
+                                              action="{{ url_for('admin_users_delete', user_id=usuario.id) }}"
+                                              class="d-inline delete-user-form"
+                                              data-username="{{ usuario.usuario }}">
+                                            <button type="button" class="btn btn-sm btn-outline-danger delete-user-btn">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="muted mb-0">Aún no hay usuarios registrados.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-dark">
+            <form method="post" id="edit-user-form">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar usuario
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editar-usuario" class="form-label">Usuario</label>
+                        <input id="editar-usuario" name="usuario" type="text" maxlength="50" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editar-contrasena" class="form-label">Contraseña (dejar vacío para mantener)</label>
+                        <input id="editar-contrasena" name="contrasena" type="password" maxlength="50" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editar-rol" class="form-label">Rol</label>
+                        <select id="editar-rol" name="rol" class="form-select" required>
+                            {% for rol in roles %}
+                            <option value="{{ rol }}">{{ rol }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='js/flash-messages.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_users.js') }}"></script>
+{% endblock %}
+

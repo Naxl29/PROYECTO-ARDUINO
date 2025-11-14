@@ -1,8 +1,7 @@
 from datetime import datetime
-import hashlib
-from typing import Dict
+from typing import Dict, List, Optional, Tuple
+
 from Model.database import Database
-from datetime import datetime
 
 class Bloque:
     def __init__(self):
@@ -140,7 +139,7 @@ class Bloque:
     #Función que verifica que el nombre de usuario no exista en la base de datos
     def usuario_existe(self, usuario):
         conn = self.db.conexion()
-        cursor = conn.cursor(dictionary=True, buffered=True)
+        cursor = conn.cursor()
         
         sql = "SELECT id FROM usuarios WHERE usuario = %s"
         cursor.execute(sql, (usuario,))
@@ -263,3 +262,128 @@ class Bloque:
         finally:
             cursor.close()
             conn.close()
+
+    def list_users(self) -> List[Dict[str, Optional[str]]]:
+        conn = self.db.conexion()
+        cursor = conn.cursor()
+        try:
+            sql = """
+                SELECT u.id, u.usuario, COALESCE(r.rol, 'USER') AS rol
+                FROM usuarios u
+                LEFT JOIN roles_usuarios ru ON u.id = ru.id_usuario
+                LEFT JOIN roles r ON ru.id_rol = r.id
+                ORDER BY u.id ASC
+            """
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result if result else []
+        except Exception as error:
+            raise RuntimeError(f"No se pudieron obtener los usuarios: {error}") from error
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_user(self, user_id: int) -> Optional[Dict[str, Optional[str]]]:
+        conn = self.db.conexion()
+        cursor = conn.cursor()
+        try:
+            sql = """
+                SELECT u.id, u.usuario, u.contrasena, COALESCE(r.rol, 'USER') AS rol
+                FROM usuarios u
+                LEFT JOIN roles_usuarios ru ON u.id = ru.id_usuario
+                LEFT JOIN roles r ON ru.id_rol = r.id
+                WHERE u.id = %s
+            """
+            cursor.execute(sql, (user_id,))
+            return cursor.fetchone()
+        except Exception as error:
+            raise RuntimeError(f"No se pudo obtener el usuario: {error}") from error
+        finally:
+            cursor.close()
+            conn.close()
+
+    def list_roles(self) -> List[str]:
+        conn = self.db.conexion()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT rol FROM roles ORDER BY id ASC")
+            rows = cursor.fetchall()
+            return [row["rol"] for row in rows] if rows else []
+        except Exception as error:
+            raise RuntimeError(f"No se pudieron obtener los roles: {error}") from error
+        finally:
+            cursor.close()
+            conn.close()
+
+    def update_user(self, user_id: int, usuario: str, contrasena: str, rol: str) -> None:
+        conn = self.db.conexion()
+        cursor = conn.cursor()
+        try:
+            conn.begin()
+            cursor.execute(
+                "UPDATE usuarios SET usuario = %s, contrasena = %s WHERE id = %s",
+                (usuario, contrasena, user_id),
+            )
+            if cursor.rowcount == 0:
+                raise RuntimeError("Usuario no encontrado")
+            role_id = self._get_role_id(cursor, rol)
+            if role_id is None:
+                raise ValueError("Rol inválido")
+            cursor.execute("DELETE FROM roles_usuarios WHERE id_usuario = %s", (user_id,))
+            cursor.execute(
+                "INSERT INTO roles_usuarios (id_usuario, id_rol) VALUES (%s, %s)",
+                (user_id, role_id),
+            )
+            conn.commit()
+        except Exception as error:
+            conn.rollback()
+            raise RuntimeError(f"No se pudo actualizar el usuario: {error}") from error
+        finally:
+            cursor.close()
+            conn.close()
+
+    def set_user_role(self, user_id: int, rol: str) -> None:
+        conn = self.db.conexion()
+        cursor = conn.cursor()
+        try:
+            conn.begin()
+            role_id = self._get_role_id(cursor, rol)
+            if role_id is None:
+                raise ValueError("Rol inválido")
+            cursor.execute("DELETE FROM roles_usuarios WHERE id_usuario = %s", (user_id,))
+            cursor.execute(
+                "INSERT INTO roles_usuarios (id_usuario, id_rol) VALUES (%s, %s)",
+                (user_id, role_id),
+            )
+            conn.commit()
+        except Exception as error:
+            conn.rollback()
+            raise RuntimeError(f"No se pudo asignar el rol: {error}") from error
+        finally:
+            cursor.close()
+            conn.close()
+
+    def delete_user(self, user_id: int) -> None:
+        conn = self.db.conexion()
+        cursor = conn.cursor()
+        try:
+            conn.begin()
+            cursor.execute("DELETE FROM reportes WHERE id_usuario = %s", (user_id,))
+            cursor.execute("DELETE FROM roles_usuarios WHERE id_usuario = %s", (user_id,))
+            cursor.execute("DELETE FROM usuarios WHERE id = %s", (user_id,))
+            if cursor.rowcount == 0:
+                raise RuntimeError("Usuario no encontrado")
+            conn.commit()
+        except Exception as error:
+            conn.rollback()
+            raise RuntimeError(f"No se pudo eliminar el usuario: {error}") from error
+        finally:
+            cursor.close()
+            conn.close()
+
+    def _get_role_id(self, cursor, rol: str) -> Optional[int]:
+        cursor.execute("SELECT id FROM roles WHERE rol = %s", (rol,))
+        row = cursor.fetchone()
+        if not row:
+            return None
+        return int(row["id"])
