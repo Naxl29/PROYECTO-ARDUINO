@@ -103,15 +103,12 @@ def create():
         if bloque_controller.usuario_existente(usuario):
             return jsonify({'success': False, 'message': 'El usuario ya está registrado'}), 400
         try:
-            id = bloque_controller.save(usuario, contrasena)
-            
-            if id:
-                return jsonify({'success': True, 'message': 'Usuario creado correctamente', 'id': id}), 201
-            else:
-                return jsonify({'success': False, 'message': 'Error al crear usuario'}), 500
-                
-        except Exception as e:
-            return jsonify({'success': False, 'message': 'Error al crear usuario - posiblemente ya existe'}), 409
+            new_id = bloque_controller.create_with_role(usuario, contrasena, 'USER')
+            return jsonify({'success': True, 'message': 'Usuario creado correctamente', 'id': new_id}), 201
+        except ValueError as error:
+            return jsonify({'success': False, 'message': str(error)}), 409
+        except RuntimeError as error:
+            return jsonify({'success': False, 'message': f'Error al crear usuario: {error}'}), 500
     
     return render_template('usuario/create.html')
 
@@ -406,6 +403,103 @@ def admin_sections_delete():
     except Exception as e:
         flash(f'Error al eliminar sección: {e}', 'error')
     return redirect(url_for('admin_sections'))
+
+@app.route('/admin/users', methods=['GET', 'POST'])
+def admin_users():
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    bloque_controller = BloqueController()
+    if request.method == 'POST':
+        usuario = (request.form.get('usuario') or '').strip()
+        contrasena = (request.form.get('contrasena') or '').strip()
+        rol = (request.form.get('rol') or '').strip()
+        if not usuario or not contrasena or not rol:
+            flash('Todos los campos son obligatorios', 'error')
+            return redirect(url_for('admin_users'))
+        try:
+            bloque_controller.create_with_role(usuario, contrasena, rol)
+            flash('Usuario creado correctamente', 'success')
+        except ValueError as error:
+            flash(str(error), 'error')
+        except RuntimeError as error:
+            flash(str(error), 'error')
+        return redirect(url_for('admin_users'))
+
+    try:
+        users = bloque_controller.list_users()
+    except RuntimeError as error:
+        flash(str(error), 'error')
+        users = []
+    try:
+        roles = bloque_controller.list_roles()
+    except RuntimeError as error:
+        flash(str(error), 'error')
+        roles = []
+    return render_template('admin/users.html', users=users, roles=roles)
+
+@app.route('/admin/users/<int:user_id>/update', methods=['POST'])
+def admin_users_update(user_id):
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    usuario = (request.form.get('usuario') or '').strip()
+    contrasena = (request.form.get('contrasena') or '').strip()
+    rol = (request.form.get('rol') or '').strip()
+
+    if not usuario or not rol:
+        flash('Usuario y rol son obligatorios', 'error')
+        return redirect(url_for('admin_users'))
+
+    bloque_controller = BloqueController()
+    try:
+        if not contrasena:
+            current_user = bloque_controller.get_user(user_id)
+            if not current_user:
+                flash('Usuario no encontrado', 'error')
+                return redirect(url_for('admin_users'))
+            contrasena = current_user.get('contrasena', '')
+        bloque_controller.update_user(user_id, usuario, contrasena, rol)
+        flash('Usuario actualizado correctamente', 'success')
+    except RuntimeError as error:
+        flash(str(error), 'error')
+    except ValueError as error:
+        flash(str(error), 'error')
+
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+def admin_users_delete(user_id):
+    if not check_session():
+        return redirect(url_for('login'))
+
+    user_info = get_user_info()
+    if user_info['rol'] != 'ADMIN':
+        flash('No tienes permisos para acceder a esta función', 'error')
+        return redirect(url_for('dashboard'))
+
+    if user_id == user_info['id_usuario']:
+        flash('No puedes eliminar tu propia cuenta', 'error')
+        return redirect(url_for('admin_users'))
+
+    bloque_controller = BloqueController()
+    try:
+        bloque_controller.delete_user(user_id)
+        flash('Usuario eliminado correctamente', 'success')
+    except RuntimeError as error:
+        flash(str(error), 'error')
+
+    return redirect(url_for('admin_users'))
 
 # Admin: suspender/activar LED (canal)
 @app.route('/admin/devices/suspend', methods=['POST'])

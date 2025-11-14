@@ -1,8 +1,10 @@
 #Controller para el usuario, en el cual se maneja cuando se registra un nuevo usuario y cuando se enciende o se apaga el botón
-from typing import Dict
+from typing import Dict, List, Optional
+
 from Model.bloque import Bloque
 from flask import session, redirect, url_for
 from utils.led_state_store import LedStates, merge_states, persist_states, read_states
+
 
 class BloqueController:
     def __init__(self):
@@ -12,6 +14,30 @@ class BloqueController:
     def save(self, usuario, contrasena):
         id = self.model.create_user(usuario, contrasena)
         return id
+
+    def create_with_role(self, usuario: str, contrasena: str, rol: str) -> int:
+        if self.model.usuario_existe(usuario):
+            raise ValueError("El usuario ya está registrado")
+        user_id = self.model.create_user(usuario, contrasena)
+        if not user_id:
+            raise RuntimeError("No se pudo crear el usuario")
+        self.model.set_user_role(int(user_id), rol)
+        return int(user_id)
+
+    def list_users(self) -> List[Dict[str, Optional[str]]]:
+        return self.model.list_users()
+
+    def get_user(self, user_id: int) -> Optional[Dict[str, Optional[str]]]:
+        return self.model.get_user(user_id)
+
+    def update_user(self, user_id: int, usuario: str, contrasena: str, rol: str) -> None:
+        self.model.update_user(user_id, usuario, contrasena, rol)
+
+    def delete_user(self, user_id: int) -> None:
+        self.model.delete_user(user_id)
+
+    def list_roles(self) -> List[str]:
+        return self.model.list_roles()
     
     #Función para guardar el estado del botón (encendido o apagado)
     def save_estado(self, id_usuario, estado, led_id):

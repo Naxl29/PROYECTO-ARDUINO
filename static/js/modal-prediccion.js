@@ -33,4 +33,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorDiv.style.display = 'block';
             });
     });
+
+    prediccionModal.addEventListener('hidden.bs.modal', function () {
+        loadingDiv.style.display = 'none';
+        resultadoDiv.style.display = 'none';
+        errorDiv.style.display = 'none';
+        setTimeout(function () {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop && backdrop.parentNode) {
+                backdrop.parentNode.removeChild(backdrop);
+            }
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        }, 150);
+    });
 });
